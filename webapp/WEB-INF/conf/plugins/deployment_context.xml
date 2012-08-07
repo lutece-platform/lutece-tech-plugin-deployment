@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+<!-- DAO -->
+	<bean id="deployment.applicationDAO"  class="fr.paris.lutece.plugins.deployment.business.ApplicationDAO" />
+	
+
+	<!-- Services --> 	 
+	<bean id="deployment.ApplicationService" class="fr.paris.lutece.plugins.deployment.service.ApplicationService" />
+	<bean id="deployment.EnvironmentService" class="fr.paris.lutece.plugins.deployment.service.EnvironmentService" />
+	<bean id="deployment.FtpService" class="fr.paris.lutece.plugins.deployment.service.FtpService" />
+	<bean id="deployment.MavenService" class="fr.paris.lutece.plugins.deployment.service.MavenService" />
+	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.SvnService" />
+	<bean id="deployment.WorkflowDeploySiteService" class="fr.paris.lutece.plugins.deployment.service.WorkflowDeploySiteService" />
+	
+
+	
+	
+
+</beans>
+ 	
