@@ -1,11 +1,14 @@
 package fr.paris.lutece.plugins.deployment.service;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
+import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
@@ -13,11 +16,16 @@ import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
 import fr.paris.lutece.plugins.deployment.util.SVNUtils;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 
+	
+	
+	HashMap<Integer,WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext=new HashMap<Integer, WorkflowDeploySiteContext>();
 	@Inject
 	ISvnService _svnService;
 	@Inject
@@ -28,30 +36,37 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	IFtpService _ftpService;
 	@Inject
 	IApplicationService _applicationService;
+
 	
-	
-	public  int addWorkflowDeploySiteContext(WorkflowDeploySiteContext context)
+	public synchronized int addWorkflowDeploySiteContext(WorkflowDeploySiteContext context)
 	{
-		
-		return -1;
+		int nIdKey=Integer.parseInt( DatastoreService.getDataValue(ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, "0"))+1;
+		//stored key in database
+		DatastoreService.setDataValue(ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY,Integer.toString( nIdKey));
+		context.setId(nIdKey);
+		_mapWorkflowDeploySiteContext.put(nIdKey, context);
+		return nIdKey;
 	}
 	
 	
 	public  WorkflowDeploySiteContext getWorkflowDeploySiteContext(int nIdContext)
 	{
 		
-		return null;
+		return _mapWorkflowDeploySiteContext.get(nIdContext);
 	}
 	
 	
 	public  String checkoutSite(WorkflowDeploySiteContext context)
 	{
+			//reinitialisation du command Result
+			DeploymentUtils.reInitCommandResult(context);
+			
 			String strSvnCheckoutSiteUrl;
 			Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 			Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
-			if(context.getTagName()!=null)
+			if(context.getTagToDeploy()!=null)
 			{
-				strSvnCheckoutSiteUrl=SVNUtils.getSvnUrlTagSite(application.getSvnUrlSite(), context.getTagName());
+				strSvnCheckoutSiteUrl=SVNUtils.getSvnUrlTagSite(application.getSvnUrlSite(), context.getTagToDeploy());
 			
 			}
 			else
@@ -68,7 +83,9 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	public void  initTagInformations(WorkflowDeploySiteContext context)
 	{
 		
-		
+		//reinitialisation du command Result
+		DeploymentUtils.reInitCommandResult(context);
+	
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 	
@@ -83,7 +100,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 			strTagName=ReleaseUtils.getReleaseName(application.getSiteName(), strVersion);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			AppLogService.error(e);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,7 +113,9 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	
 	public  String tagSite(WorkflowDeploySiteContext context)
 	{
-
+			//reinitialisation du command Result
+			DeploymentUtils.reInitCommandResult(context);
+	
 			Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 			Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 			_svnService.doSvnTagSite(application.getSiteName(), application.getSvnUrlSite(), context.getTagName(), context.getNextVersion(), context.getTagVersion(),context.getMavenUser(),context.getCommandResult());
@@ -108,7 +127,9 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	
 	public String assemblySite(WorkflowDeploySiteContext context)
 	{
-		
+		//reinitialisation du command Result
+		DeploymentUtils.reInitCommandResult(context);
+	
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 		
@@ -122,12 +143,14 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	
 	public String deploySite(WorkflowDeploySiteContext context)
 	{
-		
+		//reinitialisation du command Result
+		DeploymentUtils.reInitCommandResult(context);
+	
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement());
 		
-		_ftpService.uploadFile(application.getWebAppName()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(DeploymentUtils.getPathCheckoutSite(application.getSiteName()), context.getTagToDeploy(), ConstanteUtils.ARCHIVE_WAR_EXTENSION), serverApplicationInstance.getFtpInfo(), serverApplicationInstance.getFtpDeployDirectoryTarget()+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+application.getWebAppName(), context.getCommandResult());
+		_ftpService.uploadFile(application.getWebAppName()+ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(DeploymentUtils.getPathCheckoutSite(application.getSiteName()), context.getTagToDeploy(), ConstanteUtils.ARCHIVE_WAR_EXTENSION), serverApplicationInstance.getFtpInfo(), serverApplicationInstance.getFtpDeployDirectoryTarget(), context.getCommandResult());
 		return null;
 	
 	}

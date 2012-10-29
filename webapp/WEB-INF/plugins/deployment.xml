@@ -2,7 +2,7 @@
 <plug-in>
 
     <!-- Plugin Informations -->
-    <name>archive</name>
+    <name>deployment</name>
     <class>fr.paris.lutece.plugins.deployment.service.DeploymentPlugin</class>
     <version>1.0.0</version>
     <description>deployment.plugin.description</description>
@@ -10,7 +10,7 @@
     <installation/>
     <changes/>
     <user-guide/>
-    <provider>archive.plugin.provider</provider>
+    <provider>deployment.plugin.provider</provider>
     <provider-url>http://www.lutece.paris.fr</provider-url>
     <icon-url>images/admin/skin/plugins/archive/archive.png</icon-url>
     <copyright>Copyright (c) City of Paris</copyright>

@@ -1,0 +1,14 @@
+<div class="content-box">
+  <h2> #i18n{deployment.tasks_form_workflow.title}</h2>
+      <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="" id=""  enctype="multipart/form-data" >
+	   
+	   	<input name="id_action" value="${id_action}" type="hidden" />
+	   	${tasks_form}
+	   	
+	    <p>
+	  		<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_save}" class="button" name="save" />
+	  		<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_cancel}" class="button" name="cancel" />
+	   	</p>
+   		  
+   	</form>	  
+ </div>

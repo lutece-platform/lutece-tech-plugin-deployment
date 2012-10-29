@@ -1,6 +1,9 @@
 package fr.paris.lutece.plugins.deployment.service;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.collections.map.HashedMap;
 
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
@@ -19,7 +22,7 @@ public interface IEnvironmentService {
 	ServerApplicationInstance getServerApplicationInstance(String strCodeApplication,String strServerInstanceCode,String strCodeEnvironment);
 	
 	
-	List<ServerApplicationInstance> getListServerApplicationInstance(
+	HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(
 			String strCodeApplication);
 	
 

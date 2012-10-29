@@ -1,10 +1,29 @@
 package fr.paris.lutece.plugins.deployment.business;
 
-public class CommandResult implements Cloneable
+import java.io.Serializable;
+
+public class CommandResult implements Cloneable, Serializable
 {
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 		// synchro needed?
 	
+
+
+
+	/**
+	 * 
+	 */
+
+
+
 	public static int STATUS_EXCEPTION=Integer.MIN_VALUE;
+	
+	
 	private StringBuffer _strLog;
 	private int _nStatus;
 	private boolean _bRunning;

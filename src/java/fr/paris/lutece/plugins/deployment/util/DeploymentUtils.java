@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.deployment.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -16,12 +17,18 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
+import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
+import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
 import fr.paris.lutece.portal.service.user.attribute.AdminUserFieldService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
@@ -193,7 +200,7 @@ public class DeploymentUtils {
  	
 	public static String getPlateformUrlServerApplicationInstances(String strCodeApplication,String strCodeEnvironment)
  	{
- 		String strPathEnvironment=strCodeEnvironment.replaceAll(ConstanteUtils.CONSTANTE_SEPARATOR_POINT, ConstanteUtils.CONSTANTE_SEPARATOR_SLASH);
+ 		String strPathEnvironment=(strCodeEnvironment.replace(ConstanteUtils.CONSTANTE_SEPARATOR_POINT, ConstanteUtils.CONSTANTE_SEPARATOR_SLASH)).toUpperCase();
  		return getPlateformUrlApplication(strCodeApplication)+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +strPathEnvironment+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +ConstanteUtils.CONSTANTE_SERVER_TOMCAT;
  		
  	}
@@ -202,7 +209,7 @@ public class DeploymentUtils {
  	
 	public static String getDeployDirectoryTarget(String strCodeApplication,String strCodeEnvironment,String strCodeServerApplicationInstance)
  	{
- 		return getPlateformUrlServerApplicationInstances(strCodeApplication,strCodeEnvironment)	+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+strCodeServerApplicationInstance+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+ConstanteUtils.CONSTANTE_SERVER_RO;
+ 		return getPlateformUrlServerApplicationInstances(strCodeApplication,strCodeEnvironment)	+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+strCodeServerApplicationInstance+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+AppPropertiesService.getProperty(ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_DPLOY_DIRECTORY_TARGET);
  	}
 	
 	
@@ -237,16 +244,20 @@ public class DeploymentUtils {
     
     	String strIdAttributeLogin=  AppPropertiesService.getProperty(ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN);
     	String strIdAttributePasssword=  AppPropertiesService.getProperty(ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD);
-    	
+    	String strLoginValue=null;
+    	String strPasswordValue=null;
     	MavenUser mavenUser=null;
     	Map<String,Object> mapAttributeUser  =AdminUserFieldService.getAdminUserFields(nIdAdminUser,locale);
     	if(mapAttributeUser.containsKey(strIdAttributeLogin) && mapAttributeUser.containsKey(strIdAttributePasssword))
     	{
-    		
-    		mavenUser=new MavenUser();
-    		mavenUser.setLogin((String)mapAttributeUser.get(strIdAttributeLogin));
-    		mavenUser.setPaswword((String)mapAttributeUser.get(strIdAttributePasssword));
-    		
+    		strLoginValue=((ArrayList<AdminUserField>)mapAttributeUser.get(strIdAttributeLogin)).get(0).getValue();
+    		strPasswordValue=((ArrayList<AdminUserField>)mapAttributeUser.get(strIdAttributePasssword)).get(0).getValue();
+    		if(!StringUtils.isEmpty(strLoginValue)&&!(StringUtils.isEmpty(strPasswordValue)))
+    		{
+    			mavenUser=new MavenUser();
+    			mavenUser.setLogin(strLoginValue);
+    			mavenUser.setPaswword(strPasswordValue);
+    		}
     	}
     	
     	return mavenUser;
@@ -319,22 +330,56 @@ public class DeploymentUtils {
     public static int  getIdWorkflowSiteDeploy(boolean bTagSiteBeforDeploy)
    {
     	
-    	int nIdWorkflowSiteDeploy=ConstanteUtils.CONSTANTE_ID_NULL;
+    	int nIdWorkflow=ConstanteUtils.CONSTANTE_ID_NULL;
 	    if(bTagSiteBeforDeploy)
 		{
 			
-			nIdWorkflowSiteDeploy=AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE,ConstanteUtils.CONSTANTE_ID_NULL);
+			nIdWorkflow=AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE,ConstanteUtils.CONSTANTE_ID_NULL);
 				
 		}
 		else
 		{
-			nIdWorkflowSiteDeploy=AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE,ConstanteUtils.CONSTANTE_ID_NULL);
+			nIdWorkflow=AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE,ConstanteUtils.CONSTANTE_ID_NULL);
 		}
 	    
-	    return nIdWorkflowSiteDeploy;
+	    return nIdWorkflow;
 		
 	    
     }
+    
+    
+    public static HashMap<String, ReferenceList> getHashCategoryListSite(ReferenceList categoryRefList,ISvnService svnService,MavenUser mavenUser)
+    {
+    	HashMap<String, ReferenceList> hashCategoryListSite=new HashMap<String, ReferenceList>();
+    	FilterDeployment filter=new FilterDeployment();
+    	for(ReferenceItem item:categoryRefList)
+    	{
+    		filter.setCodeCategory(item.getCode());
+    		hashCategoryListSite.put(item.getCode(), svnService.getSites(filter, mavenUser));
+    	}
+    	return hashCategoryListSite;
+    	
+    }
+    
+    
+    public static void reInitCommandResult(WorkflowDeploySiteContext context)
+    {
+    	CommandResult commandResult=new CommandResult();
+    	commandResult.setLog(new StringBuffer());
+    	context.setCommandResult(commandResult);
+    	
+    }
+    
+    
+
+    
+    
+    
+ 
+    
+    
+    
+    
 
 
 }

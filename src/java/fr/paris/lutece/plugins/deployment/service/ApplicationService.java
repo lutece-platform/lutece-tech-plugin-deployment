@@ -1,27 +1,28 @@
 package fr.paris.lutece.plugins.deployment.service;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
-import fr.paris.lutece.plugins.deployment.business.ApplicationDAO;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IApllicationDAO;
+import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
 public class ApplicationService implements IApplicationService
 {
     private static final String PROPERTY_SVN_CATEGORIES_LIST = "deployment.svnCategories.list";
-    private static final String CONSTANTE_SVN_CATEGORY = "deployment.svnCategorie.";
+    private static final String CONSTANTE_SVN_CATEGORY = "deployment.svnCategory.";
     private static final String CONSTANTE_SVN_CATEGORY_NAME = ".name";
     private static final String CONSTANTE_SEPARATOR = ",";
    // private static IApplicationService _singleton;
     private static ReferenceList _listCategory;
+    @Inject
     private IApllicationDAO _applicationDAO;
 
     private ApplicationService(  )
@@ -59,8 +60,7 @@ public class ApplicationService implements IApplicationService
 	 */
     public void init(  )
     {
-        _applicationDAO = new ApplicationDAO(  );
-        initListCategories(  );
+    	initListCategories(  );
     }
 
     private void initListCategories(  )
@@ -91,7 +91,8 @@ public class ApplicationService implements IApplicationService
 	 */
     public void createApplication( Application application,Plugin plugin )
     {
-        _applicationDAO.insert( application,plugin );
+  
+    	_applicationDAO.insert( application,plugin );
     }
 
     /* (non-Javadoc)

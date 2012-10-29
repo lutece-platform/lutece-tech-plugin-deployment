@@ -1,0 +1,76 @@
+<script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
+<script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
+
+<div class="row" >
+
+    <legend>#i18n{deployment.form_init_deploy_application.table_label}</legend>
+
+	<#if error_message?has_content>
+		${error_message}
+		<a class="btn btn-primary btn-mini" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
+         	<i class="icon-edit icon-white"></i> 
+        </a>
+	<#else>
+		<script type="text/javascript">
+		// empty component list and unselect category
+		initComponantsEnvironment();
+		var itemsMap = new Object();
+		<#list server_instance_map?keys as environment_key>
+			var itemList = new Array();
+			<#assign listServerApplicationInstance = server_instance_map[environment_key!]! /> 
+			<#list listServerApplicationInstance as serverApplicationInstance>
+				var item = new Object();
+				item["code"] = "${serverApplicationInstance.code}";
+				item["name"] = "${serverApplicationInstance.name}";
+				itemList.push(item);
+			</#list>
+			itemsMap["${environment_key}"] = itemList;
+		</#list>	
+		</script>
+		<form class="form-horizontal" method="post"  name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp">
+	        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}"/>
+	        <fieldset>
+	
+	      
+	
+	           
+	            <div class="control-group">
+	                <label class="control-label" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*:</label>
+	                <div class="controls">
+	                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange='refreshComponantsEnvironment();'" />
+	          		</div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="code_server_application_instance" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance}*:</label>
+	                <div class="controls">
+	                 <select name="code_server_application_instance" id="code_server_application_instance" >
+	                 </select>     		
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}:</label>
+	                <div class="controls">
+	             		<input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy" />
+	                </div>
+	            </div>
+	            
+	            <div class="control-group">
+	                <label class="control-label" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*:</label>
+	                <div class="controls">
+	                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange='refreshComponantsEnvironment();'" />
+	          		</div>
+	            </div>
+	            
+	            
+	            
+	          
+	            
+	            <div class="form-actions">
+	                <button class="btn btn-primary" type="submit" >#i18n{deployment.form_init_deploy_application.button_deploy}</button>
+	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	            </div>
+	
+	        </fieldset>
+	    </form>
+	</#if>
+</div>

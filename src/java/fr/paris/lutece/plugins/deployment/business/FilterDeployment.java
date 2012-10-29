@@ -23,7 +23,7 @@ public class FilterDeployment
 
     public boolean containsCodeCategoryFilter(  )
     {
-        return   _strCodeCategory!= null && _strCodeCategory.isEmpty() ;
+        return   _strCodeCategory!= null && !_strCodeCategory.isEmpty() ;
     }
 
 	public void setIdApplication(int nIdApplication) {

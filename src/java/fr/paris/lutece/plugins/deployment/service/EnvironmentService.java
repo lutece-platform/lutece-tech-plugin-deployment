@@ -14,46 +14,19 @@ import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
-public class EnvironementService implements IEnvironmentService {
-	
-	private static final String PROPERTY_ENVIRONMENTS_LIST = "deployment.environments.list";
-	private static final String PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL = "deployment.plateformEnvironment.baseUrl";
-	private static final String PROPERTY_WEBSERVICE_AREAS_JSON_OBJECT_NAME = "deployment.webservice.areas.jsonObjectName";
-	private static final String PROPERTY_WEBSERVICE_AREAS_JSON_DICTIONARY_NAME = "deployment.webservice.areas.jsonDictionaryName";
-	private static final String PROPERTY_WEBSERVICE_ENVIRONMENTS_JSON_OBJECT_NAME = "deployment.webservice.environments.jsonObjectName";
-	private static final String PROPERTY_WEBSERVICE_EVIRONMENTS_JSON_DICTIONARY_NAME = "deployment.webservice.environments.jsonDictionaryName";
-	private static final String PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_OBJECT_NAME = "deployment.webservice.serverApplicationInstances.jsonObjectName";
-	private static final String PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_DICTIONARY_NAME = "deployment.webservice.serverApplicationInstances.jsonDictionaryName";
+public class EnvironmentService implements IEnvironmentService {
 	
 	
-	
-	private static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST= "deployment.serverApplicationFtp.host";
-	private static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT= "deployment.serverApplicationFtp.port";
-	private static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_LOGIN= "deployment.serverApplicationFtp.userLogin";
-	private static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_PASSWORD= "deployment.serverApplicationFtp.userPassword";
-	
-	
-    private static final String CONSTANTE__ENVIRONMENT= "deployment.environment.";
-    private static final String CONSTANTE__SERVER_APPLICATION_INSTANCE= "deployment.serverApllicationInstance.";
-    private static final String CONSTANTE__ENVIRONMENT_CODE = ".code";
-    private static final String CONSTANTE__ENVIRONMENT_MAVEN_PROFILE = ".mavenProfile";
-    private static final String CONSTANTE__ENVIRONMENT_NAME = ".name";
-    private static final String CONSTANTE__ENVIRONMENT_SERVER_APPLICATION_INSTANCE_LIST = ".serverApplicationInstanceList";
-    private static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_CODE = ".code";
-    private static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME = ".name";
-    private static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME = ".serverName";
-    private static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_FTP_WEBAPP_Url=".ftpWebAppUrl";
-
     
     
     
-    private static final String CONSTANTE_SEPARATOR = ",";
+   
 	
 	//private static IEnvironmentService _singleton;
 	private static HashMap<String,Environment>_hashEnvironements;
 	
 	
-	private EnvironementService()
+	private EnvironmentService()
 	{
 		init();
 	}
@@ -81,23 +54,23 @@ public class EnvironementService implements IEnvironmentService {
 	       _hashEnvironements=new HashMap<String, Environment>();
 	       
 	       Environment environment;
-	       String strEnvironmentsList = AppPropertiesService.getProperty ( PROPERTY_ENVIRONMENTS_LIST);
+	       String strEnvironmentsList = AppPropertiesService.getProperty ( ConstanteUtils.PROPERTY_ENVIRONMENTS_LIST);
 	        
 	        if ( StringUtils.isNotBlank( strEnvironmentsList ) )
 	        {
-	            String[] tabEnvironments = strEnvironmentsList.split( CONSTANTE_SEPARATOR );
+	            String[] tabEnvironments = strEnvironmentsList.split( ConstanteUtils.CONSTANTE_SEPARATOR_VIRGULE );
 	            
 
 	            for ( int i = 0; i < tabEnvironments.length; i++ )
 	            {
 	                
 	            	environment=new Environment();
-	            	environment.setCode( AppPropertiesService.getProperty ( CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-                            CONSTANTE__ENVIRONMENT_CODE ));
-	            	environment.setName(AppPropertiesService.getProperty ( CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-                            CONSTANTE__ENVIRONMENT_NAME ));
-	            	environment.setMavenProfile(AppPropertiesService.getProperty ( CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-	            				CONSTANTE__ENVIRONMENT_MAVEN_PROFILE ));
+	            	environment.setCode( AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
+                            ConstanteUtils.CONSTANTE__ENVIRONMENT_CODE ));
+	            	environment.setName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
+	            			ConstanteUtils.CONSTANTE__ENVIRONMENT_NAME ));
+	            	environment.setMavenProfile(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
+	            			ConstanteUtils.CONSTANTE__ENVIRONMENT_MAVEN_PROFILE ));
 	            		
 	            		if(environment.getCode()!=null)
 	            		{
@@ -123,7 +96,7 @@ public class EnvironementService implements IEnvironmentService {
 			 */
 		 	public List<Environment> getListEnvironments(String strCodeApplication)
 		 	{
-		 		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
+		 		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
 		 		List<Environment> listEnvironments=new ArrayList<Environment>();
 		 		String strJSONApllicationAreas=null;
 		 		String strJSONEnvironment=null;
@@ -161,8 +134,8 @@ public class EnvironementService implements IEnvironmentService {
 				 			for(String strEnv:listStrEnvironment )
 				 			{
 				 				
-				 				strCodeEnvironment=AppPropertiesService.getProperty ( CONSTANTE__ENVIRONMENT +ConstanteUtils.CONSTANTE_SEPARATOR_POINT+ strArea.toLowerCase()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+strEnv.toLowerCase()+
-			                            CONSTANTE__ENVIRONMENT_CODE );
+				 				strCodeEnvironment=AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + strArea.toLowerCase()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+strEnv.toLowerCase()+
+				 						ConstanteUtils.CONSTANTE__ENVIRONMENT_CODE );
 				 				Environment environment=_hashEnvironements.containsKey(strCodeEnvironment)?_hashEnvironements.get(strCodeEnvironment):null;
 				 				listEnvironments.add(environment);
 				 			}
@@ -178,21 +151,24 @@ public class EnvironementService implements IEnvironmentService {
 		 	/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getListServerApplicationInstance(java.lang.String, java.lang.String)
 			 */
-		 	public List<ServerApplicationInstance> getListServerApplicationInstance(String strCodeApplication)
+		 	public HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(String strCodeApplication)
 		 	{
 		 		
-		 		
-		 		List<ServerApplicationInstance> listServerApplicationInstance=new ArrayList<ServerApplicationInstance>();
+		 		HashMap<String,List<ServerApplicationInstance>> hashServerApplicationInstance=new HashMap<String, List<ServerApplicationInstance>>();
 		 		List<Environment> listEnvironments=getListEnvironments(strCodeApplication);
 		 		if(listEnvironments!=null)
 		 		{
+		 			List<ServerApplicationInstance> listServerApplicationInstance;
+			 		
 			 		for(Environment environment:listEnvironments)
 			 		{
-			 			
+			 			listServerApplicationInstance=new ArrayList<ServerApplicationInstance>();
 			 			listServerApplicationInstance.addAll(getListServerApplicationInstanceByEnvironment(strCodeApplication, environment.getCode()));
+			 			hashServerApplicationInstance.put(environment.getCode(), listServerApplicationInstance);
 			 		}
+			 		
 		 		}
-		 		return listServerApplicationInstance;
+		 		return hashServerApplicationInstance;
 			 		
 		 	}
 		 	
@@ -200,17 +176,18 @@ public class EnvironementService implements IEnvironmentService {
 		 	
 		 	public List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment(String strCodeApplication,String strCodeEnvironment)
 		 	{
+		 		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
 		 		List<ServerApplicationInstance> listServerApplicationInstance=new ArrayList<ServerApplicationInstance>();
 		 		List<String> listStrServerApplicationInstance;
-		 		String strWebserviceServerApplicationJsonObjectName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_OBJECT_NAME);
-		 		String strWebserviceServerApplicationJsonDictionaryName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_OBJECT_NAME);
+		 		String strWebserviceServerApplicationJsonObjectName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_OBJECT_NAME);
+		 		String strWebserviceServerApplicationJsonDictionaryName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_DICTIONARY_NAME);
 		 		String strJSONServerApplicationInstances=null;
 		 		
 		 		
 		 		
 		 		try
 		 		{
-		 			strJSONServerApplicationInstances=DeploymentUtils.callPlateformEnvironmentWs(DeploymentUtils.getPlateformUrlServerApplicationInstances(strCodeApplication, strCodeEnvironment));	
+		 			strJSONServerApplicationInstances=DeploymentUtils.callPlateformEnvironmentWs(strPlateformEnvironmentBaseUrl+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +DeploymentUtils.getPlateformUrlServerApplicationInstances(strCodeApplication, strCodeEnvironment));	
 		 		}catch (Exception e) {
 	 				AppLogService.error(e);
 	 		
@@ -222,7 +199,7 @@ public class EnvironementService implements IEnvironmentService {
 		 			for(String strServerApplicationInstance:listStrServerApplicationInstance )
 		 			{
 		 				
-		 				listServerApplicationInstance.add(getServerApplicationInstance(strCodeApplication, strServerApplicationInstance, strCodeEnvironment));
+		 				listServerApplicationInstance.add(getServerApplicationInstance(strCodeApplication, strServerApplicationInstance.toLowerCase(), strCodeEnvironment));
 		 			}
 		 		}
 		 		return listServerApplicationInstance;
@@ -233,8 +210,8 @@ public class EnvironementService implements IEnvironmentService {
 		 	private List<String> getEnvironments(String strJsonFlux)
 		 	{
 		 		
-		 		String strWebserviceEnvJsonObjectName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_ENVIRONMENTS_JSON_OBJECT_NAME);
-		 		String strWebserviceEnvJsonDictionaryName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_EVIRONMENTS_JSON_DICTIONARY_NAME);
+		 		String strWebserviceEnvJsonObjectName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_ENVIRONMENTS_JSON_OBJECT_NAME);
+		 		String strWebserviceEnvJsonDictionaryName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_EVIRONMENTS_JSON_DICTIONARY_NAME);
 		 		
 			 	
 		 		List<String> listEnvs=null;	
@@ -253,12 +230,12 @@ public class EnvironementService implements IEnvironmentService {
 		 		
 		 		ServerApplicationInstance serverApplicationInstance=new ServerApplicationInstance();
 		 		
-		 		serverApplicationInstance.setCode(AppPropertiesService.getProperty ( CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-	                    CONSTANTE__SERVER_APPLICATION_INSTANCE_CODE ));
-		 		serverApplicationInstance.setName(AppPropertiesService.getProperty ( CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 				CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME ));
-		 		serverApplicationInstance.setServerName(AppPropertiesService.getProperty ( CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 				CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME));
+		 		serverApplicationInstance.setCode(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
+		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_CODE ));
+		 		serverApplicationInstance.setName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
+		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME ));
+		 		serverApplicationInstance.setServerName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
+		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME));
 		 		serverApplicationInstance.setCodeEnvironment(strCodeEnvironment);
 		 		
 		 		setFtpInfo(serverApplicationInstance,strCodeApplication);
@@ -274,11 +251,11 @@ public class EnvironementService implements IEnvironmentService {
 		 		
 		 		serverApplicationInstance.setFtpDeployDirectoryTarget(DeploymentUtils.getDeployDirectoryTarget(strCodeApplication,serverApplicationInstance.getCodeEnvironment() , serverApplicationInstance.getCode()));
 		 		FtpInfo ftpInfo=new FtpInfo();
-		 		ftpInfo.setHost(AppPropertiesService.getProperty (PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST));
-		 		ftpInfo.setPort(AppPropertiesService.getPropertyInt (PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT,21));
-		 		ftpInfo.setUserLogin(AppPropertiesService.getProperty (PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_LOGIN));
-		 		ftpInfo.setUserPassword(AppPropertiesService.getProperty (PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_PASSWORD));
-		 		
+		 		ftpInfo.setHost(AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST));
+		 		ftpInfo.setPort(AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT,21));
+		 		ftpInfo.setUserLogin(AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_LOGIN));
+		 		ftpInfo.setUserPassword(AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_PASSWORD));
+		 		serverApplicationInstance.setFtpInfo(ftpInfo);
 		 		
 		 		
 		 		
@@ -290,8 +267,8 @@ public class EnvironementService implements IEnvironmentService {
 		 	private List<String> getAreas(String strJsonFlux)
 		 	{
 			 	
-		 		String strWebserviceAreasJsonObjectName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_AREAS_JSON_OBJECT_NAME);
-		 		String strWebserviceAreasJsonDictionaryName=  AppPropertiesService.getProperty (PROPERTY_WEBSERVICE_AREAS_JSON_DICTIONARY_NAME);
+		 		String strWebserviceAreasJsonObjectName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_AREAS_JSON_OBJECT_NAME);
+		 		String strWebserviceAreasJsonDictionaryName=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_AREAS_JSON_DICTIONARY_NAME);
 		 		
 			 	
 		 		List<String> listAreas=null;	

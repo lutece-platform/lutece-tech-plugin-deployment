@@ -1,7 +1,14 @@
 package fr.paris.lutece.plugins.deployment.business;
 
+import java.io.Serializable;
 
-public class WorkflowDeploySiteContext {
+
+public class WorkflowDeploySiteContext  implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public static final String WORKFLOW_RESOURCE_TYPE = "WORKFLOW_DEPLOY_SITE_CONTEXT";
 	private int _nId;

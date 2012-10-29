@@ -14,6 +14,7 @@ public interface IWorkflowDeploySiteService {
 	
 	String assemblySite(WorkflowDeploySiteContext context);
 	
+	String deploySite(WorkflowDeploySiteContext context);
 	
 	void initTagInformations(WorkflowDeploySiteContext context);
 	

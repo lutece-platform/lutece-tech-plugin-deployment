@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.ISVNEventHandler;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -58,7 +61,20 @@ public class SvnService implements ISvnService
 	 */
     public void init(  )
     {
-     
+    	/*
+	     * For using over http:// and https://
+	     */
+	    DAVRepositoryFactory.setup();
+	    /*
+	     * For using over svn:// and svn+xxx://
+	     */
+	    SVNRepositoryFactoryImpl.setup();
+	    
+	    /*
+	     * For using over file:///
+	     */
+	    FSRepositoryFactory.setup();
+    	
     }
 
     /* (non-Javadoc)
@@ -66,8 +82,9 @@ public class SvnService implements ISvnService
 	 */
     public ReferenceList getSites( FilterDeployment filter,MavenUser user )
     {
+    	ISVNAuthenticationManager authManager= SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(), user.getPasword() );
     	ISVNOptions options = SVNWCUtil.createDefaultOptions( true );
-		SVNClientManager clientManager=SVNClientManager.newInstance( options );
+		SVNClientManager clientManager=SVNClientManager.newInstance( options,authManager );
     	
 		ReferenceList listReferenceItems = null;
          try
@@ -87,8 +104,9 @@ public class SvnService implements ISvnService
 	 */
     public ReferenceList getTagsSite( String strUrlSite ,MavenUser user)
     {
+    	ISVNAuthenticationManager authManager= SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(), user.getPasword() );
     	ISVNOptions options = SVNWCUtil.createDefaultOptions( true );
-		SVNClientManager clientManager=SVNClientManager.newInstance( options );
+		SVNClientManager clientManager=SVNClientManager.newInstance( options ,authManager);
 		ReferenceList listReferenceItems = null;
 
         try
@@ -113,7 +131,7 @@ public class SvnService implements ISvnService
     	String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite(strSiteName);
     	
     	 if( StringUtils.isNotBlank( strSiteName ) && user!=null )
-         {
+         {	
           
             ReleaseSVNCheckoutClient updateClient =
                 new ReleaseSVNCheckoutClient( authManager,

@@ -6,17 +6,17 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 --
 -- Init  table core_user_right
 --
-INSERT INTO core_user_right (id_right,id_user) VALUES ('PROFILES_MANAGEMENT',1);
+INSERT INTO core_user_right (id_right,id_user) VALUES ('DEPLOYMENT_MANAGEMENT',1);
 
 --
 -- Init  table core_attibute
 --
-INSERT INTO core_attribute (id_attribute,type_class_name, title, help_message, is_mandatory, plugin_name) VALUES (1,'fr.paris.lutece.portal.business.user.attribute.AttributeText', 'Login SVN','',1,'deployment');
-INSERT INTO core_attribute (id_attribute,type_class_name, title, help_message, is_mandatory, plugin_name) VALUES (2,'fr.paris.lutece.portal.business.user.attribute.AttributeText', 'Password SVN','',1,'deployment');
+INSERT INTO core_attribute (id_attribute,type_class_name, title, help_message, is_mandatory, plugin_name) VALUES (1,'fr.paris.lutece.portal.business.user.attribute.AttributeText', 'Login SVN','',0,'deployment');
+INSERT INTO core_attribute (id_attribute,type_class_name, title, help_message, is_mandatory, plugin_name) VALUES (2,'fr.paris.lutece.portal.business.user.attribute.AttributeText', 'Password SVN','',0,'deployment');
 
 
 --
 -- Init  table core_attibute_field
 --
-INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (1,1,NULL,NULL,0,0,20,0,0,1);
-INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (2,2,NULL,NULL,0,0,20,0,0,1);
+INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (1,1,NULL,NULL,0,0,20,50,0,1);
+INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (2,2,NULL,NULL,0,0,20,50,0,2);

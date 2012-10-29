@@ -29,7 +29,9 @@ import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
+import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -104,6 +106,15 @@ public final class SVNUtils
     {
         SVNURL url = SVNURL.parseURIEncoded( strUrl );
         File file = new File( strCheckoutBaseSitePath );
+        if(file.exists())
+        {
+        	if(!DeleteUtil.delete(file, result.getLog()))
+        	{
+        		result.setIdError(result.getLog().toString()); 
+        		return result.getLog().toString();
+        	}
+        	
+        }
         SVNRepository repository = SVNRepositoryFactory.create( url, null );
         
              
@@ -239,16 +250,21 @@ public final class SVNUtils
     
     public static String getSvnUrlTrunkSite( String strUrlSite)
     {
-    	return strUrlSite + File.separator+ ConstanteUtils.CONSTANTE_TRUNK;
+    	return strUrlSite + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TRUNK;
     	
     }
 
     public static String getSvnUrlTagSite( String strUrlSite, String strTagName)
     {
-        return strUrlSite +File.separator+ ConstanteUtils.CONSTANTE_TAGS + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strTagName;
+        return strUrlSite +ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TAGS + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strTagName;
 
       }
-    
+    public static String getSvnUrlSite(Application application)
+    {
+    	String strUrlSite=AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_SITES_URL ) +
+    	application.getCodeCategory()+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+application.getSiteName();	
+    	return strUrlSite;
+    }
     
    
     

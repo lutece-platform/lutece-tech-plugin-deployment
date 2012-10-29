@@ -20,6 +20,7 @@ import fr.paris.lutece.plugins.deployment.business.MavenGoals;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 /**
@@ -82,7 +83,7 @@ public class MavenService implements IMavenService
 			
 			if ( nStatus != 0 )
 			{
-				//_result.setIdError( ReleaseLogger.logError( sbLog.toString(  ) ) );
+				commandResult.setIdError(commandResult.getLog().toString());
 			}
 			
 			
@@ -106,7 +107,7 @@ public class MavenService implements IMavenService
 			catch ( IOException e1 )
 			{
 				// do nothing
-				e1.printStackTrace();
+				AppLogService.error(e1);
 			}
 			commandResult.setLog( commandResult.getLog(  ).append( errorLog ) );
 			//_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );

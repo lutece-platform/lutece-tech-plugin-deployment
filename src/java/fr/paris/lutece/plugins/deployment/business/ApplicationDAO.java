@@ -17,11 +17,11 @@ public class ApplicationDAO
 	    private static final String SQL_ORDER_CODE_ASC= " ORDER BY code ASC ";
 
 		private static final String SQL_QUERY_NEW_PK = " SELECT max(id_application) FROM deployment_application ";
-		private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,code_categoy,site_name,url_site,webapp_name FROM deployment_application ";
+		private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,code_category,site_name,url_site,webapp_name FROM deployment_application ";
 		
 		
-	    private static final String SQL_QUERY_INSERT = "INSERT INTO form_category (id_application,code,name,code_categoy,site_name,url_site,webapp_name)VALUES(?,?,?,?,?,?,?)";
-	    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,code_categoy=?,site_name=?,url_site=?,webapp_name=? WHERE" +SQL_FILTER_ID_APPLICATION;
+	    private static final String SQL_QUERY_INSERT = "INSERT INTO deployment_application (id_application,code,name,code_category,site_name,url_site,webapp_name)VALUES(?,?,?,?,?,?,?)";
+	    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,code_category=?,site_name=?,url_site=?,webapp_name=? WHERE" +SQL_FILTER_ID_APPLICATION;
 	    private static final String SQL_QUERY_DELETE = "DELETE FROM deployment_application WHERE"+SQL_FILTER_ID_APPLICATION;
 	  
 	   

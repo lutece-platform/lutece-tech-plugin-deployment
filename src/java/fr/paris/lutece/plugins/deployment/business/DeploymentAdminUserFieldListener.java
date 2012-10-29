@@ -33,31 +33,20 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
-import fr.paris.lutece.plugins.profiles.service.ProfilesPlugin;
-import fr.paris.lutece.portal.business.rbac.AdminRole;
-import fr.paris.lutece.portal.business.rbac.AdminRoleHome;
-import fr.paris.lutece.portal.business.right.Right;
-import fr.paris.lutece.portal.business.right.RightHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.business.user.AdminUserHome;
-import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
-import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldHome;
-import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldListener;
-import fr.paris.lutece.portal.business.user.attribute.IAttribute;
-import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
-import fr.paris.lutece.portal.business.workgroup.AdminWorkgroupHome;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.user.attribute.AttributeService;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldHome;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldListener;
+import fr.paris.lutece.portal.business.user.attribute.IAttribute;
+import fr.paris.lutece.portal.service.user.attribute.AttributeService;
 
 
 /**
@@ -65,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * ProfilesAdminUserFieldListener
  *
  */
-public class MavenUserAdminUserFieldListener implements AdminUserFieldListener
+public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
 {
     /**
      * Create user fields
@@ -75,12 +64,11 @@ public class MavenUserAdminUserFieldListener implements AdminUserFieldListener
      */
     public void doCreateUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {
-        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+     
         List<IAttribute> listAttributes = AttributeService.getInstance(  )
-                                                          .getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME ,
+                                                          .getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME,
                 locale );
-        List<AdminUserField> listUserFields = new ArrayList<AdminUserField>(  );
-
+       
         for ( IAttribute attribute : listAttributes )
         {
             List<AdminUserField> userFields = attribute.getUserFieldsData( request, user );
@@ -89,18 +77,13 @@ public class MavenUserAdminUserFieldListener implements AdminUserFieldListener
             {
                 if ( ( userField != null ) && StringUtils.isNotBlank( userField.getValue(  ) ) )
                 {
-                    // Change the value of the user field
-                    // Instead of having the ID of the attribute field, we put the attribute field title
-                    // which represents the profile's ID
-                    userField.setValue( userField.getAttributeField(  ).getTitle(  ) );
+                   
                     AdminUserFieldHome.create( userField );
-                    listUserFields.add( userField );
+                    
                 }
             }
         }
-
-        
-    }
+       }
 
     /**
      * Modify user fields
@@ -112,28 +95,9 @@ public class MavenUserAdminUserFieldListener implements AdminUserFieldListener
     public void doModifyUserFields( AdminUser user, HttpServletRequest request, Locale locale, AdminUser currentUser )
     {
     	
-        List<IAttribute> listAttributes = AttributeService.getInstance(  )
-                                                          .getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME,
-                locale );
-        List<AdminUserField> listUserFields = new ArrayList<AdminUserField>(  );
+    	doCreateUserFields(currentUser, request, locale);
 
-        for ( IAttribute attribute : listAttributes )
-        {
-            List<AdminUserField> userFields = attribute.getUserFieldsData( request, user );
-
-            for ( AdminUserField userField : userFields )
-            {
-                if ( ( userField != null ) && StringUtils.isNotBlank( userField.getValue(  ) ) )
-                {
-                    // Change the value of the user field
-                    // Instead of having the ID of the attribute field, we put the attribute field title
-                    // which represents the profile's ID
-                    userField.setValue( userField.getAttributeField(  ).getTitle(  ) );
-                    AdminUserFieldHome.create( userField );
-                    listUserFields.add( userField );
-                }
-            }
-        }
+    
     }
 
     /**
@@ -144,6 +108,5 @@ public class MavenUserAdminUserFieldListener implements AdminUserFieldListener
      */
     public void doRemoveUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {
-       
-    }
+     }
 }
