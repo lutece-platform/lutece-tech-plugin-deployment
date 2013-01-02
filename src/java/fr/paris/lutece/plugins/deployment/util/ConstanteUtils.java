@@ -48,6 +48,7 @@ public class ConstanteUtils {
 	    public static final String JSON_ACTION_LIST="action_list";
 	    public static final String JSON_ACTION_ID="action_id";
 	    public static final String JSON_ACTION_NAME="action_name";
+	    public static final String JSON_JSP_FORCED_REDIRECT="jsp_forced_redirect";
 	    
 	   
 	    //PROPERTY

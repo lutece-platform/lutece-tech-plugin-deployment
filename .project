@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>plugin-deployment</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-	</buildSpec>
-	<natures>
-	</natures>
+  <name>plugin-deployment</name>
+  <comment>deployment plugin. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>lutece-core</project>
+    <project>library-httpaccess</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>

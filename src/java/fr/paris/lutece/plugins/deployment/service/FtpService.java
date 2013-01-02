@@ -14,9 +14,12 @@ public class FtpService implements IFtpService {
 	 */
 	public String uploadFile(String fileName,String pathLocalFile,FtpInfo ftpInfo,String remoteDirectoryPath,CommandResult commandResult)
 	{
-		
+		final StringBuffer sbLog = new StringBuffer(  );
+		sbLog.append( "Starting  deploy  Site...\n" );
+		commandResult.setRunning( true );
+		commandResult.setLog( sbLog );
 		FTPUtils.uploadFile(fileName, pathLocalFile, ftpInfo, remoteDirectoryPath, commandResult);
-		
+		commandResult.setRunning( false );
 		return null;
 	}
 	

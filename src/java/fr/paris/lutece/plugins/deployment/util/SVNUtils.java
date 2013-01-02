@@ -122,6 +122,7 @@ public final class SVNUtils
         {
             final StringBuffer sbLog = new StringBuffer(  );
             result.setLog( sbLog );
+            sbLog.append( "Starting  checkout Site...\n" );
             result.setRunning( true );
             
              updateClient.setEventHandler( new ISVNEventHandler(  )
@@ -142,7 +143,7 @@ public final class SVNUtils
                     }
                 } );
 
-            sbLog.append( "Starting project checkout...\n" );
+           
             // SVNDepth.INFINITY + dernier param�tre � FALSE pour la version 1.3.2
             updateClient.doCheckout( repository.getLocation(  ), file, SVNRevision.HEAD, SVNRevision.HEAD, true );
 

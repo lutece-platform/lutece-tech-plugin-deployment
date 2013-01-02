@@ -345,6 +345,69 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		return getManageApplication(request);
 
 	}
+	
+	
+	/**
+	 * Do process the workflow actions
+	 * 
+	 * @param request
+	 *            the HTTP request
+	 * @return the JSP return
+	 */
+	public String doProcessActionJSON(HttpServletRequest request) {
+		String strIdAction = request
+				.getParameter(ConstanteUtils.PARAM_ID_ACTION);
+		int nIdAction = DeploymentUtils.getIntegerParameter(strIdAction);
+
+		Collection<Action> listAction=null ;
+		State state=null;
+		String strJspForcedRedirect=null;
+		CommandResult result=null;
+		if (nIdAction != ConstanteUtils.CONSTANTE_ID_NULL
+				&& _nIdCurrentWorkflowDeploySiteContext != null) {
+			WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService
+					.getWorkflowDeploySiteContext(_nIdCurrentWorkflowDeploySiteContext);
+
+			int nIdWorkflowSiteDeploy = DeploymentUtils
+			.getIdWorkflowSiteDeploy(workflowDeploySiteContext
+					.isTagSiteBeforeDeploy());
+			result = workflowDeploySiteContext.getCommandResult();
+
+			
+		
+			
+			
+			if (WorkflowService.getInstance().isDisplayTasksForm(nIdAction,
+					getLocale())) {
+				strJspForcedRedirect=	getJspTasksForm(request,
+						_nIdCurrentWorkflowDeploySiteContext, nIdAction);
+			}
+			else
+			{
+				doProcessAction(workflowDeploySiteContext.getId(), nIdAction,
+						getPlugin(), getLocale(), request);
+
+				
+				listAction = WorkflowService.getInstance()
+					.getActions(workflowDeploySiteContext.getId(),
+							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+							nIdWorkflowSiteDeploy, getUser());
+					 state = WorkflowService.getInstance().getState(
+							workflowDeploySiteContext.getId(),
+							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+							nIdWorkflowSiteDeploy, ConstanteUtils.CONSTANTE_ID_NULL);
+					
+				
+			}
+		}
+		else
+		{
+			strJspForcedRedirect=	getJspManageApplication(request);
+		}
+
+			
+			return DeploymentUtils.getJSONForWorkflowAction(strJspForcedRedirect, result, state, listAction).toString();
+	}
 
 	/**
 	 * Do process the workflow actions
@@ -519,22 +582,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		CommandResult result = workflowDeploySiteContext.getCommandResult();
 
 		JSONObject jo = DeploymentUtils.getJSONForCommandResult(result);
-		int nIdWorkflowSiteDeploy = DeploymentUtils
-				.getIdWorkflowSiteDeploy(workflowDeploySiteContext
-						.isTagSiteBeforeDeploy());
-		if (!result.isRunning()) {
-			// workflow informations
-			Collection<Action> listAction = WorkflowService.getInstance()
-					.getActions(workflowDeploySiteContext.getId(),
-							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
-							nIdWorkflowSiteDeploy, getUser());
-			State state = WorkflowService.getInstance().getState(
-					workflowDeploySiteContext.getId(),
-					WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
-					nIdWorkflowSiteDeploy, ConstanteUtils.CONSTANTE_ID_NULL);
-			DeploymentUtils.addWorkflowInformations(jo, state, listAction);
-
-		}
 		return jo.toString();
 	}
 
@@ -588,12 +635,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				&& StringUtils.isNumeric(strIdAction)) {
 			int nIdAction = DeploymentUtils.getIntegerParameter(strIdAction);
 
-			/*
-			 * DIRECTORY-126 : Add new direction action : Mass Workflow action
-			 * Only the first record task form is displayed because the id
-			 * resource is not relevant when displaying the task form.
-			 */
-
+			
 			String strHtmlTasksForm = WorkflowService.getInstance()
 					.getDisplayTasksForm(_nIdCurrentWorkflowDeploySiteContext,
 							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,

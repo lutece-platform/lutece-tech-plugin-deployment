@@ -195,6 +195,7 @@ public class SvnService implements ISvnService
     	 try
          {
              final StringBuffer sbLog = new StringBuffer(  );
+             sbLog.append( "Starting  Tag  Site...\n" );
              commandResult.setLog( sbLog );
              commandResult.setRunning( true );
              commitClient.setEventHandler( new ISVNEventHandler(  )

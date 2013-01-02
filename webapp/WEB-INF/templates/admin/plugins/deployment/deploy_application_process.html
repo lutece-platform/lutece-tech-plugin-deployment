@@ -56,21 +56,45 @@
 	                    	${state}
 	                </div>
 	            </div>
-	           
-	           
 	          
-	          
-	           <#list action_list as workflow_action>
-		          	<form class="form-horizontal" method="post"  name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
-			  			<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}" />
-			  			<div class="form-actions">
-			                <button class="btn btn-primary" type="submit" >${workflow_action.name}</button>
-			             </div>
-			            <p class="help-block">${workflow_action.description}</p>   
-			          </form>
+	          <div class="workflow_actions">
+		            <#list action_list as workflow_action>
+			          	<form class="form-horizontal" method="post"  name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
+				  			<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}" />
+				  			<div class="form-actions">
+				                <button class="btn btn-primary" type="submit" >${workflow_action.name}</button>
+				             </div>
+				            <p class="help-block">${workflow_action.description}</p>   
+				          </form>
+		            
+		            </#list>
+	           </div> 
 	            
-	            </#list>
+	           <script type="text/javascript">
+		            $('.workflow_actions form').submit( function(){
+		            	var idAction = $(this).children().first().val();
+		            	runWorkflowAction( idAction );
+	  					return false;
+					});
+				</script>
+
+
+<!--	             <div class="workflow_actions">-->
+<!--		             <#list action_list as workflow_action>-->
+<!--			          	-->
+<!--				  			<a onclick="runWorkflowAction(${workflow_action.id})">${workflow_action.name}</a>-->
+<!--				             </div>-->
+<!--				            <p class="help-block">${workflow_action.description}</p>   -->
+<!--				     </#list>-->
+<!--		        </div>    -->
+
 	     		<a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
 			
 	     </fieldset>
+	     
+	     <div>
+	     	<textarea id="pre_log" class="text_black" cols="106" rows="25" readonly="readonly"></textarea>
+		 </div>
+		 
+		 
 </div>

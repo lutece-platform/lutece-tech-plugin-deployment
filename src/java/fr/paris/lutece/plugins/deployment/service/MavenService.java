@@ -65,6 +65,7 @@ public class MavenService implements IMavenService
 		try
 		{
 			final StringBuffer sbLog = new StringBuffer(  );
+			sbLog.append( "Starting  assembly  Site...\n" );
 			commandResult.setRunning( true );
 			commandResult.setLog( sbLog );
 			
@@ -89,7 +90,7 @@ public class MavenService implements IMavenService
 			
 			
 			commandResult.setStatus( nStatus );
-			commandResult.setRunning( false );
+			
 		}
 		catch ( Exception e )
 		{
@@ -111,11 +112,10 @@ public class MavenService implements IMavenService
 			}
 			commandResult.setLog( commandResult.getLog(  ).append( errorLog ) );
 			//_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
-			commandResult.setStatus( CommandResult.STATUS_EXCEPTION );
-			commandResult.setRunning( false );
+			commandResult.setStatus( CommandResult.STATUS_EXCEPTION );	
 		}
 		//_endTime = new Date(  );
-		
+		commandResult.setRunning( false );
 		return null;
 		
 	}
