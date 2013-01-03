@@ -289,17 +289,20 @@ public class DeploymentUtils {
 		return jo;
 	}
 
+
 	public static JSONObject getJSONForWorkflowAction(
-			String strJspForceRedirect, CommandResult result, State state,
+			String strJspForceRedirect,String strFormError, CommandResult result, State state,
 			Collection<Action> listAction) {
 		JSONObject jo = new JSONObject();
 		try {
 
-			jo.put(ConstanteUtils.JSON_JSP_FORCED_REDIRECT,
+			jo.put(ConstanteUtils.JSON_JSP_FOM_DISPLAY,
 					strJspForceRedirect != null ? strJspForceRedirect
 							: ConstanteUtils.CONSTANTE_EMPTY_STRING);
 
 			jo.put(ConstanteUtils.JSON_STATE, state != null ? state.getName()
+					: ConstanteUtils.CONSTANTE_EMPTY_STRING);
+			jo.put(ConstanteUtils.JSON_FORM_ERROR, strFormError != null ? strFormError
 					: ConstanteUtils.CONSTANTE_EMPTY_STRING);
 			JSONObject joAction;
 			JSONArray joListAction = new JSONArray();
@@ -310,6 +313,9 @@ public class DeploymentUtils {
 					joAction.put(ConstanteUtils.JSON_ACTION_ID, action.getId());
 					joAction.put(ConstanteUtils.JSON_ACTION_NAME, action
 							.getName());
+					joAction.put(ConstanteUtils.JSON_ACTION_DESCRIPTION, action
+							.getDescription());
+
 					joListAction.add(joAction);
 				}
 			}

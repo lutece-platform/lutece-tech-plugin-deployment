@@ -31,7 +31,8 @@ function refreshCommandResult( resultJsp )
 }
 
 function statusCallback( json )
-{
+{	
+
 	if ( json == null || json == "" )
 	{
 		/* error */
@@ -119,36 +120,56 @@ function refreshComponantsEnvironment()
 
 function runWorkflowAction( idAction ) 
 {
-	
-	$.getJSON( "jsp/admin/plugins/deployment/DoProcessActionJSON.jsp?id_action="+idAction, function(data)
+	var resultJsp='jsp/admin/plugins/deployment/DoProcessActionJSON.jsp?id_action='+idAction;
+	$.getJSON( resultJsp, function(data)
 			{
-			statusCallbackWorkflowAction(data);
+		statusCallbackWorkflowAction(data);
 			});
 	refreshCommandResult();
+}
+
+function addEvent() {
+	  
+    $('#workflow_actions form').submit( function(){
+        
+    	var idAction = $(this).children().first().val();
+    	runWorkflowAction( idAction);
+		  
+			return false;
+	});
+
+    $('#task_form').submit( function(){
+    	saveTasksForm( $(this) );
+    	return false;
+	});
 }
 
 
 function statusCallbackWorkflowAction( json )
 {
+	
 	if ( json == null || json == "" )
 	{
-		/* error */
-		/*alert("erreur de javascript");*/
-		return;
-	}
-	if(json.jsp_forced_redirect!=null && json.jsp_forced_redirect!= "" )
-	{
-		
-		window.location =json.jsp_forced_redirect;
-		
+	
 	}
 	else
 	{
-		
-		replaceWorkflowActions(json);
-		replaceWorkflowState(json);
-	}
 	
+		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
+		{
+			
+			displayTaskForm(json);
+			
+		}
+		else
+		{
+			
+			replaceWorkflowActions(json);
+			replaceWorkflowState(json);
+			
+		}
+		addEvent();
+	}
 	
 }
 
@@ -172,17 +193,103 @@ function stopAction( refresh, json )
 function replaceWorkflowActions(json)
 {
 	
-	
+	if(json.action_list!=null)
+	{
+		var newActions='';
+		var action;
+		for (val in json.action_list){ 
+
+			action=json.action_list[val]
+			newActions+='<form class="form-horizontal" method="post"  name="workflow_action_'+action.id+'" id="workflow_action_'+action.id+'" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">';
+			newActions+='<input type="hidden" name="id_action" id="id_action" value="'+action.id+'" />';
+			newActions+='<div class="form-actions">';
+			newActions+='<button class="btn btn-primary" type="submit" >'+action.name+'</button>';
+			newActions+='</div>';
+			newActions+='<p class="help-block">'+action.description+'</p>';
+			newActions+='</form>';	
+
+			}		
+
+									
+		$('#workflow_actions').html(newActions);
+        		
+
+	}
 	
 }
 
 
 function replaceWorkflowState(json)
 {
-	
+	if(json.state!=null && json.state!= "" )
+	{
+		
+		$('#workflow_state').html(json.state);
+		
+	}
 	
 	
 }
+
+
+function displayTaskForm(json)
+{
+	
+	$.ajax({
+		  url: json.jsp_form_display,
+		  success:function ( data ) {
+			$('#workflow_task_form').html(data);
+			$('#workflow_task_form').show();
+		}
+	});
+	
+}
+
+
+
+
+
+function saveTasksForm(form ) 
+{
+	
+	$.ajax({
+          url: 'jsp/admin/plugins/deployment/DoSaveTasksFormJSON.jsp',
+          type: $(form).attr('method'), 
+          data: $(form).serialize(), 
+          dataType: 'json',
+          success: function(json) { 
+				statusCallbackTasksForm(json); 
+          }
+      });
+}
+
+
+
+function statusCallbackTasksForm( json )
+{
+   
+	if ( json == null || json == "" )
+	{
+		/* error */
+		/*alert("erreur de javascript");*/
+		return;
+	}
+	if(json.form_error!=null && json.form_error!= "" )
+	{
+		$('#task_form_error').html(json.form_error);
+		addEvent();
+	}
+	else
+	{
+		$('#workflow_task_form').hide();
+		replaceWorkflowActions(json);
+		replaceWorkflowState(json);
+		addEvent();
+	}
+	
+	
+}
+
 
 
 

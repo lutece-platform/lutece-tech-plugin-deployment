@@ -345,8 +345,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		return getManageApplication(request);
 
 	}
-	
-	
+
 	/**
 	 * Do process the workflow actions
 	 * 
@@ -359,54 +358,45 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				.getParameter(ConstanteUtils.PARAM_ID_ACTION);
 		int nIdAction = DeploymentUtils.getIntegerParameter(strIdAction);
 
-		Collection<Action> listAction=null ;
-		State state=null;
-		String strJspForcedRedirect=null;
-		CommandResult result=null;
+		Collection<Action> listAction = null;
+		State state = null;
+		String strJspFormDisplay = null;
+		CommandResult result = null;
 		if (nIdAction != ConstanteUtils.CONSTANTE_ID_NULL
 				&& _nIdCurrentWorkflowDeploySiteContext != null) {
 			WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService
 					.getWorkflowDeploySiteContext(_nIdCurrentWorkflowDeploySiteContext);
 
 			int nIdWorkflowSiteDeploy = DeploymentUtils
-			.getIdWorkflowSiteDeploy(workflowDeploySiteContext
-					.isTagSiteBeforeDeploy());
+					.getIdWorkflowSiteDeploy(workflowDeploySiteContext
+							.isTagSiteBeforeDeploy());
 			result = workflowDeploySiteContext.getCommandResult();
 
-			
-		
-			
-			
 			if (WorkflowService.getInstance().isDisplayTasksForm(nIdAction,
 					getLocale())) {
-				strJspForcedRedirect=	getJspTasksForm(request,
+				strJspFormDisplay = getJspTasksForm(request,
 						_nIdCurrentWorkflowDeploySiteContext, nIdAction);
-			}
-			else
-			{
+			} else {
 				doProcessAction(workflowDeploySiteContext.getId(), nIdAction,
 						getPlugin(), getLocale(), request);
 
-				
-				listAction = WorkflowService.getInstance()
-					.getActions(workflowDeploySiteContext.getId(),
-							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
-							nIdWorkflowSiteDeploy, getUser());
-					 state = WorkflowService.getInstance().getState(
-							workflowDeploySiteContext.getId(),
-							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
-							nIdWorkflowSiteDeploy, ConstanteUtils.CONSTANTE_ID_NULL);
-					
-				
-			}
-		}
-		else
-		{
-			strJspForcedRedirect=	getJspManageApplication(request);
-		}
+				listAction = WorkflowService.getInstance().getActions(
+						workflowDeploySiteContext.getId(),
+						WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+						nIdWorkflowSiteDeploy, getUser());
+				state = WorkflowService
+						.getInstance()
+						.getState(
+								workflowDeploySiteContext.getId(),
+								WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+								nIdWorkflowSiteDeploy,
+								ConstanteUtils.CONSTANTE_ID_NULL);
 
-			
-			return DeploymentUtils.getJSONForWorkflowAction(strJspForcedRedirect, result, state, listAction).toString();
+			}
+		} 
+
+		return DeploymentUtils.getJSONForWorkflowAction(strJspFormDisplay,
+				null, result, state, listAction).toString();
 	}
 
 	/**
@@ -436,10 +426,57 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					getPlugin(), getLocale(), request);
 
 			return getJspDeployApplicationProcess(request);
-		} 
+		}
 
-			return getJspManageApplication(request);
+		return getJspManageApplication(request);
+
+	}
+
+	/**
+	 * save the tasks form
+	 * 
+	 * @param request
+	 *            the httpRequest
+	 * @return The URL to go after performing the action
+	 */
+	public String doSaveTasksFormJSON(HttpServletRequest request) {
+
+		String strIdAction = request
+				.getParameter(ConstanteUtils.PARAM_ID_ACTION);
+		int nIdAction = DeploymentUtils.getIntegerParameter(strIdAction);
+
+		Collection<Action> listAction = null;
+		State state = null;
 		
+		CommandResult result = null;
+		String strError = null;
+		if (nIdAction != ConstanteUtils.CONSTANTE_ID_NULL
+				&& _nIdCurrentWorkflowDeploySiteContext != null) {
+			WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService
+					.getWorkflowDeploySiteContext(_nIdCurrentWorkflowDeploySiteContext);
+
+			int nIdWorkflowSiteDeploy = DeploymentUtils
+					.getIdWorkflowSiteDeploy(workflowDeploySiteContext
+							.isTagSiteBeforeDeploy());
+			result = workflowDeploySiteContext.getCommandResult();
+
+			strError = doSaveTaskForm(workflowDeploySiteContext.getId(),
+					nIdAction, getPlugin(), getLocale(), request);
+
+			listAction = WorkflowService.getInstance().getActions(
+					workflowDeploySiteContext.getId(),
+					WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+					nIdWorkflowSiteDeploy, getUser());
+			state = WorkflowService.getInstance().getState(
+					workflowDeploySiteContext.getId(),
+					WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
+					nIdWorkflowSiteDeploy, ConstanteUtils.CONSTANTE_ID_NULL);
+
+		}
+
+		return DeploymentUtils.getJSONForWorkflowAction(null,
+				strError, result, state, listAction).toString();
+
 	}
 
 	/**
@@ -465,9 +502,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 						.getId(), nIdAction, getPlugin(), getLocale(), request);
 
 				if (StringUtils.isNotBlank(strError)) {
-					return strError;
+					return AdminMessageService.getMessageUrl(request, strError,
+							AdminMessage.TYPE_STOP);
 				}
-				
+
 			}
 			return getJspDeployApplicationProcess(request);
 		}
@@ -556,7 +594,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 								request, locale);
 
 				if (strError != null) {
+
 					return strError;
+
 				}
 
 				bHasSucceed = true;
@@ -580,9 +620,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService
 				.getWorkflowDeploySiteContext(_nIdCurrentWorkflowDeploySiteContext);
 		CommandResult result = workflowDeploySiteContext.getCommandResult();
+		String strReturn = ConstanteUtils.CONSTANTE_EMPTY_STRING;
+		if (result != null) {
+			JSONObject jo = DeploymentUtils.getJSONForCommandResult(result);
+			strReturn = jo.toString();
+		}
 
-		JSONObject jo = DeploymentUtils.getJSONForCommandResult(result);
-		return jo.toString();
+		return strReturn;
 	}
 
 	public String doDeployApplication(HttpServletRequest request) {
@@ -635,7 +679,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				&& StringUtils.isNumeric(strIdAction)) {
 			int nIdAction = DeploymentUtils.getIntegerParameter(strIdAction);
 
-			
 			String strHtmlTasksForm = WorkflowService.getInstance()
 					.getDisplayTasksForm(_nIdCurrentWorkflowDeploySiteContext,
 							WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
@@ -652,7 +695,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					ConstanteUtils.TEMPLATE_TASKS_FORM_WORKFLOW, getLocale(),
 					model);
 
-			return getAdminPage(templateList.getHtml());
+			return templateList.getHtml();
 		}
 
 		return getManageApplication(request);

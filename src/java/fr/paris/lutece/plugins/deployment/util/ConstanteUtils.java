@@ -44,12 +44,13 @@ public class ConstanteUtils {
 	    public static final String JSON_LOG="log";
 	    public static final String JSON_RUNNING="running";
 	    public static final String JSON_ID_ERROR="id_error";
-	    public static final String JSON_STATE="state_name";
+	    public static final String JSON_STATE="state";
 	    public static final String JSON_ACTION_LIST="action_list";
-	    public static final String JSON_ACTION_ID="action_id";
-	    public static final String JSON_ACTION_NAME="action_name";
-	    public static final String JSON_JSP_FORCED_REDIRECT="jsp_forced_redirect";
-	    
+	    public static final String JSON_ACTION_ID="id";
+	    public static final String JSON_ACTION_NAME="name";
+	    public static final String JSON_ACTION_DESCRIPTION="description";
+	    public static final String JSON_JSP_FOM_DISPLAY="jsp_form_display";
+	    public static final String JSON_FORM_ERROR="form_error";
 	   
 	    //PROPERTY
 

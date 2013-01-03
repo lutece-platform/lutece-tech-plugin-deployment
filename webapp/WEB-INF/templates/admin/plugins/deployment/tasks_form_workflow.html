@@ -1,6 +1,8 @@
 <div class="content-box">
   <h2> #i18n{deployment.tasks_form_workflow.title}</h2>
-      <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="" id=""  enctype="multipart/form-data" >
+     
+     <div id="task_form_error"></div>
+      <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="task_form" id="task_form" >
 	   
 	   	<input name="id_action" value="${id_action}" type="hidden" />
 	   	${tasks_form}
@@ -11,4 +13,7 @@
 	   	</p>
    		  
    	</form>	  
+   <script type="text/javascript">
+   		addEvent();
+   </script>		
  </div>

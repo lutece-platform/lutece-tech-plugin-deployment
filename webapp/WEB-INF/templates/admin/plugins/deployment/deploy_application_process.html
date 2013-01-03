@@ -52,12 +52,12 @@
 	    <fieldset>
 	           <div class="control-group">
 	                <label class="control-label" for="code" >#i18n{deployment.deploy_application_process.label_state}  : </label> 
-	                <div class="controls">
+	                <div class="controls" id="workflow_state">
 	                    	${state}
 	                </div>
 	            </div>
 	          
-	          <div class="workflow_actions">
+	          <div id="workflow_actions">
 		            <#list action_list as workflow_action>
 			          	<form class="form-horizontal" method="post"  name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
 				  			<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}" />
@@ -69,32 +69,18 @@
 		            
 		            </#list>
 	           </div> 
-	            
-	           <script type="text/javascript">
-		            $('.workflow_actions form').submit( function(){
-		            	var idAction = $(this).children().first().val();
-		            	runWorkflowAction( idAction );
-	  					return false;
-					});
-				</script>
-
-
-<!--	             <div class="workflow_actions">-->
-<!--		             <#list action_list as workflow_action>-->
-<!--			          	-->
-<!--				  			<a onclick="runWorkflowAction(${workflow_action.id})">${workflow_action.name}</a>-->
-<!--				             </div>-->
-<!--				            <p class="help-block">${workflow_action.description}</p>   -->
-<!--				     </#list>-->
-<!--		        </div>    -->
-
 	     		<a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
-			
+				
 	     </fieldset>
-	     
+	     <div id=workflow_form_task></div>
 	     <div>
 	     	<textarea id="pre_log" class="text_black" cols="106" rows="25" readonly="readonly"></textarea>
 		 </div>
+		 
+		  <script type="text/javascript">
+		  		addEvent();
+		  </script>
+		 
 		 
 		 
 </div>
