@@ -16,7 +16,7 @@ public interface IMavenService {
 	 * @param strDevelopmentVersion la prochaine version de developpement (avec -SNAPSHOT)
 	 * @return le thread
 	 */
-	void mvnSiteAssembly(String strSiteName,String strTagName, Environment environment,
+	void mvnSiteAssembly(String strSiteName,String strTagName, String strMavenProfile,
 			MavenUser user,CommandResult commandResult );
 
 }

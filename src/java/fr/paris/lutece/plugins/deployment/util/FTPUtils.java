@@ -11,6 +11,7 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FtpInfo;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class FTPUtils {
 
@@ -130,11 +131,11 @@ public class FTPUtils {
 
 		catch (FTPConnectionClosedException e) {
 			bError = true;
-			System.err.println("Server closed connection.");
-			e.printStackTrace();
+			AppLogService.error("Server closed connection."+e);
+		
 		} catch (IOException e) {
 			bError = true;
-			e.printStackTrace();
+			AppLogService.error(e);
 		} finally {
 			if (ftp.isConnected()) {
 				try {
@@ -181,7 +182,7 @@ public class FTPUtils {
 			} else {
 				ftp.connect(ftpInfo.getHost());
 			}
-			System.out.println("Connected to "
+			AppLogService.debug("Connected to "
 					+ ftpInfo.getHost()
 					+ " on "
 					+ (ftpInfo.getPort() > 0 ? ftpInfo.getPort() : ftp
@@ -194,7 +195,7 @@ public class FTPUtils {
 
 			if (!FTPReply.isPositiveCompletion(reply)) {
 				ftp.disconnect();
-				System.err.println("FTP server refused connection.");
+				AppLogService.error("FTP server refused connection.");
 				System.exit(1);
 			}
 			return ftp;
@@ -206,8 +207,7 @@ public class FTPUtils {
 					// do nothing
 				}
 			}
-			System.err.println("Could not connect to server.");
-			e.printStackTrace();
+			AppLogService.error("Could not connect to server."+e);
 			System.exit(1);
 		}
 		return null;

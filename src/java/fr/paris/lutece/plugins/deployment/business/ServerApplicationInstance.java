@@ -8,6 +8,7 @@ public class ServerApplicationInstance {
 	private String _strServerName;
 	private String _strDeployDirectoryTarget;
 	private FtpInfo _ftpInfo;
+	private String _strMavenProfile;
 	
 	
 	
@@ -48,6 +49,13 @@ public class ServerApplicationInstance {
 	}
 	public FtpInfo getFtpInfo() {
 		return _ftpInfo;
+	}
+	
+	public String getMavenProfile() {
+		return _strMavenProfile;
+	}
+	public void setMavenProfile(String strMavenProfile) {
+		_strMavenProfile = strMavenProfile;
 	}
 
 }

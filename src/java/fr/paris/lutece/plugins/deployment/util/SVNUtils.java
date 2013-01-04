@@ -116,14 +116,11 @@ public final class SVNUtils
         	
         }
         SVNRepository repository = SVNRepositoryFactory.create( url, null );
-        
+        final StringBuffer logBuffer=	result.getLog();
              
         try
         {
-            final StringBuffer sbLog = new StringBuffer(  );
-            result.setLog( sbLog );
-            sbLog.append( "Starting  checkout Site...\n" );
-            result.setRunning( true );
+          
             
              updateClient.setEventHandler( new ISVNEventHandler(  )
                 {
@@ -132,20 +129,22 @@ public final class SVNUtils
                     {
                         // Do nothing
                     }
-
+                    
                     public void handleEvent( SVNEvent event, double progress )
                                      throws SVNException
                     {
-                        sbLog.append( ( 
+                    	logBuffer.append( ( 
                                           ( event.getAction(  ) == SVNEventAction.UPDATE_ADD ) ? "ADDED "
                                                                                                : event.getAction(  )
                                        ) + " " + event.getFile(  ) + "\n" );
                     }
                 } );
 
-           
+          
             // SVNDepth.INFINITY + dernier param�tre � FALSE pour la version 1.3.2
             updateClient.doCheckout( repository.getLocation(  ), file, SVNRevision.HEAD, SVNRevision.HEAD, true );
+            
+            
 
          } catch ( SVNAuthenticationException e )
         {

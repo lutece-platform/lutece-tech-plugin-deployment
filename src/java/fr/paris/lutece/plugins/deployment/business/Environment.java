@@ -4,7 +4,7 @@ public class Environment {
 	
 	private String _strCode;
 	private String _strName;
-	private String _strMavenProfile;
+	
 	
 	
 	
@@ -21,12 +21,7 @@ public class Environment {
 		return _strName;
 	}
 	
-	public String getMavenProfile() {
-		return _strMavenProfile;
-	}
-	public void setMavenProfile(String strMavenProfile) {
-		_strMavenProfile = strMavenProfile;
-	}
+
 	
 	
 

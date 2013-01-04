@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.tmatesoft.sqljet.core.internal.lang.SqlParser.result_column_return;
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -169,7 +170,7 @@ public class SvnService implements ISvnService
 //        	 
          }
         
-
+    	
         return ConstanteUtils.CONSTANTE_EMPTY_STRING;
     }
 
@@ -194,10 +195,8 @@ public class SvnService implements ISvnService
     	
     	 try
          {
-             final StringBuffer sbLog = new StringBuffer(  );
-             sbLog.append( "Starting  Tag  Site...\n" );
-             commandResult.setLog( sbLog );
-             commandResult.setRunning( true );
+             
+    		 final StringBuffer sbLog = commandResult.getLog();
              commitClient.setEventHandler( new ISVNEventHandler(  )
                  {
                      public void checkCancelled(  )
@@ -245,12 +244,13 @@ public class SvnService implements ISvnService
              sbLog.append( ReleaseUtils.updateReleaseVersion(strSiteLocalBasePath,strNextVersion,
                                                  "[site-release] Update pom version for " + strSiteName,commitClient) );
              sbLog.append( "Pom updated\n" );
-
-             commandResult.setRunning( false );
+             
+         
+            
          } catch ( Exception e )
          {
              //commandResult.setStatus( ICommandThread.STATUS_EXCEPTION );
-             commandResult.setRunning( false );
+             
 
              StringWriter sw = new StringWriter(  );
              PrintWriter pw = new PrintWriter( sw );
@@ -270,7 +270,7 @@ public class SvnService implements ISvnService
                  e1.printStackTrace(  );
              }
 
-             commandResult.setLog( commandResult.getLog(  ).append( errorLog ) );
+            commandResult.getLog(  ).append( errorLog ) ;
              /**
              _result.setIdError( ReleaseLogger.logError( 
                                                          _result.getLog(  ).toString(  ),

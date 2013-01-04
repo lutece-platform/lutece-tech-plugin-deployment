@@ -32,23 +32,24 @@ function refreshCommandResult( resultJsp )
 
 function statusCallback( json )
 {	
-
+	
 	if ( json == null || json == "" )
 	{
-		/* error */
-		/*alert("erreur de javascript");*/
-		return;
-	}
-	setResultLog( json.log );
-	if ( json.running )
-	{
-		/* still running */
 		setTimeout( longAction, 2000 );
 	}
 	else
 	{
-		/* ended */
-		//stopAction( _refresh, json );
+		setResultLog( json.log );
+		if ( json.running )
+		{
+			/* still running */
+			setTimeout( longAction, 2000 );
+		}
+		else
+		{
+			/* ended */
+			stopAction( _refresh, json );
+		}
 	}
 }
 

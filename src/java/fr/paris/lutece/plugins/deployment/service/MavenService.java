@@ -64,10 +64,7 @@ public class MavenService implements IMavenService
 	
 		try
 		{
-			final StringBuffer sbLog = new StringBuffer(  );
-			sbLog.append( "Starting  assembly  Site...\n" );
-			commandResult.setRunning( true );
-			commandResult.setLog( sbLog );
+			final StringBuffer sbLog = commandResult.getLog();
 			
 			
 			
@@ -91,6 +88,7 @@ public class MavenService implements IMavenService
 			
 			commandResult.setStatus( nStatus );
 			
+			
 		}
 		catch ( Exception e )
 		{
@@ -110,12 +108,12 @@ public class MavenService implements IMavenService
 				// do nothing
 				AppLogService.error(e1);
 			}
-			commandResult.setLog( commandResult.getLog(  ).append( errorLog ) );
+				commandResult.getLog().append(errorLog);
 			//_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
 			commandResult.setStatus( CommandResult.STATUS_EXCEPTION );	
 		}
 		//_endTime = new Date(  );
-		commandResult.setRunning( false );
+		
 		return null;
 		
 	}
@@ -124,14 +122,14 @@ public class MavenService implements IMavenService
 	/* (non-Javadoc)
 	 * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
 	 */
-	public void mvnSiteAssembly(String strSiteName, String strTagName,Environment environment,MavenUser user,CommandResult commandResult )
+	public void mvnSiteAssembly(String strSiteName, String strTagName,String strMavenProfile,MavenUser user,CommandResult commandResult )
 	{
 		String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite(strSiteName);
     	
 		List<String> listGoals =MavenGoals.LUTECE_SITE_ASSEMBLY.asList();
 		List<String> listGoalsProfile=new ArrayList<String>();
 		listGoalsProfile.addAll(listGoals);
-		listGoalsProfile.add("-P "+environment.getMavenProfile());
+		listGoalsProfile.add("-P "+strMavenProfile);
 		 mvn( strTagName,strSiteLocalBasePath, listGoalsProfile,commandResult);
 		
 	}

@@ -24,14 +24,14 @@ public class ConstanteUtils {
 		public static final String CONSTANTE__ENVIRONMENT= "deployment.environment.";
 		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE= "deployment.serverApplicationInstance.";
 		public static final String CONSTANTE__ENVIRONMENT_CODE = ".code";
-		public static final String CONSTANTE__ENVIRONMENT_MAVEN_PROFILE = ".mavenProfile";
+		
 		public static final String CONSTANTE__ENVIRONMENT_NAME = ".name";
 		public static final String CONSTANTE__ENVIRONMENT_SERVER_APPLICATION_INSTANCE_LIST = ".serverApplicationInstanceList";
 		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_CODE = ".code";
 		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME = ".name";
 		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME = ".serverName";
 		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_FTP_WEBAPP_Url=".ftpWebAppUrl";
-
+		public static final String CONSTANTE__SERVER_APPLICATION_INSTANCE_MAVEN_PROFILE = ".mavenProfile";
 		
 	    public static final String CONSTANTE_SQL_WHERE = " WHERE ";
 	    public static final String CONSTANTE_SQL_AND = " AND ";

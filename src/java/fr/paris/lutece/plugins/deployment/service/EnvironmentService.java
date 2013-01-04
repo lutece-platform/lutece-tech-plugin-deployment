@@ -69,8 +69,7 @@ public class EnvironmentService implements IEnvironmentService {
                             ConstanteUtils.CONSTANTE__ENVIRONMENT_CODE ));
 	            	environment.setName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
 	            			ConstanteUtils.CONSTANTE__ENVIRONMENT_NAME ));
-	            	environment.setMavenProfile(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-	            			ConstanteUtils.CONSTANTE__ENVIRONMENT_MAVEN_PROFILE ));
+	            	
 	            		
 	            		if(environment.getCode()!=null)
 	            		{
@@ -236,6 +235,9 @@ public class EnvironmentService implements IEnvironmentService {
 		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME ));
 		 		serverApplicationInstance.setServerName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
 		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME));
+		 		serverApplicationInstance.setMavenProfile(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
+		 			 ConstanteUtils.CONSTANTE_SEPARATOR_POINT + strCodeEnvironment+ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_MAVEN_PROFILE));
+		 		
 		 		serverApplicationInstance.setCodeEnvironment(strCodeEnvironment);
 		 		
 		 		setFtpInfo(serverApplicationInstance,strCodeApplication);
