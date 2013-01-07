@@ -2,12 +2,12 @@ package fr.paris.lutece.plugins.deployment.service;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
-import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
@@ -54,7 +54,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	}
 	
 	
-	public  String checkoutSite(WorkflowDeploySiteContext context)
+	public  String checkoutSite(WorkflowDeploySiteContext context,Locale locale)
 	{
 			//reinitialisation du command Result
 			DeploymentUtils.reInitCommandResult(context);
@@ -111,7 +111,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 		
 	}
 	
-	public  String tagSite(WorkflowDeploySiteContext context)
+	public  String tagSite(WorkflowDeploySiteContext context,Locale locale)
 	{
 			//reinitialisation du command Result
 			DeploymentUtils.reInitCommandResult(context);
@@ -129,7 +129,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	}
 	
 	
-	public String assemblySite(WorkflowDeploySiteContext context)
+	public String assemblySite(WorkflowDeploySiteContext context,Locale locale)
 	{
 		//reinitialisation du command Result
 		DeploymentUtils.reInitCommandResult(context);
@@ -137,7 +137,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 		
-		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement());
+		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale);
 		context.getCommandResult().getLog().append( "Starting Action Assembly  Site...\n" );
 		_mavenService.mvnSiteAssembly(application.getSiteName(),context.getTagName(), serverApplicationInstance.getMavenProfile(), context.getMavenUser(),context.getCommandResult());
 		context.getCommandResult().getLog().append( "End Action Assembly  Site...\n" );
@@ -148,16 +148,16 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	}
 	
 	
-	public String deploySite(WorkflowDeploySiteContext context)
+	public String deploySite(WorkflowDeploySiteContext context,Locale locale)
 	{
 		//reinitialisation du command Result
 		DeploymentUtils.reInitCommandResult(context);
 	
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
-		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement());
+		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale);
 		context.getCommandResult().getLog().append( "Starting Action Deploy  Site...\n" );
-		_ftpService.uploadFile(application.getWebAppName()+ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(DeploymentUtils.getPathCheckoutSite(application.getSiteName()), context.getTagToDeploy(), ConstanteUtils.ARCHIVE_WAR_EXTENSION), serverApplicationInstance.getFtpInfo(), serverApplicationInstance.getFtpDeployDirectoryTarget(), context.getCommandResult());
+		_ftpService.uploadFile(application.getWebAppName()+ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(DeploymentUtils.getPathCheckoutSite(application.getSiteName()), context.getTagToDeploy(), ConstanteUtils.ARCHIVE_WAR_EXTENSION), serverApplicationInstance.getFtpInfo(), DeploymentUtils.getDeployDirectoryTarget(application.getCode(), serverApplicationInstance), context.getCommandResult());
 		context.getCommandResult().getLog().append( "End Action Deploy  Site...\n" );
 		//stop command result
 		context.getCommandResult().setRunning( false );

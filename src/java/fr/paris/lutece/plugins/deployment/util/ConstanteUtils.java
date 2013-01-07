@@ -60,9 +60,9 @@ public class ConstanteUtils {
 	    public static final String PROPERTY_MODIFY_APPLICATION_PAGE_TITLE="deployment.create_application.page_title";
 	    public static final String PROPERTY_FORM_DEPLOY_SITE_PAGE_TITLE="deployment.form_deploy_site.page_title";
 	    public static final String PROPERTY_LABEL_CODE = "deployment.create_application.label_code";
-	    public static final String PROPERTY_LABEL_CODE_ENVIRONMENT = "deployment.deploy_application.label_code_environment";
-	    public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE = "deployment.deploy_application.label_code_server_application_instance";
-	    public static final String PROPERTY_LABEL_TAG_TO_DEPLOY = "deployment.deploy_application.label_tag_to_deploy";
+	    public static final String PROPERTY_LABEL_CODE_ENVIRONMENT = "deployment.form_init_deploy_application.label_code_environment";
+	    public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE = "deployment.form_init_deploy_application.label_code_server_application_instance";
+	    public static final String PROPERTY_LABEL_TAG_TO_DEPLOY = "deployment.form_init_deploy_application.label_tag_to_deploy";
 	    public static final String PROPERTY_LABEL_CODE_CATEGORY = "deployment.create_application.label_code_category";
 	    public static final String PROPERTY_LABEL_NAME = "deployment.create_application.label_name";
 	    public static final String PROPERTY_LABEL_WEBAPP_NAME = "deployment.create_application.label_webapp_name";

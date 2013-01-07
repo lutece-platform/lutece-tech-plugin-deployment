@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
@@ -112,6 +113,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				.getUserId(), getLocale());
 		// ReferenceList
 		ReferenceList refListCategory = _applicationService.getListCategory();
+		DeploymentUtils.addEmptyRefenceItem(refListCategory);
 		HashMap model = new HashMap();
 		if (mavenUser != null) {
 			Map<String, ReferenceList> hashCategoryListSite = DeploymentUtils
@@ -267,14 +269,15 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					nIdApplication, getPlugin());
 
 			List<Environment> listEnvironments = _environmentService
-					.getListEnvironments(application.getCode());
+					.getListEnvironments(application.getCode(),getLocale());
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _environmentService
-					.getHashServerApplicationInstance(application.getCode());
+					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale());
 
 			ReferenceList refListTagSite = _svnService.getTagsSite(application
 					.getSvnUrlSite(), mavenUser);
 			ReferenceList refListEnvironements = ReferenceList.convert(
 					listEnvironments, "code", "name", false);
+			DeploymentUtils.addEmptyRefenceItem(refListEnvironements);
 
 			model.put(ConstanteUtils.MARK_ENVIRONMENT_LIST,
 					refListEnvironements);
@@ -310,12 +313,12 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					workflowDeploySiteContext.getIdApplication(), getPlugin());
 			Environment environment = _environmentService
 					.getEnvironment(workflowDeploySiteContext
-							.getCodeEnvironement());
+							.getCodeEnvironement(),getLocale());
 			ServerApplicationInstance serverApplicationInstance = _environmentService
 					.getServerApplicationInstance(application.getCode(),
 							workflowDeploySiteContext
 									.getCodeServerAppplicationInstance(),
-							workflowDeploySiteContext.getCodeEnvironement());
+							workflowDeploySiteContext.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale());
 			// workflow informations
 			Collection<Action> listAction = WorkflowService.getInstance()
 					.getActions(workflowDeploySiteContext.getId(),

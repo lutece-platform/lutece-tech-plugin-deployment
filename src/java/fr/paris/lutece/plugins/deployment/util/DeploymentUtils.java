@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
@@ -183,26 +184,27 @@ public class DeploymentUtils {
 	}
 
 	public static String getPlateformUrlServerApplicationInstances(
-			String strCodeApplication, String strCodeEnvironment) {
+			String strCodeApplication, String strCodeEnvironment,
+			String strServerApplicationType) {
 		String strPathEnvironment = (strCodeEnvironment.replace(
 				ConstanteUtils.CONSTANTE_SEPARATOR_POINT,
 				ConstanteUtils.CONSTANTE_SEPARATOR_SLASH)).toUpperCase();
 		return getPlateformUrlApplication(strCodeApplication)
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strPathEnvironment
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
-				+ ConstanteUtils.CONSTANTE_SERVER_TOMCAT;
+				+ strServerApplicationType;
 
 	}
 
 	public static String getDeployDirectoryTarget(String strCodeApplication,
-			String strCodeEnvironment, String strCodeServerApplicationInstance) {
+			ServerApplicationInstance serverApplicationInstance) {
 		return getPlateformUrlServerApplicationInstances(strCodeApplication,
-				strCodeEnvironment)
+				serverApplicationInstance.getCodeEnvironment(),
+				serverApplicationInstance.getType())
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
-				+ strCodeServerApplicationInstance
+				+ serverApplicationInstance.getCode()
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
-				+ AppPropertiesService
-						.getProperty(ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_DPLOY_DIRECTORY_TARGET);
+				+ serverApplicationInstance.getFtpDirectoryTarget();
 	}
 
 	/**
@@ -289,10 +291,9 @@ public class DeploymentUtils {
 		return jo;
 	}
 
-
 	public static JSONObject getJSONForWorkflowAction(
-			String strJspForceRedirect,String strFormError, CommandResult result, State state,
-			Collection<Action> listAction) {
+			String strJspForceRedirect, String strFormError,
+			CommandResult result, State state, Collection<Action> listAction) {
 		JSONObject jo = new JSONObject();
 		try {
 
@@ -302,8 +303,9 @@ public class DeploymentUtils {
 
 			jo.put(ConstanteUtils.JSON_STATE, state != null ? state.getName()
 					: ConstanteUtils.CONSTANTE_EMPTY_STRING);
-			jo.put(ConstanteUtils.JSON_FORM_ERROR, strFormError != null ? strFormError
-					: ConstanteUtils.CONSTANTE_EMPTY_STRING);
+			jo.put(ConstanteUtils.JSON_FORM_ERROR,
+					strFormError != null ? strFormError
+							: ConstanteUtils.CONSTANTE_EMPTY_STRING);
 			JSONObject joAction;
 			JSONArray joListAction = new JSONArray();
 			if (listAction != null) {
@@ -359,6 +361,7 @@ public class DeploymentUtils {
 		FilterDeployment filter = new FilterDeployment();
 		for (ReferenceItem item : categoryRefList) {
 			filter.setCodeCategory(item.getCode());
+
 			hashCategoryListSite.put(item.getCode(), svnService.getSites(
 					filter, mavenUser));
 		}
@@ -372,6 +375,16 @@ public class DeploymentUtils {
 		context.setCommandResult(commandResult);
 		commandResult.setRunning(true);
 
+	}
+
+	public static void addEmptyRefenceItem(ReferenceList referenceList) {
+		if (referenceList != null) {
+
+			ReferenceItem referenceItem = new ReferenceItem();
+			referenceItem.setCode(ConstanteUtils.CONSTANTE_EMPTY_STRING);
+			referenceItem.setName(ConstanteUtils.CONSTANTE_EMPTY_STRING);
+			referenceList.add(0, referenceItem);
+		}
 	}
 
 }

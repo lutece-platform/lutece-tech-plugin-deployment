@@ -4,6 +4,7 @@ public class Environment {
 	
 	private String _strCode;
 	private String _strName;
+	private String _strI18nKeyName;
 	
 	
 	
@@ -21,7 +22,13 @@ public class Environment {
 		return _strName;
 	}
 	
+	public String getI18nKeyName() {
+		return _strI18nKeyName;
+	}
 
+	public void setI18nKeyName(String strName) {
+		_strI18nKeyName = strName;
+	}
 	
 	
 

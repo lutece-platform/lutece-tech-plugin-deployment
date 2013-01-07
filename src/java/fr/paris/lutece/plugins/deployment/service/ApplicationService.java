@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IApllicationDAO;
-import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
@@ -66,7 +65,7 @@ public class ApplicationService implements IApplicationService
     private void initListCategories(  )
     {
         _listCategory= new ReferenceList();
-
+        
          String strCategoriesList = AppPropertiesService.getProperty ( PROPERTY_SVN_CATEGORIES_LIST );
 
         if ( StringUtils.isNotBlank( strCategoriesList ) )

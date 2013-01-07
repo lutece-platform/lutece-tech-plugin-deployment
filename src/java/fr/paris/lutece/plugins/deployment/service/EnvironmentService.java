@@ -3,14 +3,15 @@ package fr.paris.lutece.plugins.deployment.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Locale;
 
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FtpInfo;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -24,76 +25,71 @@ public class EnvironmentService implements IEnvironmentService {
 	
 	//private static IEnvironmentService _singleton;
 	private static HashMap<String,Environment>_hashEnvironements;
+	private static HashMap<String,ServerApplicationInstance>_hashServerApplicationInstance;
 	
 	
 	private EnvironmentService()
 	{
-		init();
+	
 	}
 	
-//	 public static IEnvironmentService getInstance(  )
-//	 {
-//        if ( _singleton == null )
-//        {
-//            _singleton = new EnvironementService(  );
-//        }
-//
-//        return _singleton;
-//	  }
 	 
-	 private void init()
+
+	 
+	 
+	 private void initHashServerApplicationInstance(  )
 	 {
-	
-		 initHashEnvironments();
+		  List<ServerApplicationInstance> listServerApplicationInstance = SpringContextService.getBeansOfType( ServerApplicationInstance.class );
+		  _hashServerApplicationInstance = new HashMap<String, ServerApplicationInstance>(  );
+
+	        if ( listServerApplicationInstance != null )
+	        {
+	            for ( ServerApplicationInstance serverApplicationInstance : listServerApplicationInstance )
+	            {
+	            	_hashServerApplicationInstance.put( serverApplicationInstance.getType()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+serverApplicationInstance.getCode(),serverApplicationInstance );
+	            }
+	        }
 		 
-	 }
+	    }
 	 
 	 
 	 private void initHashEnvironments(  )
 	    {
-	       _hashEnvironements=new HashMap<String, Environment>();
+	      
 	       
-	       Environment environment;
-	       String strEnvironmentsList = AppPropertiesService.getProperty ( ConstanteUtils.PROPERTY_ENVIRONMENTS_LIST);
-	        
-	        if ( StringUtils.isNotBlank( strEnvironmentsList ) )
-	        {
-	            String[] tabEnvironments = strEnvironmentsList.split( ConstanteUtils.CONSTANTE_SEPARATOR_VIRGULE );
-	            
+	       List<Environment> listEnvironment = SpringContextService.getBeansOfType( Environment.class );
+	       _hashEnvironements=new HashMap<String, Environment>();
 
-	            for ( int i = 0; i < tabEnvironments.length; i++ )
-	            {
-	                
-	            	environment=new Environment();
-	            	environment.setCode( AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-                            ConstanteUtils.CONSTANTE__ENVIRONMENT_CODE ));
-	            	environment.setName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + tabEnvironments[i] +
-	            			ConstanteUtils.CONSTANTE__ENVIRONMENT_NAME ));
-	            	
-	            		
-	            		if(environment.getCode()!=null)
-	            		{
-	            			_hashEnvironements.put(environment.getCode(),environment );
-	            		}
-	            	}
-	            }
+		        if ( listEnvironment != null )
+		        {
+		            for ( Environment environment:listEnvironment)
+		            {
+		            	_hashEnvironements.put( environment.getCode(),environment);
+		            }
+		        }
+	    
 	        }
 	 
 	 		/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getEnvironment(java.lang.String)
 			 */
-	 		public Environment getEnvironment(String strCode)
+	 		public Environment getEnvironment(String strCode,Locale locale)
 	 		{
 	 			
-	 			return _hashEnvironements.get(strCode);
-	 			
+	 			if(_hashEnvironements==null)
+	 			{
+	 				initHashEnvironments();
+	 			}
+	 			Environment environment= _hashEnvironements.get(strCode);
+	 			environment.setName(I18nService.getLocalizedString(environment.getI18nKeyName(), locale));
+	 			return environment;
 	 		}
 	 
 	 	
 		 	/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getListEnvironments(java.lang.String)
 			 */
-		 	public List<Environment> getListEnvironments(String strCodeApplication)
+		 	public List<Environment> getListEnvironments(String strCodeApplication,Locale locale)
 		 	{
 		 		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
 		 		List<Environment> listEnvironments=new ArrayList<Environment>();
@@ -133,9 +129,8 @@ public class EnvironmentService implements IEnvironmentService {
 				 			for(String strEnv:listStrEnvironment )
 				 			{
 				 				
-				 				strCodeEnvironment=AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__ENVIRONMENT + strArea.toLowerCase()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+strEnv.toLowerCase()+
-				 						ConstanteUtils.CONSTANTE__ENVIRONMENT_CODE );
-				 				Environment environment=_hashEnvironements.containsKey(strCodeEnvironment)?_hashEnvironements.get(strCodeEnvironment):null;
+				 				strCodeEnvironment=strArea.toLowerCase()+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+strEnv.toLowerCase();
+				 				Environment environment=getEnvironment(strCodeEnvironment, locale);
 				 				listEnvironments.add(environment);
 				 			}
 				 		}
@@ -150,11 +145,11 @@ public class EnvironmentService implements IEnvironmentService {
 		 	/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getListServerApplicationInstance(java.lang.String, java.lang.String)
 			 */
-		 	public HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(String strCodeApplication)
+		 	public HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(String strCodeApplication,String strServerApplicationType,Locale locale)
 		 	{
 		 		
 		 		HashMap<String,List<ServerApplicationInstance>> hashServerApplicationInstance=new HashMap<String, List<ServerApplicationInstance>>();
-		 		List<Environment> listEnvironments=getListEnvironments(strCodeApplication);
+		 		List<Environment> listEnvironments=getListEnvironments(strCodeApplication,locale);
 		 		if(listEnvironments!=null)
 		 		{
 		 			List<ServerApplicationInstance> listServerApplicationInstance;
@@ -162,7 +157,7 @@ public class EnvironmentService implements IEnvironmentService {
 			 		for(Environment environment:listEnvironments)
 			 		{
 			 			listServerApplicationInstance=new ArrayList<ServerApplicationInstance>();
-			 			listServerApplicationInstance.addAll(getListServerApplicationInstanceByEnvironment(strCodeApplication, environment.getCode()));
+			 			listServerApplicationInstance.addAll(getListServerApplicationInstanceByEnvironment(strCodeApplication, environment.getCode(),strServerApplicationType,locale));
 			 			hashServerApplicationInstance.put(environment.getCode(), listServerApplicationInstance);
 			 		}
 			 		
@@ -173,7 +168,7 @@ public class EnvironmentService implements IEnvironmentService {
 		 	
 		 	
 		 	
-		 	public List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment(String strCodeApplication,String strCodeEnvironment)
+		 	public List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment(String strCodeApplication,String strCodeEnvironment,String strServerApplicationType,Locale locale)
 		 	{
 		 		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
 		 		List<ServerApplicationInstance> listServerApplicationInstance=new ArrayList<ServerApplicationInstance>();
@@ -186,7 +181,7 @@ public class EnvironmentService implements IEnvironmentService {
 		 		
 		 		try
 		 		{
-		 			strJSONServerApplicationInstances=DeploymentUtils.callPlateformEnvironmentWs(strPlateformEnvironmentBaseUrl+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +DeploymentUtils.getPlateformUrlServerApplicationInstances(strCodeApplication, strCodeEnvironment));	
+		 			strJSONServerApplicationInstances=DeploymentUtils.callPlateformEnvironmentWs(strPlateformEnvironmentBaseUrl+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +DeploymentUtils.getPlateformUrlServerApplicationInstances(strCodeApplication, strCodeEnvironment,strServerApplicationType));	
 		 		}catch (Exception e) {
 	 				AppLogService.error(e);
 	 		
@@ -198,7 +193,7 @@ public class EnvironmentService implements IEnvironmentService {
 		 			for(String strServerApplicationInstance:listStrServerApplicationInstance )
 		 			{
 		 				
-		 				listServerApplicationInstance.add(getServerApplicationInstance(strCodeApplication, strServerApplicationInstance.toLowerCase(), strCodeEnvironment));
+		 				listServerApplicationInstance.add(getServerApplicationInstance(strCodeApplication, strServerApplicationInstance.toLowerCase(), strCodeEnvironment,strServerApplicationType,locale));
 		 			}
 		 		}
 		 		return listServerApplicationInstance;
@@ -223,23 +218,18 @@ public class EnvironmentService implements IEnvironmentService {
 		 	}
 		 	
 		 	
-		 	public  ServerApplicationInstance getServerApplicationInstance(String strCodeApplication,String strServerInstanceCode,String strCodeEnvironment)
+		 	public  ServerApplicationInstance getServerApplicationInstance(String strCodeApplication,String strServerInstanceCode,String strCodeEnvironment,String strServerType,Locale locale)
 		 	{
 		 		
-		 		
-		 		ServerApplicationInstance serverApplicationInstance=new ServerApplicationInstance();
-		 		
-		 		serverApplicationInstance.setCode(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_CODE ));
-		 		serverApplicationInstance.setName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_NAME ));
-		 		serverApplicationInstance.setServerName(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 				ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_SERVER_NAME));
-		 		serverApplicationInstance.setMavenProfile(AppPropertiesService.getProperty ( ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE + strServerInstanceCode +
-		 			 ConstanteUtils.CONSTANTE_SEPARATOR_POINT + strCodeEnvironment+ConstanteUtils.CONSTANTE__SERVER_APPLICATION_INSTANCE_MAVEN_PROFILE));
-		 		
+		 		if(_hashServerApplicationInstance==null)
+		 		{
+		 			
+		 			initHashServerApplicationInstance();
+		 		}
+		 		ServerApplicationInstance defaultServerApplicationInstance=_hashServerApplicationInstance.get(strServerType+ConstanteUtils.CONSTANTE_SEPARATOR_POINT+strServerInstanceCode);
+		 		ServerApplicationInstance serverApplicationInstance=newServerApplicationInstance(defaultServerApplicationInstance.getBeanName(),locale);
 		 		serverApplicationInstance.setCodeEnvironment(strCodeEnvironment);
-		 		
+		 		serverApplicationInstance.setName(I18nService.getLocalizedString(serverApplicationInstance.getI18nKeyName(), locale));
 		 		setFtpInfo(serverApplicationInstance,strCodeApplication);
 		 		
 		 		return serverApplicationInstance;
@@ -251,7 +241,7 @@ public class EnvironmentService implements IEnvironmentService {
 		 	{
 		 		
 		 		
-		 		serverApplicationInstance.setFtpDeployDirectoryTarget(DeploymentUtils.getDeployDirectoryTarget(strCodeApplication,serverApplicationInstance.getCodeEnvironment() , serverApplicationInstance.getCode()));
+		 		//serverApplicationInstance.setFtpDirectoryTarget(DeploymentUtils.getDeployDirectoryTarget(strCodeApplication,serverApplicationInstance.getCodeEnvironment() , serverApplicationInstance.getCode()));
 		 		FtpInfo ftpInfo=new FtpInfo();
 		 		ftpInfo.setHost(AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST));
 		 		ftpInfo.setPort(AppPropertiesService.getPropertyInt (ConstanteUtils.PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT,21));
@@ -288,7 +278,11 @@ public class EnvironmentService implements IEnvironmentService {
 			
 		 	
 		 	
-		 
+		 private ServerApplicationInstance newServerApplicationInstance(String strBeanName,Locale locale)
+		 {
+			
+			return (ServerApplicationInstance) SpringContextService.getBean(strBeanName);
+		 }
 		 	
 		 
 		 	
