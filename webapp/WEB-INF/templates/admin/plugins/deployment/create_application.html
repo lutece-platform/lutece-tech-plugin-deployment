@@ -28,6 +28,8 @@
 		</#list>	
 		</script>
 		<form class="form-horizontal" method="post"  name="create_application" id="create_application" action="jsp/admin/plugins/deployment/DoCreateApplication.jsp">
+	   	 <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
+	        
 	        <fieldset>
 	
 	            <div class="control-group">
@@ -68,7 +70,7 @@
 	            
 	            <div class="form-actions">
 	                <button class="btn btn-primary" type="submit" >#i18n{deployment.create_application.button_create}</button>
-	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
 	            </div>
 	
 	        </fieldset>

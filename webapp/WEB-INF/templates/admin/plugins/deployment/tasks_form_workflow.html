@@ -3,7 +3,7 @@
      
      <div id="task_form_error"></div>
       <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="task_form" id="task_form" >
-	   
+	  	 <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 	   	<input name="id_action" value="${id_action}" type="hidden" />
 	   	${tasks_form}
 	   	

@@ -29,6 +29,7 @@
 		</script>
 		<form class="form-horizontal" method="post"  name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp">
 	        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}"/>
+	        <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 	        <fieldset>
 	
 	      
@@ -67,7 +68,7 @@
 	            
 	            <div class="form-actions">
 	                <button class="btn btn-primary" type="submit" >#i18n{deployment.form_init_deploy_application.button_deploy}</button>
-	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplications.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
 	            </div>
 	
 	        </fieldset>
