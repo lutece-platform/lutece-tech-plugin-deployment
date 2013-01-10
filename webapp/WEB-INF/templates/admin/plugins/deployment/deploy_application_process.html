@@ -60,8 +60,8 @@
 	          <div id="workflow_actions">
 		            <#list action_list as workflow_action>
 			          	<form class="form-horizontal" method="post"  name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
-				  			<input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 				  			<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}" />
+				  			<input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 				  			<div class="form-actions">
 				                <button class="btn btn-primary" type="submit" >${workflow_action.name}</button>
 				             </div>
