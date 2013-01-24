@@ -108,7 +108,50 @@
 				
 			</map>
 		</property>
- 	 </bean>	
+ 	 </bean>
+	<bean id="deployment.serverApplicationMysql0001" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="0001"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationMysql0001"/>
+ 		
+  	<bean id="deployment.serverApplicationMysql0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="0002"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.0002.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationMysql0002"/>
+ 		
+ 	<bean id="deployment.serverApplicationMysqlfo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="fo"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.fo.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationMysqlfo"/>
+  	<bean id="deployment.serverApplicationMysqlbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="bo"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.bo.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationMysqlbo"/>
+ 		
+ 	<bean id="deployment.serverApplicationHttpd0001" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="0001"
+ 		p:i18nKeyName="deployment.server_application_instance.httpd.0001.name"
+ 		p:type="HTTPD"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationHttpd0001"/>
+ 		
+ 	<bean id="deployment.serverApplicationHttpd0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="0002"
+ 		p:i18nKeyName="deployment.server_application_instance.httpd.0002.name"
+ 		p:type="HTTPD"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationHttpd0001"/>
+	
+ 		
+ 	
 	
 </beans>
  	

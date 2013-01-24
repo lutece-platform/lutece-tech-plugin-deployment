@@ -22,7 +22,7 @@ public interface IEnvironmentService {
 	
 	
 	HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(
-			String strCodeApplication,String strServerApplicationType,Locale locale);
+			String strCodeApplication,String strServerApplicationType,Locale locale,boolean withStatus,boolean withActions);
 	
 
 }

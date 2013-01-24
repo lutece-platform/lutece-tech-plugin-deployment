@@ -369,11 +369,17 @@ public class DeploymentUtils {
 
 	}
 
-	public static void reInitCommandResult(WorkflowDeploySiteContext context) {
+	public static void startCommandResult(WorkflowDeploySiteContext context) {
 		CommandResult commandResult = new CommandResult();
 		commandResult.setLog(new StringBuffer());
 		context.setCommandResult(commandResult);
 		commandResult.setRunning(true);
+
+	}
+	
+	public static void stopCommandResult(WorkflowDeploySiteContext context) {
+	
+		context.getCommandResult().setRunning(false);
 
 	}
 

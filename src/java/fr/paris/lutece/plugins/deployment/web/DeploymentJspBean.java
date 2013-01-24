@@ -146,7 +146,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				.getParameter(ConstanteUtils.PARAM_ID_APPLICATION);
 		int nIdApplication = DeploymentUtils
 				.getIntegerParameter(strIdApplication);
-
+		MavenUser mavenUser = DeploymentUtils.getMavenUser(getUser()
+				.getUserId(), getLocale());
 		// ReferenceList
 		ReferenceList refListCategory = _applicationService.getListCategory();
 		Application application = _applicationService.getApplication(
@@ -154,16 +155,94 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		// build Filter
 
 		HashMap model = new HashMap();
-		model.put(ConstanteUtils.MARK_CATEGORY_LIST, refListCategory);
+		if (mavenUser != null) {
+			Map<String, ReferenceList> hashCategoryListSite = DeploymentUtils
+					.getHashCategoryListSite(refListCategory, _svnService,
+							mavenUser);
+			model.put(ConstanteUtils.MARK_CATEGORY_LIST, refListCategory);
+			model.put(ConstanteUtils.MARK_CATEGORY_LIST_SITE_MAP,
+					hashCategoryListSite);
+			if(application!=null && hashCategoryListSite.containsKey(application.getCodeCategory()) )
+			{
+				
+				model.put(ConstanteUtils.MARK_SITE_LIST, hashCategoryListSite.get(application.getCodeCategory()));	
+				
+			}
+
+		} else {
+			String strErrorMessage = I18nService.getLocalizedString(
+					ConstanteUtils.I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET,
+					getLocale());
+			model.put(ConstanteUtils.MARK_ERROR_MESSAGE, strErrorMessage);
+			model.put(ConstanteUtils.MARK_ID_USER, getUser().getUserId());
+		}
+		
 		model.put(ConstanteUtils.MARK_APPLICATION, application);
 
-		setPageTitleProperty(ConstanteUtils.PROPERTY_CREATE_APPLICATION_PAGE_TITLE);
+		setPageTitleProperty(ConstanteUtils.PROPERTY_MODIFY_APPLICATION_PAGE_TITLE);
 		HtmlTemplate templateList = AppTemplateService.getTemplate(
-				ConstanteUtils.TEMPLATE_CREATE_APPLICATION, getLocale(), model);
+				ConstanteUtils.TEMPLATE_MODIFY_APPLICATION, getLocale(), model);
 
 		return getAdminPage(templateList.getHtml());
 
 	}
+	
+	
+	public String getViewApplication(HttpServletRequest request) {
+
+		AdminUser adminUser = getUser();
+		MavenUser mavenUser = DeploymentUtils.getMavenUser(adminUser
+				.getUserId(), getLocale());
+		String strIdApplication = request
+				.getParameter(ConstanteUtils.PARAM_ID_APPLICATION);
+		int nIdApplication = DeploymentUtils
+				.getIntegerParameter(strIdApplication);
+
+		setPageTitleProperty(ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE);
+		HashMap model = new HashMap();
+		if (nIdApplication == ConstanteUtils.CONSTANTE_ID_NULL) {
+			return getJspManageApplication(request);
+		}
+		if (mavenUser != null) {
+			Application application = _applicationService.getApplication(
+					nIdApplication, getPlugin());
+
+			List<Environment> listEnvironments = _environmentService
+					.getListEnvironments(application.getCode(),getLocale());
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _environmentService
+					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),true,true);
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _environmentService
+			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),true,true);
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _environmentService
+			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_HTTPD,getLocale(),true,true);
+			
+			ReferenceList refListEnvironements = ReferenceList.convert(
+					listEnvironments, "code", "name", false);
+			model.put(ConstanteUtils.MARK_ENVIRONMENT_LIST,
+					refListEnvironements);
+			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT,
+					hashServerApplicationInstanceTomcat);
+			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL,
+					hashServerApplicationInstanceMysql);
+			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_HTTPD,
+					hashServerApplicationInstanceHttpd);
+			
+			model.put(ConstanteUtils.MARK_APPLICATION, application);
+		} else {
+			String strErrorMessage = I18nService.getLocalizedString(
+					ConstanteUtils.I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET,
+					getLocale());
+			model.put(ConstanteUtils.MARK_ERROR_MESSAGE, strErrorMessage);
+			model.put(ConstanteUtils.MARK_ID_USER, getUser().getUserId());
+		}
+
+		HtmlTemplate template = AppTemplateService.getTemplate(
+				ConstanteUtils.TEMPLATE_VIEW_APPLICATION,
+				getLocale(), model);
+		return getAdminPage(template.getHtml());
+
+	}
+	
 
 	public String doModifyApplication(HttpServletRequest request) {
 
@@ -271,7 +350,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			List<Environment> listEnvironments = _environmentService
 					.getListEnvironments(application.getCode(),getLocale());
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _environmentService
-					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale());
+					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
 
 			ReferenceList refListTagSite = _svnService.getTagsSite(application
 					.getSvnUrlSite(), mavenUser);
@@ -281,7 +360,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 			model.put(ConstanteUtils.MARK_ENVIRONMENT_LIST,
 					refListEnvironements);
-			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP,
+			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT,
 					hashServerApplicationInstance);
 			model.put(ConstanteUtils.MARK_SITE_LIST, refListTagSite);
 			model.put(ConstanteUtils.MARK_APPLICATION, application);
@@ -380,9 +459,14 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 				strJspFormDisplay = getJspTasksForm(request,
 						_nIdCurrentWorkflowDeploySiteContext, nIdAction);
 			} else {
-				doProcessAction(workflowDeploySiteContext.getId(), nIdAction,
+				
+					doProcessAction(workflowDeploySiteContext, nIdAction,
 						getPlugin(), getLocale(), request);
-
+				DeploymentUtils.stopCommandResult(workflowDeploySiteContext);
+				//End Action
+				
+				
+				
 				listAction = WorkflowService.getInstance().getActions(
 						workflowDeploySiteContext.getId(),
 						WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
@@ -425,7 +509,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 						_nIdCurrentWorkflowDeploySiteContext, nIdAction);
 			}
 
-			doProcessAction(workflowDeploySiteContext.getId(), nIdAction,
+			doProcessAction(workflowDeploySiteContext, nIdAction,
 					getPlugin(), getLocale(), request);
 
 			return getJspDeployApplicationProcess(request);
@@ -531,25 +615,27 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 	 * @param request
 	 *            the HTTP request
 	 */
-	private void doProcessAction(int nIdWorkflowSiteContext, int nIdAction,
+	private void doProcessAction(WorkflowDeploySiteContext workflowDeploySiteContext, int nIdAction,
 			Plugin plugin, Locale locale, HttpServletRequest request) {
 
 		if (WorkflowService.getInstance().canProcessAction(
-				nIdWorkflowSiteContext,
+				workflowDeploySiteContext.getId(),
 				WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdAction,
 				ConstanteUtils.CONSTANTE_ID_NULL, request, false)) {
-			boolean bHasSucceed = false;
+			
 
 			try {
+			
+				DeploymentUtils.startCommandResult(workflowDeploySiteContext);
 				WorkflowService.getInstance().doProcessAction(
-						nIdWorkflowSiteContext,
+						workflowDeploySiteContext.getId(),
 						WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
 						nIdAction, ConstanteUtils.CONSTANTE_ID_NULL, request,
 						locale, false);
-				bHasSucceed = true;
+				DeploymentUtils.stopCommandResult(workflowDeploySiteContext);
+			
 			} catch (Exception e) {
-				WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService
-						.getWorkflowDeploySiteContext(_nIdCurrentWorkflowDeploySiteContext);
+				
 
 				AppLogService.error(
 						"Error processing during deployment of application  '"

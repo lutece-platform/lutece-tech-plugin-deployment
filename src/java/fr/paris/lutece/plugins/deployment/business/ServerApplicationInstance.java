@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.deployment.business;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ServerApplicationInstance {
 
@@ -14,6 +15,8 @@ public class ServerApplicationInstance {
 	private String _strType;
 	private HashMap<String, String> _hashMavenProfile;
 	private String _strBeanName;
+	private Integer _nStatus;
+	private List<ServerApplicationAction> _listServerApplicationAction;
 
 	public String getName() {
 		return _strName;
@@ -94,6 +97,23 @@ public class ServerApplicationInstance {
 
 	public void setBeanName(String strBeanName) {
 		_strBeanName = strBeanName;
+	}
+
+	public void setStatus(Integer _nStatus) {
+		this._nStatus = _nStatus;
+	}
+
+	public Integer getStatus() {
+		return _nStatus;
+	}
+
+	public void setListServerApplicationAction(
+			List<ServerApplicationAction> _listServerApplicationAction) {
+		this._listServerApplicationAction = _listServerApplicationAction;
+	}
+
+	public List<ServerApplicationAction> getListServerApplicationAction() {
+		return _listServerApplicationAction;
 	}
 
 }

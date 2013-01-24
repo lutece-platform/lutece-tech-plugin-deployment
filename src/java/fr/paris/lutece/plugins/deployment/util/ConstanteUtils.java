@@ -36,6 +36,8 @@ public class ConstanteUtils {
 	    public static final String CONSTANTE_SQL_WHERE = " WHERE ";
 	    public static final String CONSTANTE_SQL_AND = " AND ";
 	    public static final String CONSTANTE_SERVER_TOMCAT="TOMCAT";
+	    public static final String CONSTANTE_SERVER_MYSQL="MYSQL";
+	    public static final String CONSTANTE_SERVER_HTTPD="HTTPD";
 	    public static final String CONSTANTE_SERVER_RO="RO";
 	    public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY="max_deploy_site_context_key";
 	    
@@ -103,13 +105,17 @@ public class ConstanteUtils {
 	  
 	    //STATE
 	    public static final String CONSTANTE_COMMAND_RESULT_STATUS_EXCEPTION_VALUE="exception";
-
+	    //STATUS SERVER APLLICATION STATE 
+	    public static final Integer STATUS_KO=0;
+	    public static final Integer STATUS_OK=1;
+	    
 	    //MARK
 	    public static final String MARK_SITE_TAG_VERSION="site_tag_version";
 	    public static final String MARK_SITE_TAG_NAME="site_tag_name";
 	    public static final String MARK_SITE_NEXT_VERSION="site_next_version";
 	    public static final String MARK_APPLICATION_LIST="application_list";
 	    public static final String MARK_CATEGORY_LIST="category_list";
+	  
 	    public static final String MARK_CATEGORY_MAP="category_map";
 	    public static final String MARK_CATEGORY_LIST_SITE_MAP="category_list_site_map";
 	    public static final String MARK_CATEGORY_SELECTED="category_selected";
@@ -117,7 +123,9 @@ public class ConstanteUtils {
 	    public static final String MARK_APPLICATION="application";
 	    public static final String MARK_CODE_CATEGORY="code_category";
 	    public static final String MARK_ENVIRONMENT_LIST="environment_list";
-	    public static final String MARK_SERVER_INSTANCE_MAP="server_instance_map";
+	    public static final String MARK_SERVER_INSTANCE_MAP_TOMCAT="server_instance_map";
+	    public static final String MARK_SERVER_INSTANCE_MAP_MYSQL="server_instance_map_mysql";
+	    public static final String MARK_SERVER_INSTANCE_MAP_HTTPD="server_instance_map_httpd";
 	    public static final String MARK_SITE_LIST="site_list";
 	    public static final String MARK_SERVER_INSTANCE="server_instance";
 	    public static final String MARK_ENVIRONMENT="environment";
@@ -155,6 +163,7 @@ public class ConstanteUtils {
 	    public static final String TEMPLATE_MANAGE_APPLICATION = "admin/plugins/deployment/manage_application.html";
 	    public static final String TEMPLATE_CREATE_APPLICATION = "admin/plugins/deployment/create_application.html";
 	    public static final String TEMPLATE_MODIFY_APPLICATION = "admin/plugins/deployment/modify_application.html";
+	    public static final String TEMPLATE_VIEW_APPLICATION = "admin/plugins/deployment/view_application.html";
 	    public static final String TEMPLATE_FORM_INIT_DEPLOY_APPLICATION= "admin/plugins/deployment/form_init_deploy_application.html";
 	    public static final String TEMPLATE_DEPLOY_APPLICATION_PROCESS = "admin/plugins/deployment/deploy_application_process.html";
 	    public static final String TEMPLATE_TASKS_FORM_WORKFLOW ="admin/plugins/deployment/tasks_form_workflow.html";

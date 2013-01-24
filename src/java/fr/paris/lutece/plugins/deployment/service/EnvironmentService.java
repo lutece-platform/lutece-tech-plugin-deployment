@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FtpInfo;
+import fr.paris.lutece.plugins.deployment.business.ServerApplicationAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
@@ -26,6 +27,7 @@ public class EnvironmentService implements IEnvironmentService {
 	//private static IEnvironmentService _singleton;
 	private static HashMap<String,Environment>_hashEnvironements;
 	private static HashMap<String,ServerApplicationInstance>_hashServerApplicationInstance;
+	private static HashMap<String,ServerApplicationAction>_hashServerApplicationAction;
 	
 	
 	private EnvironmentService()
@@ -69,6 +71,23 @@ public class EnvironmentService implements IEnvironmentService {
 		        }
 	    
 	        }
+	 private void initHashServerApplicationAction(  )
+	    {
+	      
+	       
+	       List< ServerApplicationAction> listAction = SpringContextService.getBeansOfType( ServerApplicationAction.class );
+	       _hashServerApplicationAction=new HashMap<String, ServerApplicationAction>();
+
+		        if ( listAction != null )
+		        {
+		            for ( ServerApplicationAction action:listAction)
+		            {
+		            	_hashServerApplicationAction.put( action.getCode(),action);
+		            }
+		        }
+	    
+	        }
+	 
 	 
 	 		/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getEnvironment(java.lang.String)
@@ -145,7 +164,7 @@ public class EnvironmentService implements IEnvironmentService {
 		 	/* (non-Javadoc)
 			 * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getListServerApplicationInstance(java.lang.String, java.lang.String)
 			 */
-		 	public HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(String strCodeApplication,String strServerApplicationType,Locale locale)
+		 	public HashMap<String,List<ServerApplicationInstance>> getHashServerApplicationInstance(String strCodeApplication,String strServerApplicationType,Locale locale,boolean withStatus,boolean withActions)
 		 	{
 		 		
 		 		HashMap<String,List<ServerApplicationInstance>> hashServerApplicationInstance=new HashMap<String, List<ServerApplicationInstance>>();
@@ -283,9 +302,24 @@ public class EnvironmentService implements IEnvironmentService {
 			
 			return (ServerApplicationInstance) SpringContextService.getBean(strBeanName);
 		 }
+		 
+		
 		 	
 		 
-		 	
+		 private ServerApplicationAction getServerApplicationAction(String strCode,Locale locale)
+		 {
+			 if(_hashServerApplicationAction==null)
+		 		{
+		 			
+		 			initHashServerApplicationAction();
+		 		}
+			 	ServerApplicationAction serverApplicationAction=_hashServerApplicationAction.get(strCode);
+			 	if(serverApplicationAction!=null)
+			 	{
+			 		serverApplicationAction.setName(I18nService.getLocalizedString(serverApplicationAction.getI18nKeyName(), locale));
+			 	}
+			 	return serverApplicationAction;
+		 }	
 		 	
 		 	
 		 
