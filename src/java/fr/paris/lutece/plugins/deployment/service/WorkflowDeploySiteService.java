@@ -31,6 +31,8 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	@Inject
 	IEnvironmentService _environmentService;
 	@Inject
+	IServerApplicationService _serverApplicationService;
+	@Inject
 	IFtpService _ftpService;
 	@Inject
 	IApplicationService _applicationService;
@@ -130,7 +132,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
 		
-		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale);
+		ServerApplicationInstance serverApplicationInstance=_serverApplicationService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale,false,false);
 		context.getCommandResult().getLog().append( "Starting Action Assembly  Site...\n" );
 		_mavenService.mvnSiteAssembly(application.getSiteName(),context.getTagName(), serverApplicationInstance.getMavenProfile(), context.getMavenUser(),context.getCommandResult());
 		context.getCommandResult().getLog().append( "End Action Assembly  Site...\n" );
@@ -146,7 +148,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 	
 		Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
 		Application application=_applicationService.getApplication(context.getIdApplication(), plugin);
-		ServerApplicationInstance serverApplicationInstance=_environmentService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale);
+		ServerApplicationInstance serverApplicationInstance=_serverApplicationService.getServerApplicationInstance(application.getCode(),context.getCodeServerAppplicationInstance(),context.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,locale,false,false);
 		context.getCommandResult().getLog().append( "Starting Action Deploy  Site...\n" );
 		_ftpService.uploadFile(application.getWebAppName()+ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(DeploymentUtils.getPathCheckoutSite(application.getSiteName()), context.getTagToDeploy(), ConstanteUtils.ARCHIVE_WAR_EXTENSION), serverApplicationInstance.getFtpInfo(), DeploymentUtils.getDeployDirectoryTarget(application.getCode(), serverApplicationInstance), context.getCommandResult());
 		context.getCommandResult().getLog().append( "End Action Deploy  Site...\n" );

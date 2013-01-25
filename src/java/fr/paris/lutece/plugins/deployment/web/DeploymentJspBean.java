@@ -21,6 +21,7 @@ import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.service.IApplicationService;
 import fr.paris.lutece.plugins.deployment.service.IEnvironmentService;
+import fr.paris.lutece.plugins.deployment.service.IServerApplicationService;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.deployment.service.IWorkflowDeploySiteService;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
@@ -40,7 +41,6 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
@@ -54,6 +54,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			.getBean("deployment.ApplicationService");
 	private IEnvironmentService _environmentService = SpringContextService
 			.getBean("deployment.EnvironmentService");
+	
+	private IServerApplicationService _serverApplicationService = SpringContextService
+	.getBean("deployment.ServerApplicationService");
+
 	private ISvnService _svnService = SpringContextService
 			.getBean("deployment.SvnService");
 	private IWorkflowDeploySiteService _workflowDeploySiteService = SpringContextService
@@ -209,11 +213,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 			List<Environment> listEnvironments = _environmentService
 					.getListEnvironments(application.getCode(),getLocale());
-			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _environmentService
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService
 					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),true,true);
-			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _environmentService
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService
 			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),true,true);
-			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _environmentService
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService
 			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_HTTPD,getLocale(),true,true);
 			
 			ReferenceList refListEnvironements = ReferenceList.convert(
@@ -349,7 +353,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 			List<Environment> listEnvironments = _environmentService
 					.getListEnvironments(application.getCode(),getLocale());
-			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _environmentService
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _serverApplicationService
 					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
 
 			ReferenceList refListTagSite = _svnService.getTagsSite(application
@@ -393,11 +397,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			Environment environment = _environmentService
 					.getEnvironment(workflowDeploySiteContext
 							.getCodeEnvironement(),getLocale());
-			ServerApplicationInstance serverApplicationInstance = _environmentService
+			ServerApplicationInstance serverApplicationInstance = _serverApplicationService
 					.getServerApplicationInstance(application.getCode(),
 							workflowDeploySiteContext
 									.getCodeServerAppplicationInstance(),
-							workflowDeploySiteContext.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale());
+							workflowDeploySiteContext.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
 			// workflow informations
 			Collection<Action> listAction = WorkflowService.getInstance()
 					.getActions(workflowDeploySiteContext.getId(),

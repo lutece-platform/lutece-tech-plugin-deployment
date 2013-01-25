@@ -44,8 +44,27 @@
 								 <tr>
 					                <td>${serverApplicationInstance.code}</td>
 					                <td>${serverApplicationInstance.name}</td>
-					                <td></td>  
-					                <td></td>
+					                <td>    
+					                	<#if serverApplicationInstance.status==1>
+                       						<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
+                       					<#else>
+                        					<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
+                        				</#if>
+					                 <td> 
+					              	 <#list serverApplicationInstance.listServerApplicationAction as action >  
+									 	<#if (!action.status?exists)||(action.status?exists && serverApplicationInstance.status==action.status)>
+									 		<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/RunAction.jsp?code_action=${action.code}&code_server_application=${serverApplicationInstance.code}" title="${action.name}" >
+                       							 <i class="${action.iconCssClass}"></i>
+                   						 </a>	
+									 	</#if>
+									 		
+									 	
+									 	
+									 								                	
+					                		
+					                  </#list>	
+					                
+					                </td>
 					             </tr>				
 					            </#list>
 					        </tbody>
@@ -71,9 +90,28 @@
 								 <tr>
 					                <td>${serverApplicationInstance.code}</td>
 					                <td>${serverApplicationInstance.name}</td>
-					                <td></td>  
-					                <td></td>
-					             </tr>				
+					                <td>    
+					                	<#if serverApplicationInstance.status==1>
+                       						<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
+                       					<#else>
+                        					<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
+                        				</#if>
+					                 <td> 
+					              	 <#list serverApplicationInstance.listServerApplicationAction as action >  
+									 	<#if (!action.status?exists)||(action.status?exists && serverApplicationInstance.status==action.status)>
+									 		<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/RunAction.jsp?code_action=${action.code}&code_server_application=${serverApplicationInstance.code}" title="${action.name}" >
+                       							 <i class="${action.iconCssClass}"></i>
+                   						 </a>	
+									 	</#if>
+									 		
+									 	
+									 	
+									 								                	
+					                		
+					                  </#list>	
+					                
+					                </td>
+					             </tr>								
 					            </#list>
 					        </tbody>
 					   	 </table>
@@ -96,12 +134,31 @@
 					
 					            <#list listServerApplicationInstanceHttpd as serverApplicationInstance>
 										
-								 <tr>
+								<tr>
 					                <td>${serverApplicationInstance.code}</td>
 					                <td>${serverApplicationInstance.name}</td>
-					                <td></td>  
-					                <td></td>
-					             </tr>				
+					                <td>    
+					                	<#if serverApplicationInstance.status==1>
+                       						<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
+                       					<#else>
+                        					<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
+                        				</#if>
+					                 <td> 
+					              	 <#list serverApplicationInstance.listServerApplicationAction as action >  
+									 	<#if (!action.status?exists)||(action.status?exists && serverApplicationInstance.status==action.status)>
+									 		<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/RunAction.jsp?code_action=${action.code}&code_server_application=${serverApplicationInstance.code}" title="${action.name}" >
+                       							 <i class="${action.iconCssClass}"></i>
+                   						 </a>	
+									 	</#if>
+									 		
+									 	
+									 	
+									 								                	
+					                		
+					                  </#list>	
+					                
+					                </td>
+					             </tr>					
 					            </#list>
 					        </tbody>
 					   	 </table>

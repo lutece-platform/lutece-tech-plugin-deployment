@@ -18,6 +18,13 @@
 	<!-- Services --> 	 
 	<bean id="deployment.ApplicationService" class="fr.paris.lutece.plugins.deployment.service.ApplicationService" />
 	<bean id="deployment.EnvironmentService" class="fr.paris.lutece.plugins.deployment.service.EnvironmentService" />
+	<bean id="deployment.ActionService" class="fr.paris.lutece.plugins.deployment.service.ActionService" />
+	<bean id="deployment.ServerApplicationService" class="fr.paris.lutece.plugins.deployment.service.ServerApplicationService" >
+<!--		<property name="environmentService" ref="deployment.EnvironmentService" />-->
+<!--		<property name="actionService" ref="deployment.ActionService" />-->
+	</bean>
+	
+	
 	<bean id="deployment.FtpService" class="fr.paris.lutece.plugins.deployment.service.FtpService" />
 	<bean id="deployment.MavenService" class="fr.paris.lutece.plugins.deployment.service.MavenService" />
 	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.SvnService" />
@@ -143,14 +150,58 @@
  		p:ftpDirectoryTarget="DATAS"
  		p:beanName="deployment.serverApplicationHttpd0001"/>
  		
+ 		
+ 		
+ 		
  	<bean id="deployment.serverApplicationHttpd0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0002"
  		p:i18nKeyName="deployment.server_application_instance.httpd.0002.name"
  		p:type="HTTPD"
  		p:ftpDirectoryTarget="DATAS"
  		p:beanName="deployment.serverApplicationHttpd0001"/>
-	
  		
+ 		
+ 		
+ 	
+	 <bean id="deployment.actionStatus" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 		p:code="@STATUS"
+ 		p:i18nKeyName="deployment.action.status.name"
+ 		p:usedForStatus="true"
+ 		p:iconCssClass="icon-refresh icon-white"
+ 		/>
+ 		
+ 	<bean id="deployment.actionShutdown" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 		p:code="@SHUTDOWN"
+ 		p:i18nKeyName="deployment.action.shutdown.name"
+ 		p:usedForStatus="false"
+ 		p:status="1"
+ 		p:iconCssClass="icon-off icon-white"
+ 		/>
+ 	
+ 	<bean id="deployment.actionRmWork" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 		p:code="@RMWORK"
+ 		p:i18nKeyName="deployment.action.rmwork.name"
+ 		p:usedForStatus="false"
+ 		p:status="0"
+ 		p:iconCssClass="icon-trash icon-white"
+ 		/>
+ 		
+ 	<bean id="deployment.actionRmWorkwithParams" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 		p:code="@RMWORK_WITH_PARAMS"
+ 		p:i18nKeyName="deployment.action.rmworkwithparams.name"
+ 		p:usedForStatus="false"
+ 		p:status="0"
+ 		p:iconCssClass="icon-trash icon-white"
+ 		/>	
+ 		
+   <bean id="deployment.actionStartUp" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 		p:code="@STARTUP"
+ 		p:i18nKeyName="deployment.action.startup.name"
+ 		p:usedForStatus="false"
+ 		p:status="0"
+ 		p:iconCssClass="icon-play-circle icon-white"
+ 		/>
+ 			
  	
 	
 </beans>

@@ -16,7 +16,7 @@ public class ServerApplicationInstance {
 	private HashMap<String, String> _hashMavenProfile;
 	private String _strBeanName;
 	private Integer _nStatus;
-	private List<ServerApplicationAction> _listServerApplicationAction;
+	private List<IAction> _listServerApplicationAction;
 
 	public String getName() {
 		return _strName;
@@ -108,11 +108,11 @@ public class ServerApplicationInstance {
 	}
 
 	public void setListServerApplicationAction(
-			List<ServerApplicationAction> _listServerApplicationAction) {
+			List<IAction> _listServerApplicationAction) {
 		this._listServerApplicationAction = _listServerApplicationAction;
 	}
 
-	public List<ServerApplicationAction> getListServerApplicationAction() {
+	public List<IAction> getListServerApplicationAction() {
 		return _listServerApplicationAction;
 	}
 

@@ -116,6 +116,20 @@ public class DeploymentUtils {
 
 		return strResponse;
 	}
+	
+	public static List<String> getJSONDictionary(String dictionaryName, String strJSONFlux) {
+		List<String> jsonCollection = new ArrayList<String>();
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(strJSONFlux);
+		JSONArray jsonArray = jo.getJSONArray(
+				dictionaryName);
+		Iterator iterator = jsonArray.iterator();
+		while (iterator.hasNext()) {
+			jsonCollection.add((String) iterator.next());
+		}
+		return jsonCollection;
+	}
+	
+	
 
 	public static List<String> getJSONDictionary(String objectName,
 			String dictionaryName, String strJSONFlux) {
@@ -129,6 +143,15 @@ public class DeploymentUtils {
 		}
 		return jsonCollection;
 	}
+	
+	public static JSONObject getJSONOBject( String strJSONFlux) {
+	
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(strJSONFlux);
+		return jo;
+	}
+	
+	
+	
 
 	/**
 	 * Retourne l'emplacement du pom
@@ -194,6 +217,25 @@ public class DeploymentUtils {
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
 				+ strServerApplicationType;
 
+	}
+	
+	
+	public static String getPlateformUrlServerApplicationActions(String strCodeApplication,
+			ServerApplicationInstance serverApplicationInstance) {
+		return getPlateformUrlServerApplicationInstances(strCodeApplication,
+				serverApplicationInstance.getCodeEnvironment(),
+				serverApplicationInstance.getType())
+				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+				+ serverApplicationInstance.getCode().toUpperCase();
+				
+	}
+	
+	public static String getPlateformUrlServerApplicationAction(String strCodeApplication,
+			ServerApplicationInstance serverApplicationInstance,String strCodeAction) {
+		return getPlateformUrlServerApplicationActions(strCodeApplication, serverApplicationInstance)
+				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+				+ strCodeAction;
+				
 	}
 
 	public static String getDeployDirectoryTarget(String strCodeApplication,
