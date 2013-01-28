@@ -1,12 +1,9 @@
 package fr.paris.lutece.plugins.deployment.business;
 
-import net.sf.json.JSONObject;
-import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
-import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.util.List;
 
-public class Action implements IAction {
+
+public abstract class Action implements IAction {
 	
 	private String _strCode;
 	private String _strName;
@@ -14,6 +11,8 @@ public class Action implements IAction {
 	private Integer _strStatus;
 	private boolean  _bUsedForStatus;
 	private String _strIconCssClass;
+	private boolean  _bDisplay;
+	private List<String> _listParameters;
 	
 	
 	/* (non-Javadoc)
@@ -77,40 +76,29 @@ public class Action implements IAction {
 		return _bUsedForStatus;
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.paris.lutece.plugins.deployment.business.IAction#run(java.lang.String, fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance)
-	 */
-	public String run(String strCodeApplication,ServerApplicationInstance serverApplicationInstance)
-	{
-		
-		String strPlateformEnvironmentBaseUrl=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
- 		String strWebserviceActionJsonPropery=  AppPropertiesService.getProperty (ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT);
- 		String strJSONAction=null;
- 		String strResult=null;
- 		
- 		
- 		try
- 		{
- 			strJSONAction=DeploymentUtils.callPlateformEnvironmentWs(strPlateformEnvironmentBaseUrl+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +DeploymentUtils.getPlateformUrlServerApplicationAction(strCodeApplication, serverApplicationInstance, this.getCode()));	
- 		}catch (Exception e) {
-			AppLogService.error(e);
 	
- 		}
- 		if(strJSONAction!=null)
- 		{
- 			JSONObject jo=DeploymentUtils.getJSONOBject(strJSONAction);
- 			if(jo!=null)
- 			{
- 				strResult=jo.getString(strWebserviceActionJsonPropery);
- 			}
- 		}
-		return strResult;
-	}
 	public void setIconCssClass(String _strIconCssClass) {
 		this._strIconCssClass = _strIconCssClass;
 	}
 	public String getIconCssClass() {
 		return _strIconCssClass;
+	}
+	
+	
+
+	public boolean isDisplay() {
+		// TODO Auto-generated method stub
+		return _bDisplay;
+	}
+
+	public void setDisplay(boolean bDisplay) {
+		_bDisplay=bDisplay;
+	}
+	public void setParameters(List<String> _listParameters) {
+		this._listParameters = _listParameters;
+	}
+	public List<String> getParameters() {
+		return _listParameters;
 	}
 	
 	

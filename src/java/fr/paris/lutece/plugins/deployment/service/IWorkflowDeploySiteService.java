@@ -2,6 +2,8 @@ package fr.paris.lutece.plugins.deployment.service;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 
 public interface IWorkflowDeploySiteService {
@@ -19,6 +21,10 @@ public interface IWorkflowDeploySiteService {
 	String deploySite(WorkflowDeploySiteContext context,Locale locale);
 	
 	void initTagInformations(WorkflowDeploySiteContext context);
+	
+	String executeServerAction(String strActionCode,
+			HttpServletRequest request, WorkflowDeploySiteContext context,
+			Locale locale);
 	
 
 }

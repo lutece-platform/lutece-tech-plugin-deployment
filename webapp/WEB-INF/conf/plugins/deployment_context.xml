@@ -163,43 +163,48 @@
  		
  		
  	
-	 <bean id="deployment.actionStatus" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+	 <bean id="deployment.actionStatus" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.name"
  		p:usedForStatus="true"
  		p:iconCssClass="icon-refresh icon-white"
+ 		p:display="true"
  		/>
  		
- 	<bean id="deployment.actionShutdown" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 	<bean id="deployment.actionShutdown" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@SHUTDOWN"
  		p:i18nKeyName="deployment.action.shutdown.name"
  		p:usedForStatus="false"
  		p:status="1"
  		p:iconCssClass="icon-off icon-white"
+ 		p:display="true"
  		/>
  	
- 	<bean id="deployment.actionRmWork" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 	<bean id="deployment.actionRmWork" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@RMWORK"
  		p:i18nKeyName="deployment.action.rmwork.name"
  		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="icon-trash icon-white"
+ 		p:display="true"
  		/>
  		
- 	<bean id="deployment.actionRmWorkwithParams" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+ 	<bean id="deployment.actionRmWorkwithParams" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@RMWORK_WITH_PARAMS"
  		p:i18nKeyName="deployment.action.rmworkwithparams.name"
  		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="icon-trash icon-white"
+ 		p:display="false"
  		/>	
  		
-   <bean id="deployment.actionStartUp" class="fr.paris.lutece.plugins.deployment.business.Action" scope="prototype"
+   <bean id="deployment.actionStartUp" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@STARTUP"
  		p:i18nKeyName="deployment.action.startup.name"
  		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="icon-play-circle icon-white"
+ 		p:display="true"
  		/>
  			
  	

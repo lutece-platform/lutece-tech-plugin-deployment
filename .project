@@ -3,7 +3,6 @@
   <name>plugin-deployment</name>
   <comment>deployment plugin. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects>
-    <project>lutece-core</project>
     <project>library-httpaccess</project>
   </projects>
   <buildSpec>

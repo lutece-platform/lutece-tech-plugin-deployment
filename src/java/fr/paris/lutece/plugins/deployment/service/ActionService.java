@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 
+import fr.paris.lutece.plugins.deployment.business.ActionParameter;
+import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
@@ -87,13 +90,32 @@ public class ActionService implements IActionService {
 	    
 	        }
 
-
+	 
+	 public List<IAction> getListAction(Locale locale)
+	 {
+		 List<IAction> listActions=new ArrayList<IAction>();
+		 IAction action;
+		 if(_hashServerApplicationAction==null)
+		 {
+			 initHashServerApplicationAction();
+		 }
+		 for(Entry<String, IAction> entry :_hashServerApplicationAction.entrySet())
+		 {
+			 action=entry.getValue();
+			 action.setName(I18nService.getLocalizedString(action.getI18nKeyName(), locale));
+			 listActions.add(action);
+		 }
+		 return listActions;
+		
+	 }
+	 
+	 
 
 	@Override
 	public String executeAction(String strCodeApplication, IAction action,
-			ServerApplicationInstance serverApplicationInstance) {
+			ServerApplicationInstance serverApplicationInstance,CommandResult commandResult,ActionParameter... parameter) {
 		// TODO Auto-generated method stub
-		return  action.run(strCodeApplication, serverApplicationInstance);
+		return  action.run(strCodeApplication, serverApplicationInstance,commandResult,parameter);
 	}
 
 

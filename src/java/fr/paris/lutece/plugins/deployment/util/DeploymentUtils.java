@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -16,6 +18,7 @@ import net.sf.json.JSONSerializer;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.paris.lutece.plugins.deployment.business.ActionParameter;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
@@ -434,5 +437,26 @@ public class DeploymentUtils {
 			referenceList.add(0, referenceItem);
 		}
 	}
+	
+	
+	public static ActionParameter[]getActionParameters(HttpServletRequest request,List<String> listParameterNames)
+	{
+				
+		if(listParameterNames!=null)
+		{
+			List<ActionParameter> listActionParameters=new ArrayList<ActionParameter>();
+			ActionParameter actionParameter;
+			for(String param:listParameterNames)
+			{
+				actionParameter=new ActionParameter();
+				actionParameter.setName(param);
+				actionParameter.setValue(request.getParameter(param));
+			}
+			
+			return listActionParameters.toArray(new ActionParameter[listParameterNames.size()]);
+		}
+		return null;
+	}
+	
 
 }

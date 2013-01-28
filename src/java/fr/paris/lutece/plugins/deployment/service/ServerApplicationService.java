@@ -165,7 +165,7 @@ public class ServerApplicationService implements IServerApplicationService {
 			 {
 				 if(action.isUsedForStatus())
 				 {
-					 String  strResult=_actionService.executeAction(strCodeApplication, action, serverApplicationInstance);
+					 String  strResult=_actionService.executeAction(strCodeApplication, action, serverApplicationInstance,null);
 					 return  strResult!=null?(new Integer(new Boolean(strResult)?1:0)):null;	
 				 }
 				 

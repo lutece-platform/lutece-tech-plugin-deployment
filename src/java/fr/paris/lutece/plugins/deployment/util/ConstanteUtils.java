@@ -140,6 +140,7 @@ public class ConstanteUtils {
 	    public static final String MARK_TAG_TO_DEPLOY="tag_to_deploy";
 	    public static final String MARK_ID_ACTION = "id_action";
 	    public static final String MARK_TASKS_FORM = "tasks_form";
+	    public static final String MARK_CONFIG="config";
 	    //PARAM
 	    public static final String PARAM_SITE_TAG_VERSION="site_tag_version";
 	    public static final String PARAM_SITE_TAG_NAME="site_tag_name";
@@ -157,6 +158,7 @@ public class ConstanteUtils {
 	    public static final String PARAM_CANCEL="cancel";
 	    public static final String PARAM_ID_ACTION="id_action";
 	    public static final String PARAM_ID_WORKFLOW_CONTEXT="id_workflow_context";
+	    public static final String PARAM_CODE_ACTION_DEPLOYMENT="code_action";
 	    
 	    
 	    //ARCHIVE TYPE
