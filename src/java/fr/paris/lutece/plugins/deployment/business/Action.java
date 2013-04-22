@@ -13,6 +13,7 @@ public abstract class Action implements IAction {
 	private String _strIconCssClass;
 	private boolean  _bDisplay;
 	private List<String> _listParameters;
+	private String _strServerType;
 	
 	
 	/* (non-Javadoc)
@@ -99,6 +100,12 @@ public abstract class Action implements IAction {
 	}
 	public List<String> getParameters() {
 		return _listParameters;
+	}
+	public void setServerType(String _strServerType) {
+		this._strServerType = _strServerType;
+	}
+	public String getServerType() {
+		return _strServerType;
 	}
 	
 	

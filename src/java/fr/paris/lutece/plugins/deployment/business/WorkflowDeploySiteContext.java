@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.deployment.business;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 
 public class WorkflowDeploySiteContext  implements Serializable {
@@ -14,8 +15,11 @@ public class WorkflowDeploySiteContext  implements Serializable {
 	private int _nId;
 	private int _nIdApplication;
 	private String _strSvnBaseSiteUrl;
+	
+	private HashMap<String,String> _hashServerApplicationInstance;
 	private String _strCodeEnvironement;
-	private String _strCodeServerAppplicationInstance;
+	private String _strCodeServerAppplicationInstanceTomcat;
+	private String _strCodeServerAppplicationInstanceMysql;
 	private boolean _bTagSiteBeforeDeploy;
 	private String _strTagToDeploy;
 	private String _strTagName;
@@ -23,9 +27,11 @@ public class WorkflowDeploySiteContext  implements Serializable {
 	private String _strTagVersion;
 	private CommandResult _commandResult;
 	private MavenUser _mavenUser;
+	private boolean _bDeployWar;
+	private boolean _bDeploySql;
 	
 	
-	
+
 	public int getId() {
 		return _nId;
 	}
@@ -78,13 +84,24 @@ public class WorkflowDeploySiteContext  implements Serializable {
 		_strCodeEnvironement = strCodeEnvironement;
 	}
 	
-	public String getCodeServerAppplicationInstance() {
-		return _strCodeServerAppplicationInstance;
+	public String getCodeServerInstance(String strType) {
+		if(_hashServerApplicationInstance!=null)
+		{
+			return _hashServerApplicationInstance.get(strType);
+		}
+		return null;
+		
 	}
 	
-	public void setCodeServerAppplicationInstance(
-			String strCodeServerAppplicationInstance) {
-		_strCodeServerAppplicationInstance = strCodeServerAppplicationInstance;
+	public void setCodeServerInstance(
+			String strCodeServerAppplicationInstance,String strType) {
+		
+		if(_hashServerApplicationInstance==null)
+		{
+			_hashServerApplicationInstance=new HashMap<String, String>();
+		}
+		_hashServerApplicationInstance.put(strType, strCodeServerAppplicationInstance);
+	
 	}
 	
 	public boolean isTagSiteBeforeDeploy() {
@@ -115,6 +132,19 @@ public class WorkflowDeploySiteContext  implements Serializable {
 	}
 	public MavenUser getMavenUser() {
 		return _mavenUser;
+	}
+
+	public void setDeployWar(boolean _bDeployWar) {
+		this._bDeployWar = _bDeployWar;
+	}
+	public boolean isDeployWar() {
+		return _bDeployWar;
+	}
+	public boolean isDeploySql() {
+		return _bDeploySql;
+	}
+	public void setDeploySql(boolean bDeploySql) {
+		_bDeploySql = bDeploySql;
 	}
 	
 

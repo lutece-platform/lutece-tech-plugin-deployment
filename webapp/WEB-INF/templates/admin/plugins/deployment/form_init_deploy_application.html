@@ -14,27 +14,35 @@
 		<script type="text/javascript">
 		// empty component list and unselect category
 		initComponantsEnvironment();
-		var itemsMap = new Object();
-		<#list server_instance_map?keys as environment_key>
+		var itemsMapServerTomcat = new Object();
+		<#list server_instance_map_tomcat?keys as environment_key>
 			var itemList = new Array();
-			<#assign listServerApplicationInstance = server_instance_map[environment_key!]! /> 
+			<#assign listServerApplicationInstance = server_instance_map_tomcat[environment_key!]! /> 
 			<#list listServerApplicationInstance as serverApplicationInstance>
 				var item = new Object();
 				item["code"] = "${serverApplicationInstance.code}";
 				item["name"] = "${serverApplicationInstance.name}";
 				itemList.push(item);
 			</#list>
-			itemsMap["${environment_key}"] = itemList;
-		</#list>	
+			itemsMapServerTomcat["${environment_key}"] = itemList;
+		</#list>
+		var itemsMapServerMysql = new Object();
+		<#list server_instance_map_mysql?keys as environment_key>
+			var itemList = new Array();
+			<#assign listServerApplicationInstance = server_instance_map_mysql[environment_key!]! /> 
+			<#list listServerApplicationInstance as serverApplicationInstance>
+				var item = new Object();
+				item["code"] = "${serverApplicationInstance.code}";
+				item["name"] = "${serverApplicationInstance.name}";
+				itemList.push(item);
+			</#list>
+			itemsMapServerMysql["${environment_key}"] = itemList;
+		</#list>		
 		</script>
 		<form class="form-horizontal" method="post"  name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp">
 	        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}"/>
 	        <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 	        <fieldset>
-	
-	      
-	
-	           
 	            <div class="control-group">
 	                <label class="control-label" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*:</label>
 	                <div class="controls">
@@ -42,11 +50,33 @@
 	          		</div>
 	            </div>
 	            <div class="control-group">
-	                <label class="control-label" for="code_server_application_instance" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance}*:</label>
+	                <label class="control-label" for="deploy_war" >#i18n{deployment.form_init_deploy_application.label_deploy_war}:</label>
 	                <div class="controls">
-	                 <select name="code_server_application_instance" id="code_server_application_instance" >
-	                 </select>     		
+	             		<input type="checkbox" id="deploy_war" name="deploy_war" />
 	                </div>
+	           </div>
+	            <div class="control-group">
+	                <label class="control-label" for="deploy_sql" >#i18n{deployment.form_init_deploy_application.label_deploy_sql}:</label>
+	                <div class="controls">
+	             		<input type="checkbox" id="deploy_sql" name="deploy_sql" />
+	                </div>
+	           </div>
+	           
+	            <div class="control-group">
+	                <label class="control-label" for="code_server_application_instance_tomcat" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_tomcat}*:</label>
+	                <div class="controls">
+	                 <select name="code_server_application_instance_tomcat" id="code_server_application_instance_tomcat" >
+	                 </select>
+	                   		
+	                </div>
+	            </div>
+	             <div class="control-group">
+	            
+	                <label class="control-label" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*:</label>
+	                <div class="controls">
+	                 <select name="code_server_application_instance_mysql" id="code_server_application_instance_mysql"> 
+	                 </select>
+	                 </div>
 	            </div>
 	            <div class="control-group">
 	                <label class="control-label" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}:</label>

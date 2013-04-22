@@ -30,6 +30,10 @@ public interface IAction {
 	
 	void setParameters(List<String> _listParameters);
 	
+	void setServerType(String _strServerType);
+	
+	String getServerType();
+	
 	List<String> getParameters();
 	
 

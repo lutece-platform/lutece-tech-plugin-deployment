@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
@@ -355,7 +356,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					.getListEnvironments(application.getCode(),getLocale());
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _serverApplicationService
 					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
-
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService
+			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),false,false);
+			
 			ReferenceList refListTagSite = _svnService.getTagsSite(application
 					.getSvnUrlSite(), mavenUser);
 			ReferenceList refListEnvironements = ReferenceList.convert(
@@ -366,6 +369,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 					refListEnvironements);
 			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT,
 					hashServerApplicationInstance);
+			
+			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL,
+					hashServerApplicationInstanceMysql);
 			model.put(ConstanteUtils.MARK_SITE_LIST, refListTagSite);
 			model.put(ConstanteUtils.MARK_APPLICATION, application);
 		} else {
@@ -397,10 +403,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			Environment environment = _environmentService
 					.getEnvironment(workflowDeploySiteContext
 							.getCodeEnvironement(),getLocale());
-			ServerApplicationInstance serverApplicationInstance = _serverApplicationService
+			ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService
 					.getServerApplicationInstance(application.getCode(),
 							workflowDeploySiteContext
-									.getCodeServerAppplicationInstance(),
+									.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT),
 							workflowDeploySiteContext.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
 			// workflow informations
 			Collection<Action> listAction = WorkflowService.getInstance()
@@ -415,7 +421,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			HashMap model = new HashMap();
 			model.put(ConstanteUtils.MARK_APPLICATION, application);
 			model.put(ConstanteUtils.MARK_SERVER_INSTANCE,
-					serverApplicationInstance);
+					serverApplicationInstanceTomcat);
 			model.put(ConstanteUtils.MARK_ENVIRONMENT, environment);
 			model.put(ConstanteUtils.MARK_STATE, state.getName());
 			model.put(ConstanteUtils.MARK_ACTION_LIST, listAction);
@@ -799,10 +805,18 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 		String strCodeEnvironment = request
 				.getParameter(ConstanteUtils.PARAM_CODE_ENVIRONMENT);
-		String strCodeServerApplicationInstance = request
-				.getParameter(ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE);
-		String strTagSiteBeforeDeploy = request
-				.getParameter(ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY);
+		
+		String strDeployWar = request
+		.getParameter(ConstanteUtils.PARAM_DEPLOY_WAR);
+		String strDeploySql = request
+		.getParameter(ConstanteUtils.PARAM_DEPLOY_SQL);
+		
+			String strCodeServerApplicationInstanceTomcat = request
+				.getParameter(ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT);
+		String strCodeServerApplicationInstanceMysql = request
+		.getParameter(ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL);
+String strTagSiteBeforeDeploy = request
+			.getParameter(ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY);
 		String strTagToDeploy = request
 				.getParameter(ConstanteUtils.PARAM_TAG_TO_DEPLOY);
 
@@ -810,9 +824,12 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 		if (StringUtils.isEmpty(strCodeEnvironment)) {
 			strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_ENVIRONMENT;
-		} else if (StringUtils.isEmpty(strCodeServerApplicationInstance)) {
-			strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE;
-		} else if (StringUtils.isEmpty(strTagSiteBeforeDeploy)
+		} else if (!StringUtils.isEmpty(strDeployWar)&&StringUtils.isEmpty(strCodeServerApplicationInstanceTomcat)) {
+			strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT;
+		} else if (!StringUtils.isEmpty(strDeploySql)&&StringUtils.isEmpty(strCodeServerApplicationInstanceMysql)) {
+			strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL;
+		}
+		else if (StringUtils.isEmpty(strTagSiteBeforeDeploy)
 				&& StringUtils.isEmpty(strTagToDeploy)) {
 			strFieldError = ConstanteUtils.PROPERTY_LABEL_TAG_TO_DEPLOY;
 		}
@@ -827,10 +844,25 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 		}
 
 		workflowDeploySiteContext.setCodeEnvironement(strCodeEnvironment);
-		workflowDeploySiteContext
-				.setCodeServerAppplicationInstance(strCodeServerApplicationInstance);
+		if(!StringUtils.isEmpty(strCodeServerApplicationInstanceTomcat))
+		{
+			workflowDeploySiteContext
+				.setCodeServerInstance(strCodeServerApplicationInstanceTomcat,ConstanteUtils.CONSTANTE_SERVER_TOMCAT);
+		}
+		
+		if(!StringUtils.isEmpty(strCodeServerApplicationInstanceMysql))
+		{
+			workflowDeploySiteContext
+				.setCodeServerInstance(strCodeServerApplicationInstanceMysql,ConstanteUtils.CONSTANTE_SERVER_MYSQL);
+		}
+		
+		
+		
 		workflowDeploySiteContext.setTagSiteBeforeDeploy(!StringUtils
 				.isEmpty(strTagSiteBeforeDeploy));
+		workflowDeploySiteContext.setDeployWar(!StringUtils.isEmpty(strDeployWar));
+		workflowDeploySiteContext.setDeploySql(!StringUtils.isEmpty(strDeploySql));
+		
 		if (StringUtils.isEmpty(strTagSiteBeforeDeploy)) {
 			workflowDeploySiteContext.setTagToDeploy(strTagToDeploy);
 		}

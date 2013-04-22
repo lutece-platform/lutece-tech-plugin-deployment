@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
+import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
@@ -28,6 +29,7 @@ import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.user.attribute.AdminUserFieldService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -458,5 +460,37 @@ public class DeploymentUtils {
 		return null;
 	}
 	
+	
+	public static ReferenceList getReferenceListServerType(Locale locale)
+	{
+		ReferenceList referenceList=new ReferenceList();
+		referenceList.addItem(ConstanteUtils.CONSTANTE_EMPTY_STRING, ConstanteUtils.CONSTANTE_EMPTY_STRING);
+		referenceList.addItem(ConstanteUtils.CONSTANTE_SERVER_TOMCAT, I18nService.getLocalizedString(ConstanteUtils.PROPERTY_SERVER_TYPE_TOMCAT_LABEL, locale));
+		referenceList.addItem(ConstanteUtils.CONSTANTE_SERVER_MYSQL, I18nService.getLocalizedString(ConstanteUtils.PROPERTY_SERVER_TYPE_MYSQL_LABEL, locale));
+		referenceList.addItem(ConstanteUtils.CONSTANTE_SERVER_HTTPD, I18nService.getLocalizedString(ConstanteUtils.PROPERTY_SERVER_TYPE_HTTPD_LABEL, locale));
+		return referenceList;
+	}
+	
+	
+	public static ReferenceList getReferenceListAction(List<IAction> listAction)
+	{
+		ReferenceList referenceList=new ReferenceList();
+		referenceList.addItem(ConstanteUtils.CONSTANTE_EMPTY_STRING, ConstanteUtils.CONSTANTE_EMPTY_STRING);
+		for(IAction action:listAction)
+		{
+			referenceList.addItem(getActionKey(action.getCode(), action.getServerType()), action.getI18nKeyName());
+		}
+		return referenceList;
+	}
+	
+	
+	public static String getActionKey(String strCode,String strServerType)
+	{
+		
+			return strCode+"_"+strServerType;	
+	
+	}
+	
+
 
 }

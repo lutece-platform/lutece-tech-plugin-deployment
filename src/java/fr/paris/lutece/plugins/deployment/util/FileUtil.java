@@ -1,8 +1,10 @@
 package fr.paris.lutece.plugins.deployment.util;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DeleteUtil
+public class FileUtil
 {
 	
 	public static final boolean STATUS_OK = true;
@@ -26,5 +28,28 @@ public class DeleteUtil
 			return STATUS_ERROR;
 		}
 		return STATUS_OK;
+	}
+	
+	public static List<String> list( String strDirPath,String strFileExtension)
+	{
+		List<String> strFileList= new ArrayList<String>();
+		File file=new File(strDirPath);
+		
+		if ( file.isDirectory(  ) )
+		{
+			
+			for ( String fileName : file.list() )
+			{
+				
+			
+				strFileList.addAll(list( file.getAbsolutePath() + File.separator + fileName ,strFileExtension));
+			}
+		}
+		else if(strFileExtension== null ||file.getName().endsWith(strFileExtension))
+		{
+			strFileList.add(file.getName());
+			
+		}
+		return strFileList;
 	}
 }

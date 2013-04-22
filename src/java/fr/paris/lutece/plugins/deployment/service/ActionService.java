@@ -25,14 +25,14 @@ public class ActionService implements IActionService {
 	
 	
 	 
-	 public IAction getAction(String strCode,Locale locale)
+	 public IAction getAction(String strKey,Locale locale)
 	 {
 		 if(_hashServerApplicationAction==null)
 	 		{
 	 			
 	 			initHashServerApplicationAction();
 	 		}
-		 	IAction serverApplicationAction=_hashServerApplicationAction.get(strCode);
+		 	IAction serverApplicationAction=_hashServerApplicationAction.get(strKey);
 		 	if(serverApplicationAction!=null)
 		 	{
 		 		serverApplicationAction.setName(I18nService.getLocalizedString(serverApplicationAction.getI18nKeyName(), locale));
@@ -63,9 +63,9 @@ public class ActionService implements IActionService {
 	 		{
 	 			
 	 			listStrActions=DeploymentUtils.getJSONDictionary( strWebserviceActionJsonDictionaryName, strJSONActions);
-	 			for(String strActionCoce:listStrActions )
+	 			for(String strActionCode:listStrActions )
 	 			{
-	 				listActions.add(getAction(strActionCoce, locale));
+	 				listActions.add(getAction(DeploymentUtils.getActionKey(strActionCode, serverApplicationInstance.getType()), locale));
 	 			}
 	 		}
 	 		return listActions;
@@ -84,7 +84,7 @@ public class ActionService implements IActionService {
 		        {
 		            for ( IAction action:listAction)
 		            {
-		            	_hashServerApplicationAction.put( action.getCode(),action);
+		            	_hashServerApplicationAction.put( DeploymentUtils.getActionKey(action.getCode(), action.getServerType()),action);
 		            }
 		        }
 	    
@@ -117,6 +117,9 @@ public class ActionService implements IActionService {
 		// TODO Auto-generated method stub
 		return  action.run(strCodeApplication, serverApplicationInstance,commandResult,parameter);
 	}
+	
+	
+	
 
 
 

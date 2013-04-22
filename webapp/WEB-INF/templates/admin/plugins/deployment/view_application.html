@@ -26,7 +26,7 @@
 			<legend>${environment.name}</legend>		  	
 			  <fieldset>
 					<legend>SERVEURS TOMCAT</legend>		
-				      <#assign listServerApplicationInstance = server_instance_map[environment.code!]! /> 
+				      <#assign listServerApplicationInstance = server_instance_map_tomcat[environment.code!]! /> 
 					    <table class="table table-striped table-condensed">
 					        <thead>
 					            <tr>
@@ -72,7 +72,7 @@
 			</fieldset>		
 			<fieldset>
 				<legend> SERVEURS MYSQL</legend>	
-				      <#assign listServerApplicationInstanceMysql = server_instance_map[environment.code!]! /> 
+				      <#assign listServerApplicationInstanceMysql = server_instance_map_mysql[environment.code!]! /> 
 					    <table class="table table-striped table-condensed">
 					        <thead>
 					            <tr>
@@ -119,7 +119,7 @@
 				 <fieldset>
 					<legend> SERVEURS HTTPD</legend>	   	 
 			
-				      <#assign listServerApplicationInstanceHttpd = server_instance_map[environment.code!]! /> 
+				      <#assign listServerApplicationInstanceHttpd = server_instance_map_httpd[environment.code!]! /> 
 					    <table class="table table-striped table-condensed">
 					        <thead>
 					            <tr>

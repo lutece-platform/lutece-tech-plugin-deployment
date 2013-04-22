@@ -138,7 +138,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 
 		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
 				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerAppplicationInstance(), context
+						.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT), context
 						.getCodeEnvironement(),
 						ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false,
 						false);
@@ -161,7 +161,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 				.getIdApplication(), plugin);
 		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
 				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerAppplicationInstance(), context
+						.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT), context
 						.getCodeEnvironement(),
 						ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false,
 						false);
@@ -184,20 +184,21 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
 
 	}
 
-	public String executeServerAction(String strActionCode,
+	public String executeServerAction(String strActionKey,
 			HttpServletRequest request, WorkflowDeploySiteContext context,
 			Locale locale) {
 		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
 		Application application = _applicationService.getApplication(context
 				.getIdApplication(), plugin);
+		IAction action = _actionService.getAction(strActionKey, locale);
 		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
 				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerAppplicationInstance(), context
+						.getCodeServerInstance(action.getServerType()), context
 						.getCodeEnvironement(),
-						ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false,
+						action.getServerType(), locale, false,
 						false);
 
-		IAction action = _actionService.getAction(strActionCode, locale);
+		
 		if (action != null) {
 			context.getCommandResult().getLog().append(
 					"Starting Action " + action.getName() + " \n");

@@ -108,7 +108,7 @@ public final class SVNUtils
         File file = new File( strCheckoutBaseSitePath );
         if(file.exists())
         {
-        	if(!DeleteUtil.delete(file, result.getLog()))
+        	if(!FileUtil.delete(file, result.getLog()))
         	{
         		result.setIdError(result.getLog().toString()); 
         		return result.getLog().toString();

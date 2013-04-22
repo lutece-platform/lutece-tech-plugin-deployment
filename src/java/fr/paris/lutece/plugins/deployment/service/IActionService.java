@@ -10,7 +10,7 @@ import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 
 public interface IActionService {
 	
-	IAction getAction(String strCode,Locale locale);
+	IAction getAction(String strKey,Locale locale);
 	
 	List<IAction> getListActionByServerApplicationInstance(String strCodeApplication,ServerApplicationInstance serverApplicationInstance,Locale locale);
 

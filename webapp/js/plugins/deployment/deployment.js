@@ -92,28 +92,43 @@ function initComponantsEnvironment()
 	// clear category selection
 	$("#code_environment").selectedIndex = 0;
 	// see selectbox.js
-	removeAllOptions( document.getElementById("code_server_application_instance") );
+	removeAllOptions( document.getElementById("code_server_application_instance_tomcat") );
+	removeAllOptions( document.getElementById("code_server_application_instance_mysql") );
 }
 
 function refreshComponantsEnvironment()
 {
-	var select = document.getElementById("code_server_application_instance"); 
-	// first, remove all
-	removeAllOptions( select );
+	var selectTomcat = document.getElementById("code_server_application_instance_tomcat"); 
+	// first, remove all tomcat
+	removeAllOptions( selectTomcat );
+	var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
+	// first, remove all mysql
+	removeAllOptions( selectMysql );
+	
 	
 	var selectEnvironment = document.getElementById("code_environment");
 	
-	// add options
+	
 	var selectedEnvironment = selectEnvironment.options[selectEnvironment.selectedIndex].value;
 	if ( selectedEnvironment != null && selectedEnvironment != "" )
 	{
-		var itemList = itemsMap[selectedEnvironment];
+	   // add options Tomcat
+		var itemListTomcat = itemsMapServerTomcat[selectedEnvironment];
 		// add empty value
-		addOption( select,"","",true );
-		for ( var i = 0; i < itemList.length; i++ )
+		addOption( selectTomcat,"","",true );
+		for ( var i = 0; i < itemListTomcat.length; i++ )
 		{
-			var item = itemList[i];
-			addOption(select,item["name"],item["code"],false);
+			var item = itemListTomcat[i];
+			addOption(selectTomcat,item["name"],item["code"],false);
+		}
+		// add options Mysql
+		var itemListMysql = itemsMapServerMysql[selectedEnvironment];
+		// add empty value
+		addOption( selectMysql,"","",true );
+		for ( var i = 0; i < itemListMysql.length; i++ )
+		{
+			var item = itemListMysql[i];
+			addOption(selectMysql,item["name"],item["code"],false);
 		}
 	}
 }
