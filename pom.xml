@@ -102,6 +102,6 @@
 	 <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</connection>
         <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</developerConnection>
-        <url>http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</url>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/technical/plugin-deployment</url>
     </scm>
 </project>
