@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
@@ -214,10 +215,51 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 			List<Environment> listEnvironments = _environmentService
 					.getListEnvironments(application.getCode(),getLocale());
+			
+			
+			
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService
 					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),true,true);
+			
+			
+			
+			
+//			//Add TOM server
+//			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTom = _serverApplicationService
+//					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOM,getLocale(),true,true);
+//			
+//			for(Environment environment:listEnvironments)
+//			{
+//				
+//				if(hashServerApplicationInstanceTom.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceTom.get(environment.getCode()) ))
+//				//ADD TOM SERVER
+//				{
+//					hashServerApplicationInstanceTomcat.put(environment.getCode(),hashServerApplicationInstanceTom.get(environment.getCode()));
+//				}
+//				
+//			}
+			
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService
 			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),true,true);
+//			//Add MYS server
+//			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMys = _serverApplicationService
+//					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYS,getLocale(),true,true);
+//			
+//			for(Environment environment:listEnvironments)
+//			{
+//				
+//				if(hashServerApplicationInstanceMys.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceMys.get(environment.getCode()) ))
+//				//Add MYS server
+//				{
+//					hashServerApplicationInstanceMysql.put(environment.getCode(),hashServerApplicationInstanceMys.get(environment.getCode()));
+//				}
+//				
+//			}
+			
+			
+			
+			
+			
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService
 			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_HTTPD,getLocale(),true,true);
 			
@@ -354,10 +396,46 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 
 			List<Environment> listEnvironments = _environmentService
 					.getListEnvironments(application.getCode(),getLocale());
-			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = _serverApplicationService
-					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
+			
+			
+			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService
+					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),true,true);
+			
+			
+			
+			
+//			//Add TOM server
+//			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTom = _serverApplicationService
+//					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOM,getLocale(),true,true);
+//			
+//			for(Environment environment:listEnvironments)
+//			{
+//				
+//				if(hashServerApplicationInstanceTom.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceTom.get(environment.getCode()) ))
+//				//ADD TOM SERVER
+//				{
+//					hashServerApplicationInstanceTomcat.put(environment.getCode(),hashServerApplicationInstanceTom.get(environment.getCode()));
+//				}
+//				
+//			}
+			
 			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService
-			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),false,false);
+			.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYSQL,getLocale(),true,true);
+//			//Add MYS server
+//			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMys = _serverApplicationService
+//					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYS,getLocale(),true,true);
+//			
+//			for(Environment environment:listEnvironments)
+//			{
+//				
+//				if(hashServerApplicationInstanceMys.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceMys.get(environment.getCode()) ))
+//				//Add MYS server
+//				{
+//					hashServerApplicationInstanceMysql.put(environment.getCode(),hashServerApplicationInstanceMys.get(environment.getCode()));
+//				}
+//				
+//			}
+			
 			
 			ReferenceList refListTagSite = _svnService.getTagsSite(application
 					.getSvnUrlSite(), mavenUser);
@@ -368,7 +446,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			model.put(ConstanteUtils.MARK_ENVIRONMENT_LIST,
 					refListEnvironements);
 			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT,
-					hashServerApplicationInstance);
+					hashServerApplicationInstanceTomcat);
 			
 			model.put(ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL,
 					hashServerApplicationInstanceMysql);
@@ -403,11 +481,15 @@ public class DeploymentJspBean extends PluginAdminPageJspBean {
 			Environment environment = _environmentService
 					.getEnvironment(workflowDeploySiteContext
 							.getCodeEnvironement(),getLocale());
+			
+			
 			ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService
 					.getServerApplicationInstance(application.getCode(),
 							workflowDeploySiteContext
 									.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT),
 							workflowDeploySiteContext.getCodeEnvironement(),ConstanteUtils.CONSTANTE_SERVER_TOMCAT,getLocale(),false,false);
+			
+			
 			// workflow informations
 			Collection<Action> listAction = WorkflowService.getInstance()
 					.getActions(workflowDeploySiteContext.getId(),

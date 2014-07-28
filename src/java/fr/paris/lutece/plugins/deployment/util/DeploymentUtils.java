@@ -220,7 +220,7 @@ public class DeploymentUtils {
 		return getPlateformUrlApplication(strCodeApplication)
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strPathEnvironment
 				+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
-				+ strServerApplicationType;
+				+ getPathServerByType(strServerApplicationType,strCodeEnvironment) ;
 
 	}
 	
@@ -490,6 +490,34 @@ public class DeploymentUtils {
 			return strCode+"_"+strServerType;	
 	
 	}
+	
+	private static String getPathServerByType(String strApplicationType,String strEvironementCode)
+	{
+		
+		String strPathServer=strApplicationType;
+		
+		if(strEvironementCode.contains("v1"))
+		 {
+			
+			if( ConstanteUtils.CONSTANTE_SERVER_TOMCAT.equals(strApplicationType))
+			{
+				
+				strPathServer=ConstanteUtils.CONSTANTE_SERVER_TOM;
+					
+			}
+			else if (ConstanteUtils.CONSTANTE_SERVER_MYSQL.equals(strApplicationType)) {
+				
+				
+				strPathServer=ConstanteUtils.CONSTANTE_SERVER_MYS;
+				
+			}
+			
+			
+				}
+			return strPathServer;
+		
+	}
+	
 	
 
 

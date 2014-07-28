@@ -36,7 +36,9 @@ public class ConstanteUtils {
 	    public static final String CONSTANTE_SQL_WHERE = " WHERE ";
 	    public static final String CONSTANTE_SQL_AND = " AND ";
 	    public static final String CONSTANTE_SERVER_TOMCAT="TOMCAT";
+	    public static final String CONSTANTE_SERVER_TOM="TOM";
 	    public static final String CONSTANTE_SERVER_MYSQL="MYSQL";
+	    public static final String CONSTANTE_SERVER_MYS="MYS";
 	    public static final String CONSTANTE_SERVER_HTTPD="HTTPD";
 	    public static final String CONSTANTE_SERVER_RO="RO";
 	    public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY="max_deploy_site_context_key";

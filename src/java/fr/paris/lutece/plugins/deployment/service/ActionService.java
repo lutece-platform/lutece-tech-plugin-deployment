@@ -61,11 +61,16 @@ public class ActionService implements IActionService {
 	 		}
 	 		if(strJSONActions!=null)
 	 		{
-	 			
+	 			IAction action;
 	 			listStrActions=DeploymentUtils.getJSONDictionary( strWebserviceActionJsonDictionaryName, strJSONActions);
 	 			for(String strActionCode:listStrActions )
 	 			{
-	 				listActions.add(getAction(DeploymentUtils.getActionKey(strActionCode, serverApplicationInstance.getType()), locale));
+	 				
+	 				action=getAction(DeploymentUtils.getActionKey(strActionCode, serverApplicationInstance.getType()), locale);
+	 				if(action!=null)
+	 				{
+	 						listActions.add(action);
+	 				}
 	 			}
 	 		}
 	 		return listActions;
