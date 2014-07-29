@@ -1,7 +1,7 @@
 <script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
 <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
 
-<div class="row-fluid" >
+<div class="row" >
 
     <legend>#i18n{deployment.create_application.table_label}</legend>
 
@@ -32,45 +32,47 @@
 	        
 	        <fieldset>
 	
-	            <div class="control-group">
-	                <label class="control-label" for="code" >#i18n{deployment.create_application.label_code} * : </label> 
-	                <div class="controls">
-	                    <input type="text" id="code" name="code" size="10" maxlength="10" tabindex="1" />
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code" >#i18n{deployment.create_application.label_code} * : </label> 
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	                    <input type="text" id="code" name="code" size="10" maxlength="10" tabindex="1"  class="form-control input-sm"/>
 	                </div>
 	            </div>
 	             
-	             <div class="control-group">
-	                <label class="control-label" for="name" >#i18n{deployment.create_application.label_name} * : </label> 
-	                <div class="controls">	
-	                    <input type="text" id="name" name="name" size="20" maxlength="20" tabindex="2" />
+	             <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{deployment.create_application.label_name} * : </label> 
+	                <div class="col-xs-12 col-sm-9 col-md-9">	
+	                    <input type="text" id="name" name="name" size="20" maxlength="20" tabindex="2" class="form-control input-sm" />
 	                </div>
 	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="name" >#i18n{deployment.create_application.label_webapp_name} * : </label> 
-	                <div class="controls">	
-	                    <input type="text" id="webapp_name" name="webapp_name" size="20" maxlength="20" tabindex="3" />
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{deployment.create_application.label_webapp_name} * : </label> 
+	                <div class="col-xs-12 col-sm-9 col-md-9">	
+	                    <input type="text" id="webapp_name" name="webapp_name" size="20" maxlength="20" tabindex="3" class="form-control input-sm" />
 	                </div>
 	            </div>
 	
 	           
-	            <div class="control-group">
-	                <label class="control-label" for="code_category" >#i18n{deployment.create_application.label_category}*:</label>
-	                <div class="controls">
-	                    <@comboWithParams name="code_category" default_value="all" items=category_list additionalParameters="onchange='refreshComponants();'" />
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code_category" >#i18n{deployment.create_application.label_category}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	                    <@comboWithParams name="code_category" default_value="all" items=category_list additionalParameters="onchange='refreshComponants();'class='form-control input-sm'" />
 	          		</div>
 	            </div>
 	            
 	            
-	            <div class="control-group">
-	                <label class="control-label" for="site" >#i18n{deployment.create_application.label_site}*:</label>
-	                <div class="controls">
-	            				<select name="site" id="site" ></select>
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="site" >#i18n{deployment.create_application.label_site}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	            				<select name="site" id="site" class="form-control input-sm" ></select>
 	            	</div>
 	            </div>
 	            
-	            <div class="form-actions">
-	                <button class="btn btn-primary" type="submit" >#i18n{deployment.create_application.button_create}</button>
-	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	              <div class="form-group">
+					<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9">
+	                	<button class="btn btn-primary btn-sm" type="submit" >#i18n{deployment.create_application.button_create}</button>
+	                	<a class="btn btn-default btn-sm"  href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	           		</div>	
 	            </div>
 	
 	        </fieldset>

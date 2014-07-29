@@ -137,6 +137,7 @@ function refreshComponantsEnvironment()
 function runWorkflowAction( idAction ) 
 {
 	var resultJsp='jsp/admin/plugins/deployment/DoProcessActionJSON.jsp?id_action='+idAction;
+	$('#myModal').modal() ;
 	$.getJSON( resultJsp, function(data)
 			{
 		statusCallbackWorkflowAction(data);
@@ -170,6 +171,8 @@ function statusCallbackWorkflowAction( json )
 	}
 	else
 	{
+		
+		$('#myModal').modal('hide');
 	
 		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
 		{
@@ -270,6 +273,7 @@ function displayTaskForm(json)
 function saveTasksForm(form ) 
 {
 	
+	$('#myModal').modal() ;
 	$.ajax({
           url: 'jsp/admin/plugins/deployment/DoSaveTasksFormJSON.jsp',
           type: $(form).attr('method'), 
@@ -279,6 +283,7 @@ function saveTasksForm(form )
 				statusCallbackTasksForm(json); 
           }
       });
+	
 }
 
 
@@ -299,10 +304,12 @@ function statusCallbackTasksForm( json )
 	}
 	else
 	{
+		$('#myModal').modal('hide');
 		$('#workflow_task_form').hide();
 		replaceWorkflowActions(json);
 		replaceWorkflowState(json);
 		addEvent();
+		
 	}
 	
 	

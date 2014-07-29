@@ -13,10 +13,21 @@
 				 </#if>     
 				 <p><strong>#i18n{deployment.deploy_application_process.label_environment}  :</strong>${environment.name}</p>             
 				 <p><strong>#i18n{deployment.deploy_application_process.label_server_instance}  :</strong>${server_instance.name}</p>             
-			 	 <p><strong>#i18n{deployment.deploy_application_process.label_state}  :</strong>${state}</p>  
+			 	 <p><strong>#i18n{deployment.deploy_application_process.label_state}  :</strong><div id="workflow_state">${state}</div></p>  
 			</fieldset> 	 
  	 </div>
+ 	 
  	 <div class="col-xs-12 col-sm-4 col-md-7">           
+		    
+		    <div  id="myModal"class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  					<div class="modal-dialog modal-sm">
+    					<div class="modal-content">
+    						<a id="update" href="#"><i class="icon-refresh"></i>Une action est en cours, veuillez patienter quelques instants</a>
+    					</div>
+  					</div>
+			</div>
+		    
+		    
 		    <fieldset>
 				<div id="workflow_actions">
 			           <#list action_list as workflow_action>
@@ -44,7 +55,7 @@
 			 
 			  <script type="text/javascript">
 			  		addEvent();
-			  </script>
+			  	</script>
 		</div> 
 		 
 		 

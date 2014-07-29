@@ -100,7 +100,7 @@
 	            <div class="form-group">
 	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*:</label>
 	                <div class="col-xs-12 col-sm-9 col-md-9">
-	                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange='refreshComponantsEnvironment();' class='form-control input-sm'" />
+	                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange='' class='form-control input-sm'" />
 	          		</div>
 	            </div>
 	            
@@ -119,3 +119,19 @@
 	    </form>
 	</#if>
 </div>
+
+<script>
+$(document).ready(function(e){
+	$("#tag_site_before_deploy").click( function(e){
+		if ($(this).is (':checked'))
+		{
+			$("#tag_to_deploy").hide();
+		}
+		else
+		{
+			$("#tag_to_deploy").show();
+		}	
+			}
+		);
+ });
+</script>
