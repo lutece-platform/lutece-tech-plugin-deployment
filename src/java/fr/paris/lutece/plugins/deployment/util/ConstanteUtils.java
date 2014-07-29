@@ -91,7 +91,9 @@ public class ConstanteUtils {
 	    public static final String PROPERTY_WEBSERVICE_SERVER_APPLICATION_INSTANCES_JSON_DICTIONARY_NAME = "deployment.webservice.serverApplicationInstances.jsonDictionaryName";
 	    public static final String PROPERTY_WEBSERVICE_SERVER_ACTIONS_JSON_DICTIONARY_NAME = "deployment.webservice.serverActions.jsonDictionaryName";
 	    public static final String PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT = "deployment.webservices.serverAction.jsonPropertyResult";
-		  
+	    public static final String PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_OBJECT_NAME= "deployment.webservices.installableWarAction.jsonObjectName";
+	    public static final String PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_DICTIONARY_NAME = "deployment.webservice.installableWarAction.jsonDictionaryName";
+	      
 	    
 	    public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST= "deployment.serverApplicationFtp.host";
 	    public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT= "deployment.serverApplicationFtp.port";

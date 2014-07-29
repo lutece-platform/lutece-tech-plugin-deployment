@@ -2,15 +2,17 @@
   <h2> #i18n{deployment.tasks_form_workflow.title}</h2>
      
      <div id="task_form_error"></div>
-      <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="task_form" id="task_form" >
+      <form action="jsp/admin/plugins/deployment/DoSaveTasksFormWorkflow.jsp?plugin_name=deployment" method="post" name="task_form" id="task_form" class="form-horizontal">
 	  	 <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
 	   	<input name="id_action" value="${id_action}" type="hidden" />
 	   	${tasks_form}
 	   	
-	    <p>
-	  		<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_save}" class="button" name="save" />
-	  		<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_cancel}" class="button" name="cancel" />
-	   	</p>
+	    <div class="form-group">
+			<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9">
+				<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_save}" class="btn btn-primary btn-sm" name="save">
+				<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_cancel}" class="btn btn-primary btn-sm" name="cancel">
+			</div>
+	   	</div>
    		  
    	</form>	  
    <script type="text/javascript">

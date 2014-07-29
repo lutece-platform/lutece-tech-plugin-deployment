@@ -217,9 +217,11 @@ function replaceWorkflowActions(json)
 
 			action=json.action_list[val]
 			newActions+='<form class="form-horizontal" method="post"  name="workflow_action_'+action.id+'" id="workflow_action_'+action.id+'" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">';
-			newActions+='<input type="hidden" name="id_action" id="id_action" value="'+action.id+'" />';
-			newActions+='<div class="form-actions">';
-			newActions+='<button class="btn btn-primary" type="submit" >'+action.name+'</button>';
+			newActions+='<input type="hidden" name="id_action" id="id_action" value="'+action.id+'">';
+			newActions+='<div class="form-group">';
+			newActions+='<div class="col-xs-12 col-sm-12 col-md">'
+			newActions+='<button class="btn btn-primary btn-sm" type="submit">'+action.name+'</button>';
+			newActions+='</div>';
 			newActions+='</div>';
 			newActions+='<p class="help-block">'+action.description+'</p>';
 			newActions+='</form>';	

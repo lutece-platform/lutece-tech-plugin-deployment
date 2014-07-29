@@ -130,6 +130,7 @@ public class MavenService implements IMavenService
 		List<String> listGoalsProfile=new ArrayList<String>();
 		listGoalsProfile.addAll(listGoals);
 		listGoalsProfile.add("-P "+strMavenProfile);
+		listGoalsProfile.add("-U");
 		 mvn( strTagName,strSiteLocalBasePath, listGoalsProfile,commandResult);
 		
 	}

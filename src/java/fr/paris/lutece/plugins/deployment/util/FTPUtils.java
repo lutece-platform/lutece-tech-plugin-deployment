@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPConnectionClosedException;
 import org.apache.commons.net.ftp.FTPHTTPClient;
@@ -101,7 +102,10 @@ public class FTPUtils {
 
 	public static String uploadFile(String fileName,String pathLocalFile,FtpInfo ftpInfo,String remoteDirectoryPath,CommandResult commandResult) {
 		final FTPClient ftp = getFtpClient(ftpInfo);
+		
 		boolean bError;
+		
+		
 		// login
 
 		try {
@@ -109,6 +113,8 @@ public class FTPUtils {
 				ftp.logout();
 				bError = true;
 			}
+			
+			ftp.setFileType(FTP.BINARY_FILE_TYPE);
 
 			InputStream input = null;
 
@@ -165,8 +171,11 @@ public class FTPUtils {
 			ftp = new FTPHTTPClient(ftpInfo.getProxyHost(), ftpInfo
 					.getProxyPort(), ftpInfo.getProxyUserLogin(), ftpInfo
 					.getProxyUserPassword());
+			
 		} else {
 			ftp = new FTPClient();
+			
+			
 		}
 		//add keepAlive 
 		 if (ftpInfo.getKeepAliveTimeout() >= 0) {
@@ -190,14 +199,21 @@ public class FTPUtils {
 
 			// After connection attempt, you should check the reply code to
 			// verify
-			// success.
-			reply = ftp.getReplyCode();
+			// success
+	
+			
+			
+			
+			
+		reply = ftp.getReplyCode();
+			
 
 			if (!FTPReply.isPositiveCompletion(reply)) {
 				ftp.disconnect();
 				AppLogService.error("FTP server refused connection.");
 				System.exit(1);
 			}
+		
 			return ftp;
 		} catch (IOException e) {
 			if (ftp.isConnected()) {

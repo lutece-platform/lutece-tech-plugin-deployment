@@ -1,14 +1,14 @@
 <script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
 <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
 
-<div class="row-fluid" >
+<div class="row" >
 
     <legend>#i18n{deployment.form_init_deploy_application.table_label}</legend>
 
 	<#if error_message?has_content>
 		${error_message}
-		<a class="btn btn-primary btn-mini" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
-         	<i class="icon-edit icon-white"></i> 
+		<a class="btn btn-primary btn-xs" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
+         	<i class="glyphicon glyphicon-editclass="glyphicon glyphicon-"></i> 
         </a>
 	<#else>
 		<script type="text/javascript">
@@ -39,56 +39,68 @@
 			itemsMapServerMysql["${environment_key}"] = itemList;
 		</#list>		
 		</script>
-		<form class="form-horizontal" method="post"  name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp">
-	        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}"/>
-	        <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
+		<form class="form-horizontal" method="post" name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp">
+	        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}">
+	        <input type="hidden" id="plugin_name" name="plugin_name" value="deployment">
 	        <fieldset>
-	            <div class="control-group">
-	                <label class="control-label" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*:</label>
-	                <div class="controls">
-	                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange='refreshComponantsEnvironment();'" />
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange='refreshComponantsEnvironment();' class='form-control input-sm'" />
 	          		</div>
 	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="deploy_war" >#i18n{deployment.form_init_deploy_application.label_deploy_war}:</label>
-	                <div class="controls">
+	            
+	            <input type="hidden" id="deploy_war" name="deploy_war" />
+	            <!--  
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="deploy_war" >#i18n{deployment.form_init_deploy_application.label_deploy_war}:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
 	             		<input type="checkbox" id="deploy_war" name="deploy_war" />
 	                </div>
 	           </div>
-	            <div class="control-group">
-	                <label class="control-label" for="deploy_sql" >#i18n{deployment.form_init_deploy_application.label_deploy_sql}:</label>
-	                <div class="controls">
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="deploy_sql" >#i18n{deployment.form_init_deploy_application.label_deploy_sql}:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
 	             		<input type="checkbox" id="deploy_sql" name="deploy_sql" />
 	                </div>
 	           </div>
 	           
-	            <div class="control-group">
-	                <label class="control-label" for="code_server_application_instance_tomcat" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_tomcat}*:</label>
-	                <div class="controls">
-	                 <select name="code_server_application_instance_tomcat" id="code_server_application_instance_tomcat" >
+	           -->
+	           
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code_server_application_instance_tomcat" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_tomcat}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	                 <select name="code_server_application_instance_tomcat" id="code_server_application_instance_tomcat" class="form-control input-sm">
 	                 </select>
 	                   		
 	                </div>
 	            </div>
-	             <div class="control-group">
+	              <!--  
+	             <div class="form-group">
 	            
-	                <label class="control-label" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*:</label>
-	                <div class="controls">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
 	                 <select name="code_server_application_instance_mysql" id="code_server_application_instance_mysql"> 
 	                 </select>
 	                 </div>
 	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}:</label>
-	                <div class="controls">
-	             		<input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy" />
+	            
+	            -->
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+						<div class="checkbox">
+							<label>
+							<input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy">&nbsp;
+							</label>
+						</div>
 	                </div>
 	            </div>
 	            
-	            <div class="control-group">
-	                <label class="control-label" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*:</label>
-	                <div class="controls">
-	                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange='refreshComponantsEnvironment();'" />
+	            <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*:</label>
+	                <div class="col-xs-12 col-sm-9 col-md-9">
+	                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange='refreshComponantsEnvironment();' class='form-control input-sm'" />
 	          		</div>
 	            </div>
 	            
@@ -96,9 +108,11 @@
 	            
 	          
 	            
-	            <div class="form-actions">
-	                <button class="btn btn-primary" type="submit" >#i18n{deployment.form_init_deploy_application.button_deploy}</button>
-	                <a class="btn" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+	            <div class="form-group">
+					<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9">
+						<button class="btn btn-primary btn-sm" type="submit" >#i18n{deployment.form_init_deploy_application.button_deploy}</button>
+						<a class="btn btn-default btn-sm" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment"" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
+					</div>
 	            </div>
 	
 	        </fieldset>

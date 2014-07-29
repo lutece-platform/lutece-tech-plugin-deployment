@@ -62,7 +62,7 @@
  		p:code="0001"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.0001.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomcat0001">
  		
  		<property name="hashMavenProfile">
@@ -80,7 +80,7 @@
  		p:code="0002"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.0002.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomcat0002">
  		<property name="hashMavenProfile">
 			<map>
@@ -98,7 +98,7 @@
  		p:code="01"
  		p:i18nKeyName="deployment.server_application_instance.tom.01.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTom01">
  		
  		<property name="hashMavenProfile">
@@ -113,7 +113,7 @@
  		p:code="02"
  		p:i18nKeyName="deployment.server_application_instance.tom.02.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomc02">
  		
  		<property name="hashMavenProfile">
@@ -127,7 +127,7 @@
  		p:code="bo"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.bo.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomcatbo">
  		<property name="hashMavenProfile">
 			<map>
@@ -144,7 +144,7 @@
  		p:code="fo"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.fo.name"
  		p:type="TOMCAT"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomcatfo">
  		<property name="hashMavenProfile">
 			<map>
@@ -270,55 +270,17 @@
  		p:display="false"
  		p:serverType="TOMCAT"
  		/>	
+	
+	 <bean id="deployment.actionInstall" class="fr.paris.lutece.plugins.deployment.business.WarInstallerAction" scope="prototype"
+ 		p:code="@WAR_INSTALLER"
+ 		p:i18nKeyName="deployment.action.warInstaller"
+ 		p:usedForStatus="false"
+ 		p:status="0"
+ 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:display="false"
+ 		p:serverType="TOMCAT"
+ 		/>		
 
- 	
-<!--  		 <bean id="deployment.actionStatusTom" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@STATUS" -->
-<!--  		p:i18nKeyName="deployment.action.status.tomcat.name" -->
-<!--  		p:usedForStatus="true" -->
-<!--  		p:iconCssClass="icon-refresh icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="TOM" -->
-<!--  		/> -->
- 		
-<!--       <bean id="deployment.actionStartUpTom" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@STARTUP" -->
-<!--  		p:i18nKeyName="deployment.action.startup.tomcat.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="0" -->
-<!--  		p:iconCssClass="icon-play-circle icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="TOM" -->
-<!--  		/>		 -->
- 		
-<!--  	  <bean id="deployment.actionShutdownTom" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@SHUTDOWN" -->
-<!--  		p:i18nKeyName="deployment.action.shutdown.tomcat.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="1" -->
-<!--  		p:iconCssClass="icon-off icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="TOM" -->
-<!--  		/> -->
-<!--  		<bean id="deployment.actionRmWorkTom" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@RMWORK" -->
-<!--  		p:i18nKeyName="deployment.action.rmwork.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="0" -->
-<!--  		p:iconCssClass="icon-trash icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="TOM" -->
-<!--  		/> -->
- 		
-<!--  	<bean id="deployment.actionRmWorkwithParamsTom" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@RMWORK_WITH_PARAMS" -->
-<!--  		p:i18nKeyName="deployment.action.rmworkwithparams.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="0" -->
-<!--  		p:iconCssClass="icon-trash icon-white" -->
-<!--  		p:display="false" -->
-<!--  		p:serverType="TOM" -->
-<!--  		/>	 -->
  	
  	<!--Actions MYSQL -->	
  		
