@@ -46,7 +46,11 @@ public class WarInstallerAction extends DefaultAction{
  			{
  				
  				strJSONAction=DeploymentUtils.callPlateformEnvironmentWs(strPlateformEnvironmentBaseUrl+ ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +DeploymentUtils.getPlateformUrlServerApplicationAction(strCodeApplication, serverApplicationInstance, this.getCode())+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+listWarInstalls.get(0));	
- 		 			 
+ 		 		if(strJSONAction != null)
+ 		 		{
+ 		 			AppLogService.info("Résultat de la commande @WAR_INSTALLER --> " +strJSONAction);
+ 		 			
+ 		 		}
  			}
  				
  				
