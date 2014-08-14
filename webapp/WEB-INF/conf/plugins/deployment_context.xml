@@ -114,7 +114,7 @@
  		p:i18nKeyName="deployment.server_application_instance.tom.02.name"
  		p:type="TOMCAT"
  		p:ftpDirectoryTarget="INSTALLER"
- 		p:beanName="deployment.serverApplicationTomc02">
+ 		p:beanName="deployment.serverApplicationTom02">
  		
  		<property name="hashMavenProfile">
 			<map>
