@@ -51,7 +51,8 @@ public class DeploymentPlugin extends PluginDefaultImplementation
      */
     public void init(  )
     {
-    	AdminUserFieldListenerService adminUserFieldListenerService=SpringContextService.getBean( "deployment.AdminUserFieldListenerService");
-    	adminUserFieldListenerService.registerListener(new DeploymentAdminUserFieldListener());
+        AdminUserFieldListenerService adminUserFieldListenerService = SpringContextService.getBean( 
+                "deployment.AdminUserFieldListenerService" );
+        adminUserFieldListenerService.registerListener( new DeploymentAdminUserFieldListener(  ) );
     }
 }

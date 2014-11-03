@@ -1,12 +1,37 @@
+/*
+ * Copyright (c) 2002-2013, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.deployment.service;
-
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Locale;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBException;
 
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
 import fr.paris.lutece.plugins.deployment.business.Application;
@@ -22,193 +47,177 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-public class WorkflowDeploySiteService implements IWorkflowDeploySiteService {
+import java.io.FileNotFoundException;
 
-	HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>();
-	@Inject
-	ISvnService _svnService;
-	@Inject
-	IMavenService _mavenService;
-	@Inject
-	IEnvironmentService _environmentService;
-	@Inject
-	IServerApplicationService _serverApplicationService;
-	@Inject
-	IFtpService _ftpService;
-	@Inject
-	IApplicationService _applicationService;
-	@Inject
-	private IActionService _actionService;
+import java.util.HashMap;
+import java.util.Locale;
 
-	public synchronized int addWorkflowDeploySiteContext(
-			WorkflowDeploySiteContext context) {
-		int nIdKey = Integer.parseInt(DatastoreService.getDataValue(
-				ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, "0")) + 1;
-		// stored key in database
-		DatastoreService.setDataValue(
-				ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, Integer
-						.toString(nIdKey));
-		context.setId(nIdKey);
-		_mapWorkflowDeploySiteContext.put(nIdKey, context);
-		return nIdKey;
-	}
+import javax.inject.Inject;
 
-	public WorkflowDeploySiteContext getWorkflowDeploySiteContext(int nIdContext) {
+import javax.servlet.http.HttpServletRequest;
 
-		return _mapWorkflowDeploySiteContext.get(nIdContext);
-	}
+import javax.xml.bind.JAXBException;
 
-	public String checkoutSite(WorkflowDeploySiteContext context, Locale locale) {
 
-		String strSvnCheckoutSiteUrl;
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
-		if (context.getTagToDeploy() != null) {
-			strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTagSite(application
-					.getSvnUrlSite(), context.getTagToDeploy());
+public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
+{
+    HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>(  );
+    @Inject
+    ISvnService _svnService;
+    @Inject
+    IMavenService _mavenService;
+    @Inject
+    IEnvironmentService _environmentService;
+    @Inject
+    IServerApplicationService _serverApplicationService;
+    @Inject
+    IFtpService _ftpService;
+    @Inject
+    IApplicationService _applicationService;
+    @Inject
+    private IActionService _actionService;
 
-		} else {
-			strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTrunkSite(application
-					.getSvnUrlSite());
-		}
-		context.getCommandResult().getLog().append(
-				"Starting Action Checkout  Site...\n");
-		_svnService.doSvnCheckoutSite(application.getSiteName(),
-				strSvnCheckoutSiteUrl, context.getMavenUser(), context
-						.getCommandResult());
-		context.getCommandResult().getLog().append(
-				"End Action Checkout   Site...\n");
+    public synchronized int addWorkflowDeploySiteContext( WorkflowDeploySiteContext context )
+    {
+        int nIdKey = Integer.parseInt( DatastoreService.getDataValue( 
+                    ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, "0" ) ) + 1;
+        // stored key in database
+        DatastoreService.setDataValue( ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, Integer.toString( nIdKey ) );
+        context.setId( nIdKey );
+        _mapWorkflowDeploySiteContext.put( nIdKey, context );
 
-		return null;
-	}
+        return nIdKey;
+    }
 
-	public void initTagInformations(WorkflowDeploySiteContext context) {
+    public WorkflowDeploySiteContext getWorkflowDeploySiteContext( int nIdContext )
+    {
+        return _mapWorkflowDeploySiteContext.get( nIdContext );
+    }
 
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
+    public String checkoutSite( WorkflowDeploySiteContext context, Locale locale )
+    {
+        String strSvnCheckoutSiteUrl;
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
 
-		String strVersion = null;
-		String strNextVersion = null;
-		String strTagName = null;
-		// release version and next version
-		try {
-			strVersion = ReleaseUtils.getReleaseVersion(DeploymentUtils
-					.getPathCheckoutSite(application.getSiteName()));
-			strNextVersion = ReleaseUtils.getNextVersion(strVersion);
-			strTagName = ReleaseUtils.getReleaseName(application.getSiteName(),
-					strVersion);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			AppLogService.error(e);
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		context.setTagName(strTagName);
-		context.setTagVersion(strVersion);
-		context.setNextVersion(strNextVersion);
+        if ( context.getTagToDeploy(  ) != null )
+        {
+            strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTagSite( application.getSvnUrlSite(  ), context.getTagToDeploy(  ) );
+        }
+        else
+        {
+            strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTrunkSite( application.getSvnUrlSite(  ) );
+        }
 
-	}
+        context.getCommandResult(  ).getLog(  ).append( "Starting Action Checkout  Site...\n" );
+        _svnService.doSvnCheckoutSite( application.getSiteName(  ), strSvnCheckoutSiteUrl, context.getMavenUser(  ),
+            context.getCommandResult(  ) );
+        context.getCommandResult(  ).getLog(  ).append( "End Action Checkout   Site...\n" );
 
-	public String tagSite(WorkflowDeploySiteContext context, Locale locale) {
+        return null;
+    }
 
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
-		context.getCommandResult().getLog().append(
-				"Starting Action Tag  Site...\n");
-		_svnService.doSvnTagSite(application.getSiteName(), application
-				.getSvnUrlSite(), context.getTagName(), context
-				.getNextVersion(), context.getTagVersion(), context
-				.getMavenUser(), context.getCommandResult());
-		context.getCommandResult().getLog().append("End Action Tag  Site...\n");
-		// update context status
-		context.setTagToDeploy(context.getTagName());
+    public void initTagInformations( WorkflowDeploySiteContext context )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
 
-		return null;
-	}
+        String strVersion = null;
+        String strNextVersion = null;
+        String strTagName = null;
 
-	public String assemblySite(WorkflowDeploySiteContext context, Locale locale) {
+        // release version and next version
+        try
+        {
+            strVersion = ReleaseUtils.getReleaseVersion( DeploymentUtils.getPathCheckoutSite( 
+                        application.getSiteName(  ) ) );
+            strNextVersion = ReleaseUtils.getNextVersion( strVersion );
+            strTagName = ReleaseUtils.getReleaseName( application.getSiteName(  ), strVersion );
+        }
+        catch ( FileNotFoundException e )
+        {
+            // TODO Auto-generated catch block
+            AppLogService.error( e );
+        }
+        catch ( JAXBException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace(  );
+        }
 
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
+        context.setTagName( strTagName );
+        context.setTagVersion( strVersion );
+        context.setNextVersion( strNextVersion );
+    }
 
-		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
-				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT), context
-						.getCodeEnvironement(),
-						ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false,
-						false);
-		context.getCommandResult().getLog().append(
-				"Starting Action Assembly  Site...\n");
-		_mavenService.mvnSiteAssembly(application.getSiteName(), context
-				.getTagName(), serverApplicationInstance.getMavenProfile(),
-				context.getMavenUser(), context.getCommandResult());
-		context.getCommandResult().getLog().append(
-				"End Action Assembly  Site...\n");
+    public String tagSite( WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        context.getCommandResult(  ).getLog(  ).append( "Starting Action Tag  Site...\n" );
+        _svnService.doSvnTagSite( application.getSiteName(  ), application.getSvnUrlSite(  ), context.getTagName(  ),
+            context.getNextVersion(  ), context.getTagVersion(  ), context.getMavenUser(  ),
+            context.getCommandResult(  ) );
+        context.getCommandResult(  ).getLog(  ).append( "End Action Tag  Site...\n" );
+        // update context status
+        context.setTagToDeploy( context.getTagName(  ) );
 
-		return null;
+        return null;
+    }
 
-	}
+    public String assemblySite( WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
 
-	public String deploySite(WorkflowDeploySiteContext context, Locale locale) {
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
+                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
+        context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
+        _mavenService.mvnSiteAssembly( application.getSiteName(  ), context.getTagName(  ),
+            serverApplicationInstance.getMavenProfile(  ), context.getMavenUser(  ), context.getCommandResult(  ) );
+        context.getCommandResult(  ).getLog(  ).append( "End Action Assembly  Site...\n" );
 
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
-		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
-				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_TOMCAT), context
-						.getCodeEnvironement(),
-						ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false,
-						false);
-		context.getCommandResult().getLog().append(
-				"Starting Action Deploy  Site...\n");
-		_ftpService.uploadFile(application.getWebAppName()
-				+ ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils
-				.getPathArchiveGenerated(DeploymentUtils
-						.getPathCheckoutSite(application.getSiteName()),
-						context.getTagToDeploy(),
-						ConstanteUtils.ARCHIVE_WAR_EXTENSION),
-				serverApplicationInstance.getFtpInfo(), DeploymentUtils
-						.getDeployDirectoryTarget(application.getCode(),
-								serverApplicationInstance), context
-						.getCommandResult());
-		context.getCommandResult().getLog().append(
-				"End Action Deploy  Site...\n");
+        return null;
+    }
 
-		return null;
+    public String deploySite( WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
+                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
+        context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
+        _ftpService.uploadFile( application.getWebAppName(  ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION,
+            DeploymentUtils.getPathArchiveGenerated( DeploymentUtils.getPathCheckoutSite( application.getSiteName(  ) ),
+                context.getTagToDeploy(  ), ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
+            serverApplicationInstance.getFtpInfo(  ),
+            DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
+            context.getCommandResult(  ) );
+        context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Site...\n" );
 
-	}
+        return null;
+    }
 
-	public String executeServerAction(String strActionKey,
-			HttpServletRequest request, WorkflowDeploySiteContext context,
-			Locale locale) {
-		Plugin plugin = PluginService.getPlugin(DeploymentPlugin.PLUGIN_NAME);
-		Application application = _applicationService.getApplication(context
-				.getIdApplication(), plugin);
-		IAction action = _actionService.getAction(strActionKey, locale);
-		ServerApplicationInstance serverApplicationInstance = _serverApplicationService
-				.getServerApplicationInstance(application.getCode(), context
-						.getCodeServerInstance(action.getServerType()), context
-						.getCodeEnvironement(),
-						action.getServerType(), locale, false,
-						false);
+    public String executeServerAction( String strActionKey, HttpServletRequest request,
+        WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        IAction action = _actionService.getAction( strActionKey, locale );
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+                context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
+                action.getServerType(  ), locale, false, false );
 
-		
-		if (action != null) {
-			context.getCommandResult().getLog().append(
-					"Starting Action " + action.getName() + " \n");
-			_actionService.executeAction(application.getCode(), action,
-					serverApplicationInstance, context.getCommandResult(),
-					DeploymentUtils.getActionParameters(request, action.getParameters()));
-			context.getCommandResult().getLog().append(
-					"End Action " + action.getName() + " \n");
-		}
-		return null;
-	}
+        if ( action != null )
+        {
+            context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
+            _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
+                context.getCommandResult(  ), DeploymentUtils.getActionParameters( request, action.getParameters(  ) ) );
+            context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+        }
 
+        return null;
+    }
 }

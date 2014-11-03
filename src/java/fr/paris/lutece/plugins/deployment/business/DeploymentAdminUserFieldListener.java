@@ -33,13 +33,6 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
@@ -47,6 +40,13 @@ import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldHome;
 import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldListener;
 import fr.paris.lutece.portal.business.user.attribute.IAttribute;
 import fr.paris.lutece.portal.service.user.attribute.AttributeService;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -64,11 +64,10 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
      */
     public void doCreateUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {
-     
         List<IAttribute> listAttributes = AttributeService.getInstance(  )
                                                           .getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME,
                 locale );
-       
+
         for ( IAttribute attribute : listAttributes )
         {
             List<AdminUserField> userFields = attribute.getUserFieldsData( request, user );
@@ -77,13 +76,11 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
             {
                 if ( ( userField != null ) && StringUtils.isNotBlank( userField.getValue(  ) ) )
                 {
-                   
                     AdminUserFieldHome.create( userField );
-                    
                 }
             }
         }
-       }
+    }
 
     /**
      * Modify user fields
@@ -94,10 +91,7 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
      */
     public void doModifyUserFields( AdminUser user, HttpServletRequest request, Locale locale, AdminUser currentUser )
     {
-    	
-    	doCreateUserFields(currentUser, request, locale);
-
-    
+        doCreateUserFields( currentUser, request, locale );
     }
 
     /**
@@ -108,5 +102,5 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
      */
     public void doRemoveUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {
-     }
+    }
 }

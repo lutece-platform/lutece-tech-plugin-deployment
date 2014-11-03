@@ -123,6 +123,20 @@
 			</map>
 		</property>
  	</bean>	
+   <bean id="deployment.serverApplicationTom03" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="03"
+ 		p:i18nKeyName="deployment.server_application_instance.tom.03.name"
+ 		p:type="TOMCAT"
+ 		p:ftpDirectoryTarget="INSTALLER"
+ 		p:beanName="deployment.serverApplicationTom03">
+ 		
+ 		<property name="hashMavenProfile">
+			<map>
+				<entry key="v1.pr" value="prod" />
+				<entry key="v1.r7" value="rec" />
+			</map>
+		</property>
+ 	</bean>	
  	<bean id="deployment.serverApplicationTomcatbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="bo"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.bo.name"
@@ -279,7 +293,27 @@
  		p:iconCssClass="icon-play-circle icon-white"
  		p:display="false"
  		p:serverType="TOMCAT"
- 		/>		
+ 		/>
+ 		
+ 		
+ 		<!--SERVERS PSQL -->	
+ 	 
+	<bean id="deployment.serverApplicationPsq01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="01"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
+ 		p:type="PSQ"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationPsq01"/>
+ 		
+ 		
+ 		
+  	<bean id="deployment.serverApplicationPsq02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="02"
+ 		p:i18nKeyName="deployment.server_application_instance.mysql.0002.name"
+ 		p:type="PSQ"
+ 		p:ftpDirectoryTarget="DATAS"
+ 		p:beanName="deployment.serverApplicationPsq02"/>
+ 		 	
 
  	
  	<!--Actions MYSQL -->	
