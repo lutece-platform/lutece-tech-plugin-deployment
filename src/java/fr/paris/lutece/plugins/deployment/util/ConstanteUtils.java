@@ -46,6 +46,7 @@ public class ConstanteUtils
     public static final String CONSTANTE_SEPARATOR_POINT = ".";
     public static final String CONSTANTE_SEPARATOR_VIRGULE = ",";
     public static final String CONSTANTE_EMPTY_STRING = "";
+    public static final String CONSTANTE_STAR = "*";
     public static final String CONSTANTE_MARK_STACKTRACE = "stack trace      ";
     public static final String CONSTANTE_SPACE = " ";
     public static final String CONSTANTE_POM_XML = "pom.xml";
@@ -71,17 +72,22 @@ public class ConstanteUtils
     public static final String CONSTANTE_SERVER_HTTPD = "HTTPD";
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
+    public static final String CONSTANTE_ACTION_EXECUTE = "@EXECUTE";
     public static final String JSON_STATUS = "status";
     public static final String JSON_LOG = "log";
     public static final String JSON_RUNNING = "running";
     public static final String JSON_ID_ERROR = "id_error";
     public static final String JSON_STATE = "state";
+    public static final String JSON_RESULT = "result";
     public static final String JSON_ACTION_LIST = "action_list";
     public static final String JSON_ACTION_ID = "id";
     public static final String JSON_ACTION_NAME = "name";
     public static final String JSON_ACTION_DESCRIPTION = "description";
     public static final String JSON_JSP_FOM_DISPLAY = "jsp_form_display";
     public static final String JSON_FORM_ERROR = "form_error";
+   
+    
+    
 
     //PROPERTY
     public static final String PROPERTY_NB_ITEM_PER_PAGE = "deployment.defaultNbItemPerPage";
@@ -93,11 +99,13 @@ public class ConstanteUtils
     public static final String PROPERTY_LABEL_CODE_ENVIRONMENT = "deployment.form_init_deploy_application.label_code_environment";
     public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT = "deployment.form_init_deploy_application.label_code_server_application_instance_tomcat";
     public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL = "deployment.form_init_deploy_application.label_code_server_application_instance_mysql";
+    public static final String PROPERTY_LABEL_CODE_DATABASE = "deployment.form_init_deploy_application.label_code_database";
     public static final String PROPERTY_LABEL_TAG_TO_DEPLOY = "deployment.form_init_deploy_application.label_tag_to_deploy";
     public static final String PROPERTY_LABEL_CODE_CATEGORY = "deployment.create_application.label_code_category";
     public static final String PROPERTY_LABEL_NAME = "deployment.create_application.label_name";
     public static final String PROPERTY_LABEL_WEBAPP_NAME = "deployment.create_application.label_webapp_name";
     public static final String PROPERTY_LABEL_SITE = "deployment.create_application.label_site";
+    public static final String PROPERTY_LABEL_SCRIPT_UPLOAD = "deployment.form_init_deploy_application.label_script_upload";
     public static final String PROPERTY_MESSAGE_MANDATORY_FIELD = "deployment.message.mandatory_field";
     public static final String PROPERTY_MESSAGE_CONFIRM_REMOVE_APPLICATION = "deployment.message.confirm_remove_application";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN = "deployment.adminUser.idAttribute.svnLogin";
@@ -105,6 +113,8 @@ public class ConstanteUtils
     public static final String PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE = "deployment.idWorkflowTagAndDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SITE = "deployment.idWorkflowDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_SITE = "deployment.idWorkflowTagSite";
+    public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT = "deployment.idWorkflowDeployScript";
+    
     public static final String PROPERTY_DEPLOY_SITE_PAGE_TITLE = "deployment.deploy_site.page_title";
     public static final String PROPERTY_MAX_LOG_SIZE = "deployment.maxLogSize";
     public static final String PROPERTY_ENVIRONMENTS_LIST = "deployment.environments.list";
@@ -119,6 +129,8 @@ public class ConstanteUtils
     public static final String PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT = "deployment.webservices.serverAction.jsonPropertyResult";
     public static final String PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_OBJECT_NAME = "deployment.webservices.installableWarAction.jsonObjectName";
     public static final String PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_DICTIONARY_NAME = "deployment.webservice.installableWarAction.jsonDictionaryName";
+    public static final String PROPERTY_WEBSERVICE_DATABASES_JSON_OBJECT_NAME = "deployment.webservice.databases.jsonObjectName";
+    public static final String PROPERTY_WEBSERVICE_DATABASES_JSON_DICTIONARY_NAME = "deployment.webservice.databases.jsonDictionaryName";
     public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_HOST = "deployment.serverApplicationFtp.host";
     public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_PORT = "deployment.serverApplicationFtp.port";
     public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_LOGIN = "deployment.serverApplicationFtp.userLogin";
@@ -130,6 +142,8 @@ public class ConstanteUtils
     public static final String PROPERTY_MESSAGE_CHECKOUT_ERROR_SITE_EMPTY = "message_checkout_error_site_empty";
     public static final String PROPERTY_MESSAGE_CHECKOUT_ERROR_LOGIN_MDP_EMPTY = "message_checkout_error_login_mdp_empty";
     public static final String PROPERTY_TASKS_FORM_WORKFLOW_PAGE_TITLE = "deployment.tasks_form_workflow.page_title";
+    public static final String PROPERTY_FORM_ACTION_SERVER_PAGE_TITLE = "deployment.form_action_server.page_title";
+    
     public static final String PROPERTY_SERVER_TYPE_TOMCAT_LABEL = "deployment.server_type_tomcat_label";
     public static final String PROPERTY_SERVER_TYPE_HTTPD_LABEL = "deployment.server_type_httpd_label";
     public static final String PROPERTY_SERVER_TYPE_MYSQL_LABEL = "deployment.server_type_mysql_label";
@@ -158,6 +172,7 @@ public class ConstanteUtils
     public static final String MARK_SERVER_INSTANCE_MAP_TOMCAT = "server_instance_map_tomcat";
     public static final String MARK_SERVER_INSTANCE_MAP_MYSQL = "server_instance_map_mysql";
     public static final String MARK_SERVER_INSTANCE_MAP_HTTPD = "server_instance_map_httpd";
+    public static final String MARK_DATABASE_MAP = "database_map";
     public static final String MARK_SITE_LIST = "site_list";
     public static final String MARK_SERVER_INSTANCE = "server_instance";
     public static final String MARK_ENVIRONMENT = "environment";
@@ -170,7 +185,13 @@ public class ConstanteUtils
     public static final String MARK_TAG_TO_DEPLOY = "tag_to_deploy";
     public static final String MARK_ID_ACTION = "id_action";
     public static final String MARK_TASKS_FORM = "tasks_form";
+    public static final String MARK_FORM_ACTION = "form_action";
     public static final String MARK_CONFIG = "config";
+    public static final String MARK_DEPLOY_WAR = "deploy_war";
+    public static final String MARK_DEPLOY_SQL = "deploy_sql";
+    public static final String MARK_SCRIPT_NAME = "script_name";
+    public static final String MARK_DUMP_FILE_URL = "dump_file_url";
+    public static final String MARK_DATABASE_LIST = "database_list";
 
     //PARAM
     public static final String PARAM_SITE_TAG_VERSION = "site_tag_version";
@@ -197,7 +218,13 @@ public class ConstanteUtils
     public static final String PARAM_DEPLOY_WAR = "deploy_war";
     public static final String PARAM_DEPLOY_SQL = "deploy_sql";
     public static final String PARAM_SCRIPT = "script";
-    public static final String PARAM_DATABASE = "database";
+    public static final String PARAM_CODE_DATABASE = "code_database";
+    public static final String PARAM_SCRIPT_UPLOAD = "script_upload";
+    public static final String PARAM_SCRIPT_NAME= "script_name";
+    public static final String PARAM_CODE_APPLICATION = "code_application";
+    
+    
+    
 
     //ARCHIVE TYPE
     public static final String ARCHIVE_WAR_EXTENSION = ".war";
@@ -211,11 +238,16 @@ public class ConstanteUtils
     public static final String TEMPLATE_FORM_INIT_DEPLOY_APPLICATION = "admin/plugins/deployment/form_init_deploy_application.html";
     public static final String TEMPLATE_DEPLOY_APPLICATION_PROCESS = "admin/plugins/deployment/deploy_application_process.html";
     public static final String TEMPLATE_TASKS_FORM_WORKFLOW = "admin/plugins/deployment/tasks_form_workflow.html";
+    public static final String TEMPLATE_FORM_ACTION_SERVER = "admin/plugins/deployment/form_action_server.html";
+    public static final String TEMPLATE_FORM_ACTION_DUMP = "admin/plugins/deployment/form_action_dump.html";
+    
 
     //JSP
     public static final String JSP_MANAGE_APPLICATION = "jsp/admin/plugins/deployment/ManageApplication.jsp";
     public static final String JSP_REMOVE_APPLICATION = "jsp/admin/plugins/deployment/DoRemoveApplication.jsp";
     public static final String JSP_TASK_FORM = "jsp/admin/plugins/deployment/TasksFormWorkflow.jsp";
+    public static final String JSP_FORM_SERVER_ACTION = "jsp/admin/plugins/deployment/FormServerAction.jsp";
+      
     public static final String JSP_DEPLOY_APPLICATION_PROCESS = "jsp/admin/plugins/deployment/DeployApplicationProcess.jsp";
 
     //I18nMessage

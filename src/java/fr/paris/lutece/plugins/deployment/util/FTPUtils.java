@@ -47,6 +47,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 
 public class FTPUtils
@@ -141,13 +142,13 @@ public class FTPUtils
         catch ( FTPConnectionClosedException e )
         {
             bError = true;
-            System.err.println( "Server closed connection." );
-            e.printStackTrace(  );
+            AppLogService.error( "Server closed connection." );
+           
         }
         catch ( IOException e )
         {
             bError = true;
-            e.printStackTrace(  );
+            AppLogService.error( e);
         }
         finally
         {
@@ -159,7 +160,7 @@ public class FTPUtils
                 }
                 catch ( IOException f )
                 {
-                    // do nothing
+                	 AppLogService.error( "Server closed connection." + f );
                 }
             }
         }
@@ -167,24 +168,135 @@ public class FTPUtils
         return null;
     }
 
+    
+    public static String uploadFile( String fileName, InputStream inputStream, FtpInfo ftpInfo,
+            String remoteDirectoryPath, CommandResult commandResult,boolean bBinaryFile )
+        {
+            final FTPClient ftp = getFtpClient( ftpInfo );
+
+            boolean bError;
+
+            // login
+            try
+            {
+                if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
+                {
+                    ftp.logout(  );
+                    bError = true;
+                }
+
+                if(bBinaryFile)
+                {
+                	ftp.setFileType( FTP.BINARY_FILE_TYPE );
+                }
+                ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
+
+                inputStream.close(  );
+
+                ftp.noop(  ); // check that control connection is working OK
+
+                ftp.logout(  );
+            }
+
+            catch ( FTPConnectionClosedException e )
+            {
+                bError = true;
+                AppLogService.error( "Server closed connection." + e );
+            }
+            catch ( IOException e )
+            {
+                bError = true;
+                AppLogService.error( e );
+            }
+            finally
+            {
+                if ( ftp.isConnected(  ) )
+                {
+                    try
+                    {
+                        ftp.disconnect(  );
+                    }
+                    catch ( IOException f )
+                    {
+                        // do nothing
+                    }
+                }
+            }
+
+            // upload File
+            return null;
+        }
+    
+    
+    
+    
+    public static String getFile(OutputStream outputStream, FtpInfo ftpInfo,
+            String remoteFilePath, CommandResult commandResult )
+        {
+            final FTPClient ftp = getFtpClient( ftpInfo );
+
+            boolean bError;
+
+            // login
+            try
+            {
+                if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
+                {
+                    ftp.logout(  );
+                    bError = true;
+                }
+
+               
+                ftp.retrieveFile(remoteFilePath, outputStream);
+
+                 //close output stream
+                outputStream.close();
+
+                ftp.noop(  ); // check that control connection is working OK
+
+                ftp.logout(  );
+            }
+
+            catch ( FTPConnectionClosedException e )
+            {
+                bError = true;
+                AppLogService.error( "Server closed connection." + e );
+            }
+            catch ( IOException e )
+            {
+                bError = true;
+                AppLogService.error( e );
+            }
+            finally
+            {
+                if ( ftp.isConnected(  ) )
+                {
+                    try
+                    {
+                        ftp.disconnect(  );
+                    }
+                    catch ( IOException f )
+                    {
+                        // do nothing
+                    }
+                }
+            }
+
+            // upload File
+            return null;
+        }
+    
+    
+    
     public static String uploadFile( String fileName, String pathLocalFile, FtpInfo ftpInfo,
-        String remoteDirectoryPath, CommandResult commandResult )
+        String remoteDirectoryPath, CommandResult commandResult,boolean bBinaryFile )
     {
         final FTPClient ftp = getFtpClient( ftpInfo );
 
         boolean bError;
 
         // login
-        try
-        {
-            if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
-            {
-                ftp.logout(  );
-                bError = true;
-            }
-
-            ftp.setFileType( FTP.BINARY_FILE_TYPE );
-
+       
             InputStream input = null;
 
             try
@@ -194,45 +306,12 @@ public class FTPUtils
             catch ( FileNotFoundException e )
             {
                 // TODO Auto-generated catch block
-                e.printStackTrace(  );
+                AppLogService.error(e);
             }
+            
+            return uploadFile(fileName, input, ftpInfo, remoteDirectoryPath, commandResult,bBinaryFile);
 
-            ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, input );
-
-            input.close(  );
-
-            ftp.noop(  ); // check that control connection is working OK
-
-            ftp.logout(  );
-        }
-
-        catch ( FTPConnectionClosedException e )
-        {
-            bError = true;
-            AppLogService.error( "Server closed connection." + e );
-        }
-        catch ( IOException e )
-        {
-            bError = true;
-            AppLogService.error( e );
-        }
-        finally
-        {
-            if ( ftp.isConnected(  ) )
-            {
-                try
-                {
-                    ftp.disconnect(  );
-                }
-                catch ( IOException f )
-                {
-                    // do nothing
-                }
-            }
-        }
-
-        // upload File
-        return null;
+           
     }
 
     private static FTPClient getFtpClient( FtpInfo ftpInfo )

@@ -33,6 +33,25 @@
  */
 package fr.paris.lutece.plugins.deployment.util;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
@@ -52,25 +71,6 @@ import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 public class DeploymentUtils
@@ -270,6 +270,17 @@ public class DeploymentUtils
             serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
         ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ).toUpperCase(  );
     }
+    
+    public static String getPlateformUrlDatabases( String strCodeApplication,
+            ServerApplicationInstance serverApplicationInstance )
+        {
+            return getPlateformUrlServerApplicationInstances( strCodeApplication,
+                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ).toUpperCase(  ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_ACTION_EXECUTE ;
+        }
+    
+    
 
     public static String getPlateformUrlServerApplicationAction( String strCodeApplication,
         ServerApplicationInstance serverApplicationInstance, String strCodeAction )
@@ -286,6 +297,17 @@ public class DeploymentUtils
         ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
         ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getFtpDirectoryTarget(  );
     }
+    
+    public static String getDumpFileDirectory( String strCodeApplication,
+            ServerApplicationInstance serverApplicationInstance )
+        {
+            return getPlateformUrlServerApplicationInstances( strCodeApplication,
+                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getFtpDirectoryDump(  )+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH  ;
+        }
+    
+    
 
     /**
      * convert a string to int
@@ -344,6 +366,7 @@ public class DeploymentUtils
     public static JSONObject getJSONForCommandResult( CommandResult result )
     {
         JSONObject jo = new JSONObject(  );
+        JSONObject joResult = new JSONObject(  );
 
         try
         {
@@ -380,6 +403,13 @@ public class DeploymentUtils
             jo.put( ConstanteUtils.JSON_LOG, strLog );
             jo.put( ConstanteUtils.JSON_RUNNING, result.isRunning(  ) );
             jo.put( ConstanteUtils.JSON_ID_ERROR, result.getIdError(  ) );
+            
+            for (  Entry<String,String> resultInformations: result.getResultInformations().entrySet()) {
+            	
+            	joResult.put(resultInformations.getKey(),resultInformations.getValue());
+			}
+            jo.put(ConstanteUtils.JSON_RESULT,joResult);
+            
         }
         catch ( JSONException e )
         {
@@ -434,12 +464,38 @@ public class DeploymentUtils
 
         return jo;
     }
+    
+    
+    public static JSONObject getJSONForServerAction( String strJspForceRedirect,
+            CommandResult result)
+        {
+            JSONObject jo = getJSONForCommandResult(result);
 
-    public static int getIdWorkflowSiteDeploy( boolean bTagSiteBeforDeploy )
+            try
+            {
+                jo.put( ConstanteUtils.JSON_JSP_FOM_DISPLAY,
+                    ( strJspForceRedirect != null ) ? strJspForceRedirect : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+
+                 
+            }
+            catch ( JSONException e )
+            {
+                AppLogService.error( "JSON error : " + e.getMessage(  ) );
+            }
+
+            return jo;
+        }
+
+    public static int getIdWorkflowSiteDeploy(WorkflowDeploySiteContext workflowDeploySiteContext)
     {
         int nIdWorkflow = ConstanteUtils.CONSTANTE_ID_NULL;
-
-        if ( bTagSiteBeforDeploy )
+        
+        if(workflowDeploySiteContext.isDeploySql())
+        {
+        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT,
+                     ConstanteUtils.CONSTANTE_ID_NULL );
+        }
+        else if ( workflowDeploySiteContext.isTagSiteBeforeDeploy(  )  )
         {
             nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE,
                     ConstanteUtils.CONSTANTE_ID_NULL );
@@ -472,15 +528,29 @@ public class DeploymentUtils
     public static void startCommandResult( WorkflowDeploySiteContext context )
     {
         CommandResult commandResult = new CommandResult(  );
-        commandResult.setLog( new StringBuffer(  ) );
+        startCommandResult(commandResult);
         context.setCommandResult( commandResult );
-        commandResult.setRunning( true );
+        
+    }
+    
+    public static void startCommandResult(CommandResult commandResult )
+    {
+    	
+         commandResult.setLog( new StringBuffer(  ) );
+         commandResult.setRunning( true );
+        
     }
 
     public static void stopCommandResult( WorkflowDeploySiteContext context )
     {
-        context.getCommandResult(  ).setRunning( false );
+    	stopCommandResult(context.getCommandResult(  ));
     }
+    
+    public static void stopCommandResult(CommandResult commandResult  )
+    {
+    	commandResult.setRunning( false );
+    }
+
 
     public static void addEmptyRefenceItem( ReferenceList referenceList )
     {
@@ -505,12 +575,52 @@ public class DeploymentUtils
                 actionParameter = new ActionParameter(  );
                 actionParameter.setName( param );
                 actionParameter.setValue( request.getParameter( param ) );
+                listActionParameters.add(actionParameter);
             }
 
             return listActionParameters.toArray( new ActionParameter[listParameterNames.size(  )] );
         }
 
         return null;
+    }
+    
+    
+    public static ActionParameter[] getActionParameters( WorkflowDeploySiteContext workkflowContext)
+    {
+      
+            List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>(  );
+            ActionParameter actionParameter;
+            if(workkflowContext.isDeployWar())
+            {
+	            actionParameter = new ActionParameter(  );
+	            actionParameter.setName( ConstanteUtils.PARAM_TAG_TO_DEPLOY  );
+	            actionParameter.setValue( workkflowContext.getTagToDeploy());
+	            listActionParameters.add(actionParameter);
+	            
+	       }
+            
+            if(workkflowContext.isDeploySql())
+            {
+	            actionParameter = new ActionParameter(  );
+	            actionParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE  );
+	            actionParameter.setValue( workkflowContext.getDatabaseName());
+	            listActionParameters.add(actionParameter);
+	            
+	            if(workkflowContext.getScriptFileItem() !=null)
+	            {
+		            actionParameter = new ActionParameter(  );
+		            actionParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME );
+		            actionParameter.setValue( workkflowContext.getScriptFileItem().getName());
+		            listActionParameters.add(actionParameter);
+		            
+	            }
+	        }  
+	       
+
+            return listActionParameters.toArray( new ActionParameter[listActionParameters.size(  )] );
+        
+
+   
     }
 
     public static ReferenceList getReferenceListServerType( Locale locale )
@@ -564,4 +674,18 @@ public class DeploymentUtils
 
         return strPathServer;
     }
+    
+    
+    public static ReferenceList getSimpleReferenceList( List<String> list )
+    {
+    	  ReferenceList reflist = new ReferenceList(  );
+    	  for(String strCode:list)
+    	  {
+    		  reflist.addItem(strCode, strCode);
+    		  
+    	  }
+    	  return reflist;
+    	  	  
+    }
+  
 }
