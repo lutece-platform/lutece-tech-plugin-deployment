@@ -33,21 +33,44 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FtpInfo;
 import fr.paris.lutece.plugins.deployment.util.FTPUtils;
 
+public class FtpService implements IFtpService {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.paris.lutece.plugins.deployment.service.IFtpService#uploadFile(java
+	 * .lang.String, java.lang.String,
+	 * fr.paris.lutece.plugins.deployment.business.FtpInfo, java.lang.String,
+	 * fr.paris.lutece.plugins.deployment.business.CommandResult)
+	 */
+	public String uploadFile(String fileName, String pathLocalFile,
+			FtpInfo ftpInfo, String remoteDirectoryPath,
+			CommandResult commandResult, boolean bBinaryFile) {
+		FTPUtils.uploadFile(fileName, pathLocalFile, ftpInfo,
+				remoteDirectoryPath, commandResult, bBinaryFile);
 
-public class FtpService implements IFtpService
-{
-    /* (non-Javadoc)
-     * @see fr.paris.lutece.plugins.deployment.service.IFtpService#uploadFile(java.lang.String, java.lang.String, fr.paris.lutece.plugins.deployment.business.FtpInfo, java.lang.String, fr.paris.lutece.plugins.deployment.business.CommandResult)
-     */
-    public String uploadFile( String fileName, String pathLocalFile, FtpInfo ftpInfo, String remoteDirectoryPath,
-        CommandResult commandResult )
-    {
-        FTPUtils.uploadFile( fileName, pathLocalFile, ftpInfo, remoteDirectoryPath, commandResult );
+		return null;
+	}
 
-        return null;
-    }
+	public String uploadFile(String fileName, InputStream inputStream,
+			FtpInfo ftpInfo, String remoteDirectoryPath,
+			CommandResult commandResult, boolean bBinaryFile) {
+		FTPUtils.uploadFile(fileName, inputStream, ftpInfo,
+				remoteDirectoryPath, commandResult, bBinaryFile);
+
+		return null;
+	}
+
+	public void getFile(OutputStream outputStream, FtpInfo ftpInfo,
+			String remoteFilePath, CommandResult commandResult) {
+
+		FTPUtils.getFile(outputStream, ftpInfo, remoteFilePath, commandResult);
+	}
 }

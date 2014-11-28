@@ -156,4 +156,24 @@ public class ActionService implements IActionService
         // TODO Auto-generated method stub
         return action.run( strCodeApplication, serverApplicationInstance, commandResult, parameter );
     }
+    
+    @Override
+    public boolean canExecuteAction( String strCodeApplication, IAction action,
+            ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  )
+    {
+        // TODO Auto-generated method stub
+        return action.canRunAction(strCodeApplication, serverApplicationInstance, commandResult, parameter);
+    }
+
+	
+
+	@Override
+	public String getTemplateFormAction(String strCodeApplication,
+			IAction action,
+			ServerApplicationInstance serverApplicationInstance,
+			 Locale locale
+			) {
+		// TODO Auto-generated method stub
+		return action.getTemplateFormAction(strCodeApplication, serverApplicationInstance, locale);
+	}
 }

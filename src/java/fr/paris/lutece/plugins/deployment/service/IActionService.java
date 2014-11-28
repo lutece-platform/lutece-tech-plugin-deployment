@@ -51,6 +51,12 @@ public interface IActionService
 
     String executeAction( String strCodeApplication, IAction action,
         ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter );
+    
+    boolean canExecuteAction( String strCodeApplication, IAction action,
+            ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  );
+    
+         
+    String getTemplateFormAction(String strCodeApplication, IAction action, ServerApplicationInstance serverApplicationInstance,Locale locale);      
 
     List<IAction> getListAction( Locale locale );
 }

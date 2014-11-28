@@ -53,6 +53,8 @@ public interface IWorkflowDeploySiteService
     String assemblySite( WorkflowDeploySiteContext context, Locale locale );
 
     String deploySite( WorkflowDeploySiteContext context, Locale locale );
+    
+    String deployScript( WorkflowDeploySiteContext context, Locale locale );
 
     void initTagInformations( WorkflowDeploySiteContext context );
 

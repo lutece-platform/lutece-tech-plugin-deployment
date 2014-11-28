@@ -33,7 +33,15 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
-import fr.paris.lutece.plugins.deployment.business.ActionParameter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
+
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
@@ -46,17 +54,6 @@ import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppLogService;
-
-import java.io.FileNotFoundException;
-
-import java.util.HashMap;
-import java.util.Locale;
-
-import javax.inject.Inject;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.bind.JAXBException;
 
 
 public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
@@ -194,8 +191,34 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getTagToDeploy(  ), ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
             serverApplicationInstance.getFtpInfo(  ),
             DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
-            context.getCommandResult(  ) );
+            context.getCommandResult(  ) ,true);
         context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Site...\n" );
+
+        return null;
+    }
+    
+    
+    public String deployScript( WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
+                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL, locale, false, false );
+       
+        context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Script...\n" );
+        
+        try {
+			_ftpService.uploadFile( context.getScriptFileItem().getName(),context.getScriptFileItem().getInputStream(),serverApplicationInstance.getFtpInfo(  ),
+			    DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
+			    context.getCommandResult(  ),false );
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			AppLogService.error(e);
+		}
+        
+        context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Script...\n" );
 
         return null;
     }
@@ -214,7 +237,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         {
             context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
             _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
-                context.getCommandResult(  ), DeploymentUtils.getActionParameters( request, action.getParameters(  ) ) );
+                context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
             context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
         }
 
