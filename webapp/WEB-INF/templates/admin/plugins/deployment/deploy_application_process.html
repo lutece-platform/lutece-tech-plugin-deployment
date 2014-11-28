@@ -8,12 +8,16 @@
 			
 				<p><strong>#i18n{deployment.deploy_application_process.label_code}:</strong>${application.code}</p> 
 				<p><strong>#i18n{deployment.deploy_application_process.label_name} :</strong>${application.name}</p> 
-				 <#if tag_to_deploy?has_content>
+				 <#if deploy_war &&  tag_to_deploy?has_content>
 				 	<p><strong>#i18n{deployment.deploy_application_process.label_tag_to_deploy}:</strong>${tag_to_deploy}</p> 
-				 </#if>     
+				 </#if>  
+				  <#if deploy_sql>
+				 	<p><strong>#i18n{deployment.deploy_application_process.label_script_name}:</strong>${script_name}</p> 
+				 </#if>    
 				 <p><strong>#i18n{deployment.deploy_application_process.label_environment}  :</strong>${environment.name}</p>             
 				 <p><strong>#i18n{deployment.deploy_application_process.label_server_instance}  :</strong>${server_instance.name}</p>             
 			 	 <p><strong>#i18n{deployment.deploy_application_process.label_state}  :</strong><div id="workflow_state">${state}</div></p>  
+			     <p id="dump_file" style="display:none" ><strong>#i18n{deployment.deploy_application_process.download_dump}  :</strong><div id="dump_file_url"></div></p> 
 			</fieldset> 	 
  	 </div>
  	 
