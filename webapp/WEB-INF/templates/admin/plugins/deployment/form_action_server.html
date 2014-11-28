@@ -1,0 +1,25 @@
+<div class="content-box">
+  <h2> #i18n{deployment.form_action_server.title}</h2>
+     
+     <div id="form_action_error"></div>
+      <form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server" id="form_action_server" class="form-horizontal">
+	  	 <input type="hidden" id="plugin_name" name="plugin_name" value="deployment"/>
+	   	<input name="id_application" value="${id_application}" type="hidden" />
+	   	<input name="code_environment" value="${code_environment}" type="hidden" />
+	   	<input name="code_server_application_instance" value="${code_server_application_instance}" type="hidden" />
+	   	<input name="server_application_type" value="${server_application_type}" type="hidden" />
+	   	<input name="action_code" value="${action_code}" type="hidden" />
+       	${form_action}
+	   	
+	    <div class="form-group">
+			<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9">
+				<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_save}" class="btn btn-primary btn-sm" name="save">
+				<input type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_cancel}" class="btn btn-primary btn-sm" name="cancel">
+			</div>
+	   	</div>
+   		  
+   	</form>	  
+   <script type="text/javascript">
+   		addEvent();
+   </script>		
+ </div>

@@ -45,8 +45,11 @@
                     <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/ViewApplication.jsp?id_application=${application.idApplication}"  title="#i18n{deployment.manage_application.action_view}" >
                         <i class="icon-eye-open icon-white"></i>
                     </a>
-                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}" title="#i18n{deployment.manage_application.action_deploy}" >
+                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_war=deploy_war" title="#i18n{deployment.manage_application.action_deploy_war}" >
                         <i class="icon-play-circle icon-white"></i>
+                    </a>
+                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_sql=deploy_sql" title="#i18n{deployment.manage_application.action_deploy_sql}" >
+                        <i class="icon-upload icon-white"></i>
                     </a>
 
                     <a class="btn btn-danger btn-mini" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?id_application=${application.idApplication}" title="#i18n{deployment.manage_application.action_delete}">
