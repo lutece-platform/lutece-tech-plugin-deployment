@@ -33,6 +33,22 @@
  */
 package fr.paris.lutece.plugins.deployment.web;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
@@ -44,7 +60,9 @@ import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
 import fr.paris.lutece.plugins.deployment.service.IActionService;
 import fr.paris.lutece.plugins.deployment.service.IApplicationService;
+import fr.paris.lutece.plugins.deployment.service.IDatabaseService;
 import fr.paris.lutece.plugins.deployment.service.IEnvironmentService;
+import fr.paris.lutece.plugins.deployment.service.IFtpService;
 import fr.paris.lutece.plugins.deployment.service.IServerApplicationService;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.deployment.service.IWorkflowDeploySiteService;
@@ -66,25 +84,11 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 
 public class DeploymentJspBean extends PluginAdminPageJspBean
@@ -95,8 +99,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     private IServerApplicationService _serverApplicationService = SpringContextService.getBean( 
             "deployment.ServerApplicationService" );
     private ISvnService _svnService = SpringContextService.getBean( "deployment.SvnService" );
+    
+    private IDatabaseService _databaseService = SpringContextService.getBean( "deployment.DatabaseService" );
     private IWorkflowDeploySiteService _workflowDeploySiteService = SpringContextService.getBean( 
             "deployment.WorkflowDeploySiteService" );
+   
+    private  IFtpService _ftpService = SpringContextService.getBean( 
+            "deployment.FtpService" );
   
     private IActionService _actionService = SpringContextService.getBean( 
             "deployment.ActionService" );
@@ -245,37 +254,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
                     ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
-            //			//Add TOM server
-            //			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTom = _serverApplicationService
-            //					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_TOM,getLocale(),true,true);
-            //			
-            //			for(Environment environment:listEnvironments)
-            //			{
-            //				
-            //				if(hashServerApplicationInstanceTom.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceTom.get(environment.getCode()) ))
-            //				//ADD TOM SERVER
-            //				{
-            //					hashServerApplicationInstanceTomcat.put(environment.getCode(),hashServerApplicationInstanceTom.get(environment.getCode()));
-            //				}
-            //				
-            //			}
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+                   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
                     ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
-
-            //			//Add MYS server
-            //			HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMys = _serverApplicationService
-            //					.getHashServerApplicationInstance(application.getCode(),ConstanteUtils.CONSTANTE_SERVER_MYS,getLocale(),true,true);
-            //			
-            //			for(Environment environment:listEnvironments)
-            //			{
-            //				
-            //				if(hashServerApplicationInstanceMys.containsKey(environment.getCode()) && !CollectionUtils.isEmpty(hashServerApplicationInstanceMys.get(environment.getCode()) ))
-            //				//Add MYS server
-            //				{
-            //					hashServerApplicationInstanceMysql.put(environment.getCode(),hashServerApplicationInstanceMys.get(environment.getCode()));
-            //				}
-            //				
-            //			}
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
                     ConstanteUtils.CONSTANTE_SERVER_HTTPD, getLocale(  ), true, true );
 
@@ -384,7 +364,15 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     {
         AdminUser adminUser = getUser(  );
         MavenUser mavenUser = DeploymentUtils.getMavenUser( adminUser.getUserId(  ), getLocale(  ) );
+        String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
+        String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
+        
+        Boolean bDeployWar=!StringUtils.isEmpty(strDeployWar);
+        Boolean bDeploySql=!StringUtils.isEmpty(strDeploySql);
+        
+        
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+        
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
@@ -403,26 +391,38 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(  ),
                     getLocale(  ) );
 
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
-                    ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
+           
+            if(bDeployWar)
+            {
+            	   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+                           ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
-     
+            	  model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
+            	  ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), mavenUser );
+                  model.put( ConstanteUtils.MARK_SITE_LIST, refListTagSite );
+            }
+            if(bDeploySql)
+            {
+            	
+              HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
+              
+              HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceMysql, getLocale());
+             
+              model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL, hashServerApplicationInstanceMysql );
+              model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
+              
+              }
             
-//            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
-//                    ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
-            
-         
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql=new HashMap<String, List<ServerApplicationInstance>>();
-            ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), mavenUser );
             ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
             DeploymentUtils.addEmptyRefenceItem( refListEnvironements );
 
             model.put( ConstanteUtils.MARK_ENVIRONMENT_LIST, refListEnvironements );
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
-
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL, hashServerApplicationInstanceMysql );
-            model.put( ConstanteUtils.MARK_SITE_LIST, refListTagSite );
             model.put( ConstanteUtils.MARK_APPLICATION, application );
+          
+            model.put( ConstanteUtils.MARK_DEPLOY_WAR, bDeployWar );
+            model.put( ConstanteUtils.MARK_DEPLOY_SQL,bDeploySql  );
         }
         else
         {
@@ -443,17 +443,42 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( _nIdCurrentWorkflowDeploySiteContext != null )
         {
             AdminUser adminUser = getUser(  );
+           
+            
             WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService.getWorkflowDeploySiteContext( _nIdCurrentWorkflowDeploySiteContext );
-            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext.isTagSiteBeforeDeploy(  ) );
+           
+            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext);
             Application application = _applicationService.getApplication( workflowDeploySiteContext.getIdApplication(  ),
                     getPlugin(  ) );
             Environment environment = _environmentService.getEnvironment( workflowDeploySiteContext.getCodeEnvironement(  ),
                     getLocale(  ) );
 
-            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
-                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
-                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT,
-                    getLocale(  ), false, false );
+            HashMap model = new HashMap(  );
+            if(workflowDeploySiteContext.isDeployWar())
+            {
+            
+            
+	            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
+	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT,
+	                    getLocale(  ), false, false );
+	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceTomcat );
+	            
+	            model.put( ConstanteUtils.MARK_TAG_TO_DEPLOY, workflowDeploySiteContext.getTagToDeploy(  ) );
+
+            }
+            else if(workflowDeploySiteContext.isDeploySql())
+            {
+            
+            
+	            ServerApplicationInstance serverApplicationInstanceMysql = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
+	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL,
+	                    getLocale(  ), false, false );
+	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceMysql );
+	            model.put( ConstanteUtils.MARK_SCRIPT_NAME,workflowDeploySiteContext.getScriptFileItem().getName() );
+	         }
+            
 
             // workflow informations
             Collection<Action> listAction = WorkflowService.getInstance(  )
@@ -464,14 +489,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                     WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdWorkflowSiteDeploy,
                     ConstanteUtils.CONSTANTE_ID_NULL );
 
-            HashMap model = new HashMap(  );
+           
             model.put( ConstanteUtils.MARK_APPLICATION, application );
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceTomcat );
             model.put( ConstanteUtils.MARK_ENVIRONMENT, environment );
             model.put( ConstanteUtils.MARK_STATE, state.getName(  ) );
             model.put( ConstanteUtils.MARK_ACTION_LIST, listAction );
-            model.put( ConstanteUtils.MARK_TAG_TO_DEPLOY, workflowDeploySiteContext.getTagToDeploy(  ) );
-
+            model.put( ConstanteUtils.MARK_DEPLOY_WAR, workflowDeploySiteContext.isDeployWar() );
+            model.put( ConstanteUtils.MARK_DEPLOY_SQL,workflowDeploySiteContext.isDeploySql( )  );
+         
+            
+            
+           
             setPageTitleProperty( ConstanteUtils.PROPERTY_DEPLOY_SITE_PAGE_TITLE );
 
             HtmlTemplate template = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_DEPLOY_APPLICATION_PROCESS,
@@ -504,7 +532,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService.getWorkflowDeploySiteContext( _nIdCurrentWorkflowDeploySiteContext );
 
-            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext.isTagSiteBeforeDeploy(  ) );
+            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext);
             result = workflowDeploySiteContext.getCommandResult(  );
 
             if ( WorkflowService.getInstance(  ).isDisplayTasksForm( nIdAction, getLocale(  ) ) )
@@ -580,7 +608,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             WorkflowDeploySiteContext workflowDeploySiteContext = _workflowDeploySiteService.getWorkflowDeploySiteContext( _nIdCurrentWorkflowDeploySiteContext );
 
-            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext.isTagSiteBeforeDeploy(  ) );
+            int nIdWorkflowSiteDeploy = DeploymentUtils.getIdWorkflowSiteDeploy( workflowDeploySiteContext);
             result = workflowDeploySiteContext.getCommandResult(  );
 
             strError = doSaveTaskForm( workflowDeploySiteContext.getId(  ), nIdAction, getPlugin(  ), getLocale(  ),
@@ -701,7 +729,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             try
             {
                 String strError = WorkflowService.getInstance(  )
-                                                 .doSaveTasksForm( nIdWorkflowSiteContext,
+                		.doSaveTasksForm( nIdWorkflowSiteContext,
                         WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdAction, ConstanteUtils.CONSTANTE_ID_NULL,
                         request, locale );
 
@@ -806,9 +834,61 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getManageApplication( request );
     }
     
+    /**
+     * return the tasks form
+     *
+     * @param request
+     *            the request
+     * @return the tasks form
+     */
+    public String getFormActionServer( HttpServletRequest request )
+    {
+      
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+        String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
+        String strCodeServerApplicationInstance = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE );
+        String strServerAppicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
+   	 	String strActionCode = request.getParameter( ConstanteUtils.PARAM_ACTION_CODE);
+   	 	
+   	 	
+   	 	Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
+   	 	IAction action = _actionService.getAction(  DeploymentUtils.getActionKey( strActionCode, strServerAppicationType ), request.getLocale() );
+   
+   	 	ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+    		 strCodeServerApplicationInstance , strCodeEnvironment,
+    		 strServerAppicationType, request.getLocale(), false, false );
+
+   	 	
+	   	if(action != null)
+	   	{
+	            String strHtmlFormAction =action.getTemplateFormAction(application.getCode(), serverApplicationInstance, request.getLocale());
+	
+	            Map<String, Object> model = new HashMap<String, Object>(  );
+	
+	            model.put( ConstanteUtils.MARK_FORM_ACTION,strHtmlFormAction );
+	           
+	            model.put( ConstanteUtils.PARAM_ID_APPLICATION, application.getIdApplication() );
+	            model.put(  ConstanteUtils.PARAM_ACTION_CODE, strActionCode );
+	            model.put(  ConstanteUtils.PARAM_CODE_ENVIRONMENT, strCodeEnvironment );
+	            model.put(  ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE, strCodeServerApplicationInstance );
+	            model.put(  ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE, strServerAppicationType );
+	          
+	            setPageTitleProperty( ConstanteUtils.PROPERTY_FORM_ACTION_SERVER_PAGE_TITLE );
+	
+	            HtmlTemplate templateList = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_FORM_ACTION_SERVER,
+	                    getLocale(  ), model );
+	
+	            return templateList.getHtml(  );
+	        }
+
+        return getManageApplication( request );
+    }
     
     
-    public String doRunServerAction( HttpServletRequest request )
+    
+    
+    public String doRunActionServer( HttpServletRequest request )
     {
     	 CommandResult commandResult=new CommandResult();
     	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
@@ -817,7 +897,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	 String strCodeServerApplicationInstance = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE );
     	 String strServerAppicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
     	 String strActionCode = request.getParameter( ConstanteUtils.PARAM_ACTION_CODE);
-    	
+    	 String strJspFormToDisplay =null;
+    	 
     	 Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
          IAction action = _actionService.getAction(  DeploymentUtils.getActionKey( strActionCode, strServerAppicationType ), request.getLocale() );
        
@@ -827,17 +908,66 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
          if ( action != null )
          {
-        	commandResult.getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
-             _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
+        	
+        	 if(action.canRunAction(application.getCode(), serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
+        	 {
+        		
+        		 
+        		 DeploymentUtils.startCommandResult(commandResult);
+        		 commandResult.getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
+        		
+        		 
+        		 _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
             		 commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) ) );
-             commandResult.getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+        		 commandResult.getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+        		 DeploymentUtils.stopCommandResult(commandResult);
+        	 }
+        	 else
+        	 {
+        		  strJspFormToDisplay=getJspFormActionServer(request, strActionCode, DeploymentUtils.getIntegerParameter(strIdApplication), strCodeEnvironment, strCodeServerApplicationInstance, strServerAppicationType);
+        	 }
+        	 
          }
 
-         JSONObject jo = DeploymentUtils.getJSONForCommandResult( commandResult );
+         JSONObject jo = DeploymentUtils.getJSONForServerAction(strJspFormToDisplay, commandResult);
         
          return jo.toString();
     
     }
+    
+    
+    
+    public void doDownloadDump( HttpServletRequest request, HttpServletResponse response )
+    {
+    	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+    	 String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
+    	 String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
+         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
+         String strCodeApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
+           
+         
+         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( strCodeApplication,
+        		 strCodeServerApplicationInstanceMysql,
+                 strCodeEnvironment, ConstanteUtils.CONSTANTE_SERVER_MYSQL, request.getLocale(), false, false );
+       
+    	
+    	 response.setHeader( "Content-Disposition", "attachment ;filename=\"dump_"+strCodeDatabase+ ".sql\";" );
+         response.setHeader( "Pragma", "public" );
+         response.setHeader( "Expires", "0" );
+         response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+         response.setHeader("Content-Type", "application/octet-stream");
+         CommandResult commandResult=new CommandResult();
+         
+         try {
+			_ftpService.getFile(response.getOutputStream(), serverApplicationInstance.getFtpInfo(  ), DeploymentUtils.getDumpFileDirectory(strCodeApplication, serverApplicationInstance)+"FROM_Z00-"+strCodeDatabase+"-ALL_TABLES.sql", commandResult);
+		} catch (IOException e) {
+			AppLogService.error(e);
+		}
+         
+    }
+    	
+    	
+    
     
 
     private String getFormDeployData( HttpServletRequest request, WorkflowDeploySiteContext workflowDeploySiteContext )
@@ -851,6 +981,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
         String strTagSiteBeforeDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
+        String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
+        
+        MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
+        FileItem scriptItem =null;
+
+  
+        
 
         String strFieldError = ConstanteUtils.CONSTANTE_EMPTY_STRING;
 
@@ -867,11 +1004,23 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL;
         }
-        else if ( StringUtils.isEmpty( strTagSiteBeforeDeploy ) && StringUtils.isEmpty( strTagToDeploy ) )
+        else if ( !StringUtils.isEmpty( strDeploySql ) && StringUtils.isEmpty( strCodeDatabase ) )
+        {
+            strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_DATABASE;
+        }
+        else if ( !StringUtils.isEmpty( strDeployWar ) && StringUtils.isEmpty( strTagSiteBeforeDeploy ) && StringUtils.isEmpty( strTagToDeploy ) )
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_TAG_TO_DEPLOY;
         }
-
+        else if ( !StringUtils.isEmpty( strDeploySql ) )
+        {
+        	scriptItem = mRequest.getFile(ConstanteUtils.PARAM_SCRIPT_UPLOAD);
+        	if(scriptItem ==null || scriptItem.getSize()==0)
+        	{
+        		strFieldError = ConstanteUtils.PROPERTY_LABEL_SCRIPT_UPLOAD;
+        	}
+        }
+        
         if ( !StringUtils.isEmpty( strFieldError ) )
         {
             Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale(  ) ) };
@@ -902,6 +1051,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             workflowDeploySiteContext.setTagToDeploy( strTagToDeploy );
         }
+        
+        if ( !StringUtils.isEmpty( strDeploySql ) )
+        {
+        	workflowDeploySiteContext.setDatabaseName(strCodeDatabase);
+        	workflowDeploySiteContext.setScriptFileItem(scriptItem);
+        }
+        
 
         return null;
     }
@@ -995,9 +1151,41 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
         return url.getUrl(  );
     }
+    
+    
+    /**
+     * return url of the jsp manage commentaire
+     *
+     * @param request
+     *            The HTTP request
+     * @param listIdsTestResource
+     *            the list if id resource
+     * @param nIdAction
+     *            the id action
+     * @param bShowActionResult
+     *            true if it must show the action result, false otherwise
+     * @return url of the jsp manage commentaire
+     */
+    private String getJspFormActionServer( HttpServletRequest request,String strActionCode, int nIdApplication,String strCodeEnvironment,String strCodeServerApplicationInstance,String strServerAppicationType )
+    {
+    	
+    	
+    	UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + ConstanteUtils.JSP_FORM_SERVER_ACTION );
+    	url.addParameter( ConstanteUtils.PARAM_ID_APPLICATION, nIdApplication );
+    	url.addParameter( ConstanteUtils.PARAM_ACTION_CODE, strActionCode );
+        url.addParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT, strCodeEnvironment );
+        url.addParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE, strCodeServerApplicationInstance );
+        url.addParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE, strServerAppicationType );
+        
+        
+
+        return url.getUrl(  );
+    }
 
     private String getJspDeployApplicationProcess( HttpServletRequest request )
     {
         return AppPathService.getBaseUrl( request ) + ConstanteUtils.JSP_DEPLOY_APPLICATION_PROCESS;
     }
+    
+    
 }
