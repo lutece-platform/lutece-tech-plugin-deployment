@@ -9,6 +9,19 @@ function setResultLog( log )
 	logArea.scrollTop = logArea.scrollHeight; 
 }
 
+function setResultInformations( resultInformations )
+{
+	
+	if(resultInformations.dump_file_url!=null && resultInformations.dump_file_url!= "")
+	{
+		$('#dump_file_url').html(" <a class='btn btn-primary btn-mini' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
+		$('#dump_file').show();
+	}
+	
+}
+
+
+
 
 
 function longAction( ) 
@@ -40,6 +53,7 @@ function statusCallback( json )
 	else
 	{
 		setResultLog( json.log );
+		setResultInformations( json.result );
 		if ( json.running )
 		{
 			/* still running */
@@ -96,14 +110,11 @@ function initComponantsEnvironment()
 	removeAllOptions( document.getElementById("code_server_application_instance_mysql") );
 }
 
-function refreshComponantsEnvironment()
+function refreshComponantsTomcat()
 {
 	var selectTomcat = document.getElementById("code_server_application_instance_tomcat"); 
 	// first, remove all tomcat
 	removeAllOptions( selectTomcat );
-	var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
-	// first, remove all mysql
-	removeAllOptions( selectMysql );
 	
 	
 	var selectEnvironment = document.getElementById("code_environment");
@@ -121,7 +132,24 @@ function refreshComponantsEnvironment()
 			var item = itemListTomcat[i];
 			addOption(selectTomcat,item["name"],item["code"],false);
 		}
-		// add options Mysql
+	
+	}
+}
+
+function refreshComponantsMysql()
+{
+		var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
+	// first, remove all mysql
+	removeAllOptions( selectMysql );
+	
+	
+	var selectEnvironment = document.getElementById("code_environment");
+	
+	
+	var selectedEnvironment = selectEnvironment.options[selectEnvironment.selectedIndex].value;
+	if ( selectedEnvironment != null && selectedEnvironment != "" )
+	{
+	   	// add options Mysql
 		var itemListMysql = itemsMapServerMysql[selectedEnvironment];
 		// add empty value
 		addOption( selectMysql,"","",true );
@@ -132,6 +160,36 @@ function refreshComponantsEnvironment()
 		}
 	}
 }
+
+
+function refreshComponantsDatabase()
+{
+	
+	var selectEnvironment = document.getElementById("code_environment");
+	var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
+	
+	var selectDatabase = document.getElementById("code_database"); 
+	// first, remove all mysql
+	removeAllOptions( selectDatabase );
+	
+	var selectedEnvironment = selectEnvironment.options[selectEnvironment.selectedIndex].value;
+	var selectedMysql = selectMysql.options[selectMysql.selectedIndex].value;
+	
+	if ( selectedEnvironment != null && selectedEnvironment != "" && selectedMysql != null && selectedMysql != "" )
+	{
+	   
+		// add options Mysql
+		var itemListDatabase = itemsMapDatabase[selectedEnvironment+"."+selectedMysql];
+		// add empty value
+		addOption( selectDatabase,"","",true );
+		for ( var i = 0; i < itemListDatabase.length; i++ )
+		{
+			var item = itemListDatabase[i];
+			addOption(selectDatabase,item["name"],item["code"],false);
+		}
+	}
+}
+
 
 
 function runWorkflowAction( idAction ) 
@@ -159,6 +217,19 @@ function addEvent() {
     	saveTasksForm( $(this) );
     	return false;
 	});
+    
+    $('#form_action_server').submit( function(){
+    	runActionServer( $(this) );
+    	return false;
+	});
+    
+    $('.form_run_action_server').submit( function(){
+    	runActionServer( $(this) );
+    	return false;
+	});
+    
+    
+    
 }
 
 
@@ -286,6 +357,22 @@ function saveTasksForm(form )
 	
 }
 
+function runActionServer(form ) 
+{
+	
+	$('#myModal').modal() ;
+	$.ajax({
+          url: 'jsp/admin/plugins/deployment/DoRunActionServerJSON.jsp',
+          type: $(form).attr('method'), 
+          data: $(form).serialize(), 
+          dataType: 'json',
+          success: function(json) { 
+        	  statusCallbackRunActionServer(json); 
+          }
+      });
+	
+}
+
 
 
 function statusCallbackTasksForm( json )
@@ -314,6 +401,75 @@ function statusCallbackTasksForm( json )
 	
 	
 }
+
+
+
+
+
+function statusCallbackRunActionServer( json )
+{
+	
+	if ( json == null || json == "" )
+	{
+	
+	}
+	else
+	{
+		
+		$('#myModal').modal('hide');
+	
+		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
+		{
+			
+			displayFormActionServer(json);
+			
+		}
+		else
+		{
+			setResultActionServerLog( json.log );
+			setResultActionServer( json.result );
+		
+		}
+		addEvent();
+	}
+	
+}
+
+function displayFormActionServer(json)
+{
+	
+	$.ajax({
+		  url: json.jsp_form_display,
+		  success:function ( data ) {
+			$('#div_form_action_server').html(data);
+			$('#div_form_action_server').show();
+		}
+	});
+	
+}
+
+
+function setResultActionServerLog( log )
+{
+	$('#action_server_log').html(log);
+	$('#action_server_result').show();
+}
+
+
+function setResultActionServer( resultInformations )
+{
+	
+	if(resultInformations.dump_file_url!=null && resultInformations.dump_file_url!= "")
+	{
+		$('#dump_file_url').html(" <a class='btn btn-primary btn-mini' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
+		$('#dump_file').show();
+	}
+	
+}
+
+
+
+
 
 
 
