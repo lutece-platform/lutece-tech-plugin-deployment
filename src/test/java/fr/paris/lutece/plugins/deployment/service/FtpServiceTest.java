@@ -80,7 +80,7 @@ public class FtpServiceTest extends LuteceTestCase
         CommandResult commandResult = new CommandResult(  );
         commandResult.setLog( new StringBuffer(  ) );
         _ftpService.uploadFile( strFtpFileLocalName, strFtpFileLocalPath, ftpInfo, strFtpRemoteDirectoryTarget,
-            commandResult );
+            commandResult,true );
 
         assertNotNull( commandResult );
     }
