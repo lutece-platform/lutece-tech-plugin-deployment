@@ -46,6 +46,7 @@ public class ServerApplicationInstance
 
     // private String _strServerName;
     private String _strFtpDirectoryTarget;
+    private String _strFtpDirectoryDump;
     private FtpInfo _ftpInfo;
     private String _strType;
     private HashMap<String, String> _hashMavenProfile;
@@ -173,4 +174,12 @@ public class ServerApplicationInstance
     {
         return _listServerApplicationAction;
     }
+
+	public String getFtpDirectoryDump() {
+		return _strFtpDirectoryDump;
+	}
+
+	public void setFtpDirectoryDump(String _strFtpDirectoryDumpFile) {
+		this._strFtpDirectoryDump = _strFtpDirectoryDumpFile;
+	}
 }

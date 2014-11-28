@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.deployment.business;
 
 import java.util.List;
+import java.util.Locale;
 
 
 public interface IAction
@@ -72,6 +73,14 @@ public interface IAction
 
     String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter );
+    
+    boolean canRunAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+            CommandResult commandResult, ActionParameter... parameter);
+    
+    String getTemplateFormAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,Locale locale);
+    
+    
+    
 
     void setIconCssClass( String _strIconCssClass );
 

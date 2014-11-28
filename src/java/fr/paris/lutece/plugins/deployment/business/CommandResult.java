@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.deployment.business;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class CommandResult implements Cloneable, Serializable
@@ -53,6 +55,7 @@ public class CommandResult implements Cloneable, Serializable
     private int _nStatus;
     private boolean _bRunning;
     private String _strIdError;
+    private Map<String,String> _mResultInformations=new HashMap<String, String>();
 
     /**
      * "Getter method" pour la variable {@link #_strLog}
@@ -141,4 +144,12 @@ public class CommandResult implements Cloneable, Serializable
     {
         _strIdError = strIdError;
     }
+
+	public Map<String,String> getResultInformations() {
+		return _mResultInformations;
+	}
+
+	public void setResultInformations(Map<String,String> _mResultInformations) {
+		this._mResultInformations = _mResultInformations;
+	}
 }

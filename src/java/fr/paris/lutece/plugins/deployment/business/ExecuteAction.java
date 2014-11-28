@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import java.util.Locale;
-
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -42,56 +40,76 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
-public class DefaultAction extends Action
+import java.util.List;
+
+
+/**
+ *
+ * WarInstallerAction
+ *
+ */
+public class ExecuteAction extends DefaultAction
 {
-    /* (non-Javadoc)
-     * @see fr.paris.lutece.plugins.deployment.business.IAction#run(java.lang.String, fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance)
-     */
+    @Override
     public String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter )
     {
-        String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
-        String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
-        String strJSONAction = null;
-        String strResult = null;
+    	 
+    	
+    	String strResult = null;
+    	
+    	String strDataBase=null;
+    	String strScriptName=null;
+    	for (int i = 0; i < parameter.length; i++) {
+			
+    		if(parameter[i].getName().equals(ConstanteUtils.PARAM_CODE_DATABASE))
+    		{
+    			
+    			strDataBase=parameter[i].getValue();
+    		}
+    		if(parameter[i].getName().equals(ConstanteUtils.PARAM_SCRIPT_NAME))
+    		{
+    			
+    			strScriptName=parameter[i].getValue();
+    		}
+		}
+    	
+    	
+    	if(!StringUtils.isEmpty(strDataBase) && !StringUtils.isEmpty(strScriptName) )
+    	{
+	    	 String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
+	         String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
+	         String strJSONAction = null;
+	        
+	
+	         try
+	         {
+	             strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
+	                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
+	                     DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
+	                         serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strDataBase + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strScriptName);
+	         }
+	         catch ( Exception e )
+	         {
+	             AppLogService.error( e );
+	         }
+	         
+	
+	         if ( strJSONAction != null )
+	         {
+	             JSONObject jo = DeploymentUtils.getJSONOBject( strJSONAction );
+	
+	             if ( jo != null )
+	             {
+	                 strResult = jo.getString( strWebserviceActionJsonPropery );
+	             }
+	         }
+    	}
+         
 
-        try
-        {
-            strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                    ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
-                        serverApplicationInstance, this.getCode(  ) ) );
-        }
-        catch ( Exception e )
-        {
-            AppLogService.error( e );
-        }
-
-        if ( strJSONAction != null )
-        {
-            JSONObject jo = DeploymentUtils.getJSONOBject( strJSONAction );
-
-            if ( jo != null )
-            {
-                strResult = jo.getString( strWebserviceActionJsonPropery );
-            }
-        }
-
-        return strResult;
+         return strResult;
     }
-
-	@Override
-	public boolean canRunAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
-            CommandResult commandResult, ActionParameter... parameter){
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public String getTemplateFormAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
-            Locale locale){
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

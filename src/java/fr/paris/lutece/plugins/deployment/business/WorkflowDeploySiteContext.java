@@ -34,8 +34,9 @@
 package fr.paris.lutece.plugins.deployment.business;
 
 import java.io.Serializable;
-
 import java.util.HashMap;
+
+import org.apache.commons.fileupload.FileItem;
 
 
 public class WorkflowDeploySiteContext implements Serializable
@@ -50,8 +51,6 @@ public class WorkflowDeploySiteContext implements Serializable
     private String _strSvnBaseSiteUrl;
     private HashMap<String, String> _hashServerApplicationInstance;
     private String _strCodeEnvironement;
-    private String _strCodeServerAppplicationInstanceTomcat;
-    private String _strCodeServerAppplicationInstanceMysql;
     private boolean _bTagSiteBeforeDeploy;
     private String _strTagToDeploy;
     private String _strTagName;
@@ -61,6 +60,8 @@ public class WorkflowDeploySiteContext implements Serializable
     private MavenUser _mavenUser;
     private boolean _bDeployWar;
     private boolean _bDeploySql;
+    private String _strDatabaseName;
+    private FileItem _scriptFileItem;
 
     public int getId(  )
     {
@@ -211,4 +212,22 @@ public class WorkflowDeploySiteContext implements Serializable
     {
         _bDeploySql = bDeploySql;
     }
+
+	public String getDatabaseName() {
+		return _strDatabaseName;
+	}
+
+	public void setDatabaseName(String _strDatabaseName) {
+		this._strDatabaseName = _strDatabaseName;
+	}
+
+	
+
+	public FileItem getScriptFileItem() {
+		return _scriptFileItem;
+	}
+
+	public void setScriptFileItem(FileItem _scriptFileItem) {
+		this._scriptFileItem = _scriptFileItem;
+	}
 }
