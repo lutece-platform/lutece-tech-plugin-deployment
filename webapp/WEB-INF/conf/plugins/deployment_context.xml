@@ -29,6 +29,7 @@
 	<bean id="deployment.MavenService" class="fr.paris.lutece.plugins.deployment.service.MavenService" />
 	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.SvnService" />
 	<bean id="deployment.WorkflowDeploySiteService" class="fr.paris.lutece.plugins.deployment.service.WorkflowDeploySiteService" />
+	<bean id="deployment.DatabaseService" class="fr.paris.lutece.plugins.deployment.service.DatabaseService" />
 	<!-- Listeners -->
 	<bean id="deployment.DeploymentAdminUserFieldListener" class="fr.paris.lutece.plugins.deployment.business.DeploymentAdminUserFieldListener" />
 	<bean id="deployment.AdminUserFieldListenerService" class="fr.paris.lutece.portal.service.user.attribute.AdminUserFieldListenerService" />
@@ -176,7 +177,8 @@
  		p:code="0001"
  		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysql0001"/>
  		
  		
@@ -185,7 +187,8 @@
  		p:code="0002"
  		p:i18nKeyName="deployment.server_application_instance.mysql.0002.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysql0002"/>
  		
  		
@@ -194,14 +197,16 @@
  		p:code="01"
  		p:i18nKeyName="deployment.server_application_instance.mys.01.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMys01"/>	
  		
  	<bean id="deployment.serverApplicationMys02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="02"
  		p:i18nKeyName="deployment.server_application_instance.mys.02.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMys02"/>	
  		
  				
@@ -209,13 +214,15 @@
  		p:code="fo"
  		p:i18nKeyName="deployment.server_application_instance.mysql.fo.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysqlfo"/>
   	<bean id="deployment.serverApplicationMysqlbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="bo"
  		p:i18nKeyName="deployment.server_application_instance.mysql.bo.name"
  		p:type="MYSQL"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysqlbo"/>
  	
  	<!--SERVERS HTTPD -->	
@@ -346,43 +353,40 @@
  		p:iconCssClass="icon-off icon-white"
  		p:display="true"
  		p:serverType="MYSQL"
+ 		/>
+ 		
+ 		
+ 		<bean id="deployment.actionDump" class="fr.paris.lutece.plugins.deployment.business.DumpAction" scope="prototype"
+ 		p:code="@DUMP"
+ 		p:i18nKeyName="deployment.action.dump.mysql.name"
+ 		p:usedForStatus="false"
+ 		p:status="1"
+ 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:display="true"
+ 		p:serverType="MYSQL"
+ 		>
+ 		
+	 		<property name="parameters">
+				<list>
+					<value>code_database</value>
+				</list>
+			</property>
+ 		</bean>	
+ 		
+ 		
+ 		<bean id="deployment.actionExecute" class="fr.paris.lutece.plugins.deployment.business.ExecuteAction" scope="prototype"
+ 		p:code="@EXECUTE"
+ 		p:i18nKeyName="deployment.action.execute.mysql.name"
+ 		p:usedForStatus="false"
+ 		p:status="0"
+ 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:display="false"
+ 		p:serverType="MYSQL"
  		/>	
  		
  		
  		
- <!--Actions MYS -->	
- 		
-<!--       <bean id="deployment.actionStartUpMys" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@STARTUP" -->
-<!--  		p:i18nKeyName="deployment.action.startup.mysql.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="0" -->
-<!--  		p:iconCssClass="icon-play-circle icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="MYS" -->
-<!--  		/> -->
- 	
-<!--  	<bean id="deployment.actionStatusMys" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@STATUS" -->
-<!--  		p:i18nKeyName="deployment.action.status.mysql.name" -->
-<!--  		p:usedForStatus="true" -->
-<!--  		p:iconCssClass="icon-refresh icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="MYS" -->
-<!--  		/> -->
- 		
- 		
-<!--  	 <bean id="deployment.actionShutdownMys" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype" -->
-<!--  		p:code="@SHUTDOWN" -->
-<!--  		p:i18nKeyName="deployment.action.shutdown.mysql.name" -->
-<!--  		p:usedForStatus="false" -->
-<!--  		p:status="1" -->
-<!--  		p:iconCssClass="icon-off icon-white" -->
-<!--  		p:display="true" -->
-<!--  		p:serverType="MYS" -->
-<!--  		/>	 -->
- 		
- 		
+
  		
 
  		
