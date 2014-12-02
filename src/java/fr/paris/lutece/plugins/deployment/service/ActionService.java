@@ -150,11 +150,24 @@ public class ActionService implements IActionService
     }
 
     @Override
-    public String executeAction( String strCodeApplication, IAction action,
+    public boolean executeAction( String strCodeApplication, IAction action,
         ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
         // TODO Auto-generated method stub
-        return action.run( strCodeApplication, serverApplicationInstance, commandResult, parameter );
+          String strResult=action.run( strCodeApplication, serverApplicationInstance, commandResult, parameter );
+          boolean bResult=false;
+          //set status action
+          if(strResult !=null )
+          {
+        	  bResult=new Boolean( strResult );
+        	
+          }
+          
+          if( commandResult != null)
+          {
+        	  commandResult.setStatus(bResult ? CommandResult.STATUS_OK : CommandResult.STATUS_ERROR ) ;
+          }
+          return bResult;
     }
     
     @Override

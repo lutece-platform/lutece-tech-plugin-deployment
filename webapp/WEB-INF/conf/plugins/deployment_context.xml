@@ -300,6 +300,7 @@
  		p:iconCssClass="icon-play-circle icon-white"
  		p:display="false"
  		p:serverType="TOMCAT"
+ 		p:stopWorkflowIfExecutionError="true"
  		/>
  		
  		
@@ -364,6 +365,7 @@
  		p:iconCssClass="icon-play-circle icon-white"
  		p:display="true"
  		p:serverType="MYSQL"
+ 		p:stopWorkflowIfExecutionError="true"
  		>
  		
 	 		<property name="parameters">
@@ -382,6 +384,7 @@
  		p:iconCssClass="icon-play-circle icon-white"
  		p:display="false"
  		p:serverType="MYSQL"
+ 		p:stopWorkflowIfExecutionError="true"
  		/>	
  		
  		

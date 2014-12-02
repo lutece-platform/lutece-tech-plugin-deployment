@@ -33,42 +33,54 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
-import fr.paris.lutece.util.string.StringUtil;
 
+public class FilterDeployment {
+	private String _strCodeCategory;
+	private String _strWorkgroup;
 
-public class FilterDeployment
-{
-    private String _strCodeCategory;
-    private int _nIdApplication = ConstanteUtils.CONSTANTE_ID_NULL;
+	private int _nIdApplication = ConstanteUtils.CONSTANTE_ID_NULL;
 
-    public void setCodeCategory( String strCodeCategory )
-    {
-        this._strCodeCategory = strCodeCategory;
-    }
+	public void setCodeCategory(String strCodeCategory) {
+		this._strCodeCategory = strCodeCategory;
+	}
 
-    public String getCodeCategory(  )
-    {
-        return _strCodeCategory;
-    }
+	public String getCodeCategory() {
+		return _strCodeCategory;
+	}
 
-    public boolean containsCodeCategoryFilter(  )
-    {
-        return ( _strCodeCategory != null ) && !_strCodeCategory.isEmpty(  );
-    }
+	public boolean containsCodeCategoryFilter() {
+		return (_strCodeCategory != null) && !_strCodeCategory.isEmpty();
+	}
 
-    public void setIdApplication( int nIdApplication )
-    {
-        this._nIdApplication = nIdApplication;
-    }
+	public void setIdApplication(int nIdApplication) {
+		this._nIdApplication = nIdApplication;
+	}
 
-    public int getIdApplication(  )
-    {
-        return _nIdApplication;
-    }
+	public int getIdApplication() {
+		return _nIdApplication;
+	}
 
-    public boolean containsIdApplicationFilter(  )
-    {
-        return _nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL;
-    }
+	public boolean containsIdApplicationFilter() {
+		return _nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL;
+	}
+
+	public String getWorkgroup() {
+		return _strWorkgroup;
+	}
+
+	public void setWorkGroup(String workgroup) {
+		_strWorkgroup = workgroup;
+	}
+
+	  /**
+    *
+    * @return true if the filter contain workgroup criteria
+    */
+   public boolean containsWorkgroupFilter(  )
+   {
+       return (!StringUtils.isEmpty( _strWorkgroup) && !ConstanteUtils.CONSTANTE_ALL.equals( _strWorkgroup));
+   }
 }

@@ -85,4 +85,11 @@ public interface IAction
     void setIconCssClass( String _strIconCssClass );
 
     String getIconCssClass(  );
+    
+
+	boolean isStopWorkflowIfExecutionError() ;
+
+	void setStopWorkflowIfExecutionError(
+	
+	boolean _bStopWorkflowIfExecutionError);
 }

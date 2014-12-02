@@ -50,13 +50,17 @@ public class CommandResult implements Cloneable, Serializable
     /**
      *
      */
-    public static int STATUS_EXCEPTION = Integer.MIN_VALUE;
+    
+    
+    public static int STATUS_ERROR = 0;
+    public static int STATUS_OK= 1;
+    
     private StringBuffer _strLog;
     private int _nStatus;
     private boolean _bRunning;
-    private String _strIdError;
+    private String _strError;
     private Map<String,String> _mResultInformations=new HashMap<String, String>();
-
+    
     /**
      * "Getter method" pour la variable {@link #_strLog}
      * @return La variable {@link #_strLog}
@@ -122,7 +126,7 @@ public class CommandResult implements Cloneable, Serializable
         clone._bRunning = this._bRunning;
         clone._nStatus = this._nStatus;
         clone._strLog = this._strLog;
-        clone._strIdError = this._strIdError;
+        clone._strError = this._strError;
 
         return clone;
     }
@@ -131,18 +135,18 @@ public class CommandResult implements Cloneable, Serializable
      * "Getter method" pour la variable {@link #_nIdError}
      * @return La variable {@link #_nIdError}
      */
-    public String getIdError(  )
+    public String getError(  )
     {
-        return _strIdError;
+        return _strError;
     }
 
     /**
      * "Setter method" pour la variable {@link #_nIdError}
      * @param nIdError La nouvelle valeur de la variable {@link #_nIdError}
      */
-    public void setIdError( String strIdError )
+    public void setError( String strIdError )
     {
-        _strIdError = strIdError;
+        _strError = strIdError;
     }
 
 	public Map<String,String> getResultInformations() {

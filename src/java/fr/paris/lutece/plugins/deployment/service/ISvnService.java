@@ -48,6 +48,9 @@ public interface ISvnService
     ReferenceList getTagsSite( String strUrlSite, MavenUser user );
 
     String doSvnCheckoutSite( String strSiteName, String strUrl, MavenUser user, CommandResult commandResult );
+    
+    ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, MavenUser user);
+
 
     /**
      * Checkout l'application choisie

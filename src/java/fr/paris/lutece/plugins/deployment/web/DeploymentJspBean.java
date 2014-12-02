@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.deployment.web;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -83,6 +84,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceList;
@@ -119,18 +121,27 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     public String getManageApplication( HttpServletRequest request )
     {
         String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
+        String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
                 _nDefaultItemsPerPage );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
+        
+        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
+       
+        refListCategory=DeploymentUtils.addEmptyRefenceItem(refListCategory);
 
         // build Filter
         FilterDeployment filter = new FilterDeployment(  );
         filter.setCodeCategory( strCodeCategory );
+        filter.setWorkGroup(strWorkgroup );
+        
 
         List<Application> listApplication = _applicationService.getListApplications( filter, getPlugin(  ) );
-
+        
+        //filter by workgroup
+        listApplication= (List<Application>) AdminWorkgroupService.getAuthorizedCollection( listApplication, getUser() );
         HashMap model = new HashMap(  );
         Paginator paginator = new Paginator( listApplication, _nItemsPerPage, getJspManageApplication( request ),
                 Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
@@ -142,7 +153,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             ( strCodeCategory != null ) ? strCodeCategory : ConstanteUtils.CONSTANTE_ALL );
         model.put( ConstanteUtils.MARK_PAGINATOR, paginator );
         model.put( ConstanteUtils.MARK_NB_ITEMS_PER_PAGE, paginator.getItemsPerPage(  ) );
-
+        model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
+        model.put( ConstanteUtils.MARK_USER_WORKGROUP_SELECTED, !StringUtils.isEmpty(strWorkgroup)?strWorkgroup:ConstanteUtils.CONSTANTE_ALL);
+        
+        
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_MANAGE_APPLICATION,
@@ -153,13 +167,20 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
     public String getCreateApplication( HttpServletRequest request )
     {
-        MavenUser mavenUser = DeploymentUtils.getMavenUser( getUser(  ).getUserId(  ), getLocale(  ) );
+       
+    	
+    	ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
+        
+    	MavenUser mavenUser = DeploymentUtils.getMavenUser( getUser(  ).getUserId(  ), getLocale(  ) );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
-        DeploymentUtils.addEmptyRefenceItem( refListCategory );
+        refListCategory= DeploymentUtils.addEmptyRefenceItem( refListCategory );
 
         HashMap model = new HashMap(  );
+        
+        
+      
 
         if ( mavenUser != null )
         {
@@ -167,6 +188,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                     _svnService, mavenUser );
             model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
             model.put( ConstanteUtils.MARK_CATEGORY_LIST_SITE_MAP, hashCategoryListSite );
+            model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
+            
         }
         else
         {
@@ -187,23 +210,36 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
     public String getModifyApplication( HttpServletRequest request )
     {
-        String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+       
+    	ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
+        
+    	String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
         MavenUser mavenUser = DeploymentUtils.getMavenUser( getUser(  ).getUserId(  ), getLocale(  ) );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
+        
         Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
 
         // build Filter
         HashMap model = new HashMap(  );
 
+        
+        //test if the user is authorized to access to the application
+        if(!AdminWorkgroupService.isAuthorized(application, getUser()))
+        {
+        	return getManageApplication(request);
+     	}
+        
         if ( mavenUser != null )
         {
             Map<String, ReferenceList> hashCategoryListSite = DeploymentUtils.getHashCategoryListSite( refListCategory,
                     _svnService, mavenUser );
             model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
             model.put( ConstanteUtils.MARK_CATEGORY_LIST_SITE_MAP, hashCategoryListSite );
+            model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
+            
 
             if ( ( application != null ) && hashCategoryListSite.containsKey( application.getCodeCategory(  ) ) )
             {
@@ -296,7 +332,12 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
                 return strError;
             }
-
+            //test if the user is authorized to select the workgroup
+            if(!StringUtils.isEmpty(application.getWorkgroup() ) && !AdminWorkgroupService.isAuthorized(application, getUser()))
+            {
+         	   return getJspManageApplication( request );
+         	   
+            }
             _applicationService.updateApplication( application, getPlugin(  ) );
         }
 
@@ -312,6 +353,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             return strError;
         }
+        
+        //test if the user is authorized to select the workgroup
+       if(!StringUtils.isEmpty(application.getWorkgroup() ) && !AdminWorkgroupService.isAuthorized(application, getUser()))
+       {
+    	   return getJspManageApplication( request );
+    	   
+       }
 
         application.setSvnUrlSite( SVNUtils.getSvnUrlSite( application ) );
         _applicationService.createApplication( application, getPlugin(  ) );
@@ -404,19 +452,26 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             if(bDeploySql)
             {
             	
-              HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), mavenUser) ;
+            refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
+          
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
             		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
               
               HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceMysql, getLocale());
              
               model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL, hashServerApplicationInstanceMysql );
+              
               model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
+              model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
+              
+              
               
               }
             
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql=new HashMap<String, List<ServerApplicationInstance>>();
             ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
-            DeploymentUtils.addEmptyRefenceItem( refListEnvironements );
+            refListEnvironements= DeploymentUtils.addEmptyRefenceItem( refListEnvironements );
 
             model.put( ConstanteUtils.MARK_ENVIRONMENT_LIST, refListEnvironements );
             model.put( ConstanteUtils.MARK_APPLICATION, application );
@@ -476,7 +531,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL,
 	                    getLocale(  ), false, false );
 	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceMysql );
-	            model.put( ConstanteUtils.MARK_SCRIPT_NAME,workflowDeploySiteContext.getScriptFileItem().getName() );
+	            model.put( ConstanteUtils.MARK_SCRIPT_NAME,workflowDeploySiteContext.getScriptFileItemName() );
 	         }
             
 
@@ -783,9 +838,23 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
                 return strError;
             }
-
+            
+          
             Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
 
+            if(!StringUtils.isEmpty(workflowContext.getScriptFileSelected()))
+            {
+            	
+            	try {
+					workflowContext.setScriptFileItem(new FileInputStream(DeploymentUtils.getPathUpgradeFile(DeploymentUtils.getPathCheckoutSite( application.getSiteName() ), workflowContext.getScriptFileSelected())));
+				} catch (FileNotFoundException e) {
+
+						AppLogService.error(e);
+				}
+            	workflowContext.setScriptFileItemName(workflowContext.getScriptFileSelected());
+            }
+	
+            
             workflowContext.setMavenUser( DeploymentUtils.getMavenUser( adminUser.getUserId(  ), getLocale(  ) ) );
             workflowContext.setIdApplication( application.getIdApplication(  ) );
             workflowContext.setSvnBaseSiteUrl( application.getSvnUrlSite(  ) );
@@ -982,6 +1051,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strTagSiteBeforeDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
+        String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
+        
         
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
         FileItem scriptItem =null;
@@ -1015,7 +1086,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         else if ( !StringUtils.isEmpty( strDeploySql ) )
         {
         	scriptItem = mRequest.getFile(ConstanteUtils.PARAM_SCRIPT_UPLOAD);
-        	if(scriptItem ==null || scriptItem.getSize()==0)
+        	if( StringUtils.isEmpty(strScriptUpgradeSelected) && ( scriptItem ==null || scriptItem.getSize()==0))
         	{
         		strFieldError = ConstanteUtils.PROPERTY_LABEL_SCRIPT_UPLOAD;
         	}
@@ -1055,7 +1126,21 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( !StringUtils.isEmpty( strDeploySql ) )
         {
         	workflowDeploySiteContext.setDatabaseName(strCodeDatabase);
-        	workflowDeploySiteContext.setScriptFileItem(scriptItem);
+        	
+        	if(!StringUtils.isEmpty(strScriptUpgradeSelected))
+        	{
+        		workflowDeploySiteContext.setScriptFileSelected(strScriptUpgradeSelected);
+        	}
+        	else
+        	{
+        		try {
+					workflowDeploySiteContext.setScriptFileItem(scriptItem.getInputStream());
+				} catch (IOException e) {
+					AppLogService.error(e);
+				}
+        		workflowDeploySiteContext.setScriptFileItemName(scriptItem.getFieldName());
+        		
+        	}
         }
         
 
@@ -1084,6 +1169,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strWebAppName = request.getParameter( ConstanteUtils.PARAM_WEBAPP_NAME );
         String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
         String strSite = request.getParameter( ConstanteUtils.PARAM_SITE );
+        String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
 
         String strFieldError = ConstanteUtils.CONSTANTE_EMPTY_STRING;
 
@@ -1121,6 +1207,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         application.setWebAppName( strWebAppName );
         application.setCodeCategory( strCodeCategory );
         application.setSiteName( strSite );
+        application.setWorkgroup(strWorkgroup);
 
         return null; // No error
     }

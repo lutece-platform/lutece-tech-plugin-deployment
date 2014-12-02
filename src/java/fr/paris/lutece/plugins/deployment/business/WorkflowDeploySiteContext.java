@@ -33,10 +33,10 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-
-import org.apache.commons.fileupload.FileItem;
 
 
 public class WorkflowDeploySiteContext implements Serializable
@@ -61,7 +61,9 @@ public class WorkflowDeploySiteContext implements Serializable
     private boolean _bDeployWar;
     private boolean _bDeploySql;
     private String _strDatabaseName;
-    private FileItem _scriptFileItem;
+    private InputStream _scriptFileItem;
+    private String _scriptFileItemName;
+    private String _scriptFileSelected;
 
     public int getId(  )
     {
@@ -221,13 +223,31 @@ public class WorkflowDeploySiteContext implements Serializable
 		this._strDatabaseName = _strDatabaseName;
 	}
 
+	public String getScriptFileItemName() {
+		return _scriptFileItemName;
+	}
+
+	public void setScriptFileItemName(String _scriptFileItemName) {
+		this._scriptFileItemName = _scriptFileItemName;
+	}
 	
 
-	public FileItem getScriptFileItem() {
+	public InputStream getScriptFileItem() {
 		return _scriptFileItem;
 	}
 
-	public void setScriptFileItem(FileItem _scriptFileItem) {
+	public void setScriptFileItem(InputStream _scriptFileItem) {
 		this._scriptFileItem = _scriptFileItem;
 	}
+
+	public String getScriptFileSelected() {
+		return _scriptFileSelected;
+	}
+
+	public void setScriptFileSelected(String _scriptFileSelected) {
+		this._scriptFileSelected = _scriptFileSelected;
+	}
+
+	
+	
 }

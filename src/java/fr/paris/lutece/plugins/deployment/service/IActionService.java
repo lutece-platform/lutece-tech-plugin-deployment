@@ -49,7 +49,7 @@ public interface IActionService
     List<IAction> getListActionByServerApplicationInstance( String strCodeApplication,
         ServerApplicationInstance serverApplicationInstance, Locale locale );
 
-    String executeAction( String strCodeApplication, IAction action,
+    boolean executeAction( String strCodeApplication, IAction action,
         ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter );
     
     boolean canExecuteAction( String strCodeApplication, IAction action,

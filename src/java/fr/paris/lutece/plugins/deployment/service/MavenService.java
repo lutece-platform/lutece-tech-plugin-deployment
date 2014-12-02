@@ -113,10 +113,16 @@ public class MavenService implements IMavenService
 
             if ( nStatus != 0 )
             {
-                commandResult.setIdError( commandResult.getLog(  ).toString(  ) );
+                commandResult.setError( commandResult.getLog(  ).toString(  ) );
+                commandResult.setStatus( CommandResult.STATUS_ERROR );
             }
+            else
+            {
+            	  commandResult.setStatus( CommandResult.STATUS_OK);
+            }
+            
 
-            commandResult.setStatus( nStatus );
+           
         }
         catch ( Exception e )
         {
@@ -141,7 +147,7 @@ public class MavenService implements IMavenService
 
             commandResult.getLog(  ).append( errorLog );
             //_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
-            commandResult.setStatus( CommandResult.STATUS_EXCEPTION );
+            commandResult.setStatus( CommandResult.STATUS_ERROR );
         }
 
         //_endTime = new Date(  );

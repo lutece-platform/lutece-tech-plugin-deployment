@@ -11,6 +11,7 @@ CREATE TABLE deployment_application (
 	site_name varchar(256) default NULL,
 	url_site varchar(256) default NULL,
 	webapp_name varchar(100) default NULL,
+	workgroup varchar(100) default NULL,
 	PRIMARY KEY (id_application)
 );
 

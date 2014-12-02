@@ -207,10 +207,10 @@ public class ServerApplicationService implements IServerApplicationService
             {
                 if ( action.isUsedForStatus(  ) )
                 {
-                    String strResult = _actionService.executeAction( strCodeApplication, action,
+                    boolean bResultOk = _actionService.executeAction( strCodeApplication, action,
                             serverApplicationInstance, null );
 
-                    return ( strResult != null ) ? ( new Integer( new Boolean( strResult ) ? 1 : 0 ) ) : null;
+                    return   new Integer( new Boolean( bResultOk ) ? 1 : 0 ) ;
                 }
             }
         }

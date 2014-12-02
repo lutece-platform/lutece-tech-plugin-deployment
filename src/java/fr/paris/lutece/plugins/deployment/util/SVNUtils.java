@@ -144,7 +144,7 @@ public final class SVNUtils
         {
             if ( !FileUtil.delete( file, result.getLog(  ) ) )
             {
-                result.setIdError( result.getLog(  ).toString(  ) );
+                result.setError( result.getLog(  ).toString(  ) );
 
                 return result.getLog(  ).toString(  );
             }

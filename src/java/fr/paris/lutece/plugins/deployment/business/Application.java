@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-public class Application
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
+
+public class Application implements AdminWorkgroupResource
 {
     private int _nIdApplication;
     private String _strCode;
@@ -42,6 +44,7 @@ public class Application
     private String _strCodeCategory;
     private String _strSiteName;
     private String _strSvnUrlSite;
+    private String _strWorkgroup;
 
     public void setIdApplication( int _nIdApplication )
     {
@@ -112,4 +115,15 @@ public class Application
     {
         _strWebappName = strName;
     }
+    
+    
+   public String getWorkgroup(  )
+   {
+       return _strWorkgroup;
+   }
+
+   public void setWorkgroup( String workGroup )
+   {
+       _strWorkgroup = workGroup;
+   }
 }

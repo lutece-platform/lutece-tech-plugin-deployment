@@ -51,6 +51,12 @@
 	                    <input type="text" id="webapp_name" name="webapp_name" size="20" maxlength="20" tabindex="3" value="${(application.webAppName)?if_exists}" class="form-control input-sm" />
 	                </div>
 	            </div>
+	             <div class="form-group">
+	                <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{deployment.create_application.label_workgroup} * : </label> 
+	                <div class="col-xs-12 col-sm-9 col-md-9">	
+	                     <@combo name="workgroup"  items=user_workgroup_list default_value="${application.workgroup!}" />
+	                </div>
+	            </div>
 	
 	           
 	            <div class="form-group">

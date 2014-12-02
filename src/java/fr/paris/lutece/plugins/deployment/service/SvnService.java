@@ -33,27 +33,13 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
-import fr.paris.lutece.plugins.deployment.business.CommandResult;
-import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
-import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCommitClient;
-import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCopyClient;
-import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
-import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
-import fr.paris.lutece.plugins.deployment.util.ReleaseSVNCheckoutClient;
-import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
-import fr.paris.lutece.plugins.deployment.util.SVNUtils;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.ReferenceList;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.log4j.Logger;
-
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.result_column_return;
-
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -67,9 +53,21 @@ import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import fr.paris.lutece.plugins.deployment.business.CommandResult;
+import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
+import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCommitClient;
+import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCopyClient;
+import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
+import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
+import fr.paris.lutece.plugins.deployment.util.FileUtil;
+import fr.paris.lutece.plugins.deployment.util.ReleaseSVNCheckoutClient;
+import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
+import fr.paris.lutece.plugins.deployment.util.SVNUtils;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 
 
 public class SvnService implements ISvnService
@@ -303,4 +301,30 @@ public class SvnService implements ISvnService
 
         return ConstanteUtils.CONSTANTE_EMPTY_STRING;
     }
+
+	@Override
+	public ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, MavenUser user) {
+		
+		
+		CommandResult commandResult=new CommandResult();
+		DeploymentUtils.startCommandResult(commandResult);
+		ReferenceList upgradeResults=new ReferenceList();
+		// TODO Auto-generated method stub
+		String strUrlTrunkSite= SVNUtils.getSvnUrlTrunkSite(strUrlSite);
+		
+		doSvnCheckoutSite(strSiteName, strUrlTrunkSite, user, commandResult);
+		
+		List<String> listUpgradeFiles=FileUtil.list(DeploymentUtils.getPathUpgradeFiles(DeploymentUtils.getPathCheckoutSite( strSiteName )), "sql");
+                
+		for(String upgradeFile:listUpgradeFiles)
+		{
+			upgradeResults.addItem(upgradeFile,upgradeFile);
+			
+		}
+		
+		DeploymentUtils.stopCommandResult(commandResult);
+		
+		return upgradeResults;
+		
+	}
 }

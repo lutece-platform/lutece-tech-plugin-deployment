@@ -208,16 +208,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
        
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Script...\n" );
         
-        try {
-			_ftpService.uploadFile( context.getScriptFileItem().getName(),context.getScriptFileItem().getInputStream(),serverApplicationInstance.getFtpInfo(  ),
+      	_ftpService.uploadFile( context.getScriptFileItemName(),context.getScriptFileItem(),serverApplicationInstance.getFtpInfo(  ),
 			    DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
 			    context.getCommandResult(  ),false );
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			AppLogService.error(e);
-		}
-        
+		
         context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Script...\n" );
 
         return null;
@@ -232,13 +227,20 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
                 context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
                 action.getServerType(  ), locale, false, false );
-
+        boolean bResult;
         if ( action != null )
         {
             context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
-            _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
+            bResult= _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
                 context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
+            if(!bResult && action.isStopWorkflowIfExecutionError() )
+            {
+            	//Stop Workflow Action
+            	throw new RuntimeException("Error During Server Action Execution");
+            	
+            }
             context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+            
         }
 
         return null;

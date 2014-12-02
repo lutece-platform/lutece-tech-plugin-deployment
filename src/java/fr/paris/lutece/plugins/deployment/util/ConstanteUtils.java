@@ -76,7 +76,7 @@ public class ConstanteUtils
     public static final String JSON_STATUS = "status";
     public static final String JSON_LOG = "log";
     public static final String JSON_RUNNING = "running";
-    public static final String JSON_ID_ERROR = "id_error";
+    public static final String JSON_ERROR = "error";
     public static final String JSON_STATE = "state";
     public static final String JSON_RESULT = "result";
     public static final String JSON_ACTION_LIST = "action_list";
@@ -147,7 +147,8 @@ public class ConstanteUtils
     public static final String PROPERTY_SERVER_TYPE_TOMCAT_LABEL = "deployment.server_type_tomcat_label";
     public static final String PROPERTY_SERVER_TYPE_HTTPD_LABEL = "deployment.server_type_httpd_label";
     public static final String PROPERTY_SERVER_TYPE_MYSQL_LABEL = "deployment.server_type_mysql_label";
-
+    public static final String PROPERTY_UPGRADE_DIRECTORY_PATH="deployment.server.upgradeDirectoryPath";
+;
     //STATE
     public static final String CONSTANTE_COMMAND_RESULT_STATUS_EXCEPTION_VALUE = "exception";
 
@@ -192,6 +193,10 @@ public class ConstanteUtils
     public static final String MARK_SCRIPT_NAME = "script_name";
     public static final String MARK_DUMP_FILE_URL = "dump_file_url";
     public static final String MARK_DATABASE_LIST = "database_list";
+    public static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
+    public static final String MARK_USER_WORKGROUP_SELECTED = "user_workgroup_selected";
+    public static final String MARK_UPGRADE_FILE_REF_LIST = "upgrade_file_list";
+    
 
     //PARAM
     public static final String PARAM_SITE_TAG_VERSION = "site_tag_version";
@@ -220,8 +225,10 @@ public class ConstanteUtils
     public static final String PARAM_SCRIPT = "script";
     public static final String PARAM_CODE_DATABASE = "code_database";
     public static final String PARAM_SCRIPT_UPLOAD = "script_upload";
+    public static final String PARAM_SCRIPT_UPGRADE_SELECTED = "script_upgrade_selected";
     public static final String PARAM_SCRIPT_NAME= "script_name";
     public static final String PARAM_CODE_APPLICATION = "code_application";
+    public static final String PARAM_WORKGROUP = "workgroup";
     
     
     

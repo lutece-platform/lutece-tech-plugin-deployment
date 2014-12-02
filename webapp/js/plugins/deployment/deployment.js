@@ -20,6 +20,18 @@ function setResultInformations( resultInformations )
 	
 }
 
+function setErrors( errors)
+{
+	
+	if(errors!=null && errors!= "")
+	{
+		$('#errors_msg').html( errors);
+		
+	}
+	$('#errors').show();
+	
+}
+
 
 
 
@@ -52,6 +64,11 @@ function statusCallback( json )
 	}
 	else
 	{
+		
+		if(json.status!=1)
+		{
+			setErrors(json.error);
+		}
 		setResultLog( json.log );
 		setResultInformations( json.result );
 		if ( json.running )

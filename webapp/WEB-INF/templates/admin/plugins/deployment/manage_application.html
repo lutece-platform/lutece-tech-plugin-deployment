@@ -11,6 +11,8 @@
 	            <form class="form-search" action="" method="" name="" id="">
 	                <label for="">#i18n{deployment.manage_application.label_search_by_category}</label>
 	                <@combo name="code_category"  items=category_list default_value=category_selected />
+	                 <label for="">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
+	                <@combo name="workgroup"  items=user_workgroup_list default_value=user_workgroup_selected />
 	                 <button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i>&nbsp;#i18n{deployment.manage_application.button_search_by_category}</button>
 	            </form>
 	        </div>

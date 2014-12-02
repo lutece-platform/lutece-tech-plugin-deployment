@@ -45,11 +45,12 @@ public class ApplicationDAO implements IApllicationDAO
 {
     private static final String SQL_FILTER_ID_APPLICATION = " id_application = ? ";
     private static final String SQL_FILTER_CODE_CATEGORY = " code_category = ? ";
+    private static final String SQL_FILTER_WORKGROUP = " workgroup = ? ";
     private static final String SQL_ORDER_CODE_ASC = " ORDER BY code ASC ";
     private static final String SQL_QUERY_NEW_PK = " SELECT max(id_application) FROM deployment_application ";
-    private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,code_category,site_name,url_site,webapp_name FROM deployment_application ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO deployment_application (id_application,code,name,code_category,site_name,url_site,webapp_name)VALUES(?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,code_category=?,site_name=?,url_site=?,webapp_name=? WHERE" +
+    private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,code_category,site_name,url_site,webapp_name,workgroup FROM deployment_application ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO deployment_application (id_application,code,name,code_category,site_name,url_site,webapp_name,workgroup )VALUES(?,?,?,?,?,?,?,?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,code_category=?,site_name=?,url_site=?,webapp_name=?,workgroup=?  WHERE" +
         SQL_FILTER_ID_APPLICATION;
     private static final String SQL_QUERY_DELETE = "DELETE FROM deployment_application WHERE" +
         SQL_FILTER_ID_APPLICATION;
@@ -102,6 +103,10 @@ public class ApplicationDAO implements IApllicationDAO
         {
             listStrFilter.add( SQL_FILTER_CODE_CATEGORY );
         }
+        if ( filter.containsWorkgroupFilter() )
+        {
+            listStrFilter.add( SQL_FILTER_WORKGROUP );
+        }
 
         String strSQL = DeploymentUtils.buildRequetteWithFilter( SQL_QUERY_SELECT_APPLICATION, listStrFilter,
                 SQL_ORDER_CODE_ASC );
@@ -119,6 +124,11 @@ public class ApplicationDAO implements IApllicationDAO
             daoUtil.setString( nIndex, filter.getCodeCategory(  ) );
             nIndex++;
         }
+        if ( filter.containsWorkgroupFilter(  ) )
+        {
+            daoUtil.setString( nIndex, filter.getWorkgroup() );
+            nIndex++;
+        }
 
         daoUtil.executeQuery(  );
 
@@ -132,6 +142,7 @@ public class ApplicationDAO implements IApllicationDAO
             application.setSiteName( daoUtil.getString( 5 ) );
             application.setSvnUrlSite( daoUtil.getString( 6 ) );
             application.setWebAppName( daoUtil.getString( 7 ) );
+            application.setWorkgroup(daoUtil.getString( 8 ));
             listApllication.add( application );
         }
 
@@ -159,7 +170,7 @@ public class ApplicationDAO implements IApllicationDAO
         daoUtil.setString( 5, application.getSiteName(  ) );
         daoUtil.setString( 6, application.getSvnUrlSite(  ) );
         daoUtil.setString( 7, application.getWebAppName(  ) );
-
+        daoUtil.setString( 8, application.getWorkgroup() );
         application.setIdApplication( newPrimaryKey( plugin ) );
         daoUtil.setInt( 1, application.getIdApplication(  ) );
 
@@ -179,7 +190,9 @@ public class ApplicationDAO implements IApllicationDAO
         daoUtil.setString( 5, application.getSiteName(  ) );
         daoUtil.setString( 6, application.getSvnUrlSite(  ) );
         daoUtil.setString( 7, application.getWebAppName(  ) );
-        daoUtil.setInt( 8, application.getIdApplication(  ) );
+        daoUtil.setString( 8, application.getWorkgroup() );
+        
+        daoUtil.setInt( 9, application.getIdApplication(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );

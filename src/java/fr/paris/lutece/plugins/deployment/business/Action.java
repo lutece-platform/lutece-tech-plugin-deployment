@@ -47,6 +47,7 @@ public abstract class Action implements IAction
     private boolean _bDisplay;
     private List<String> _listParameters;
     private String _strServerType;
+    private boolean _bStopWorkflowIfExecutionError;
 
     /* (non-Javadoc)
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setCode(java.lang.String)
@@ -168,4 +169,13 @@ public abstract class Action implements IAction
     {
         return _strServerType;
     }
+
+	public boolean isStopWorkflowIfExecutionError() {
+		return _bStopWorkflowIfExecutionError;
+	}
+
+	public void setStopWorkflowIfExecutionError(
+			boolean _bStopWorkflowIfExecutionError) {
+		this._bStopWorkflowIfExecutionError = _bStopWorkflowIfExecutionError;
+	}
 }

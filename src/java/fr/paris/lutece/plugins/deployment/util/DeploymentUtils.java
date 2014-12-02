@@ -211,6 +211,53 @@ public class DeploymentUtils
     {
         return strPathSite + File.separator + ConstanteUtils.CONSTANTE_POM_XML;
     }
+    
+    
+    /**
+     * Retourne l'emplacement du pom
+     *
+     * @param strBasePath
+     * @param strPluginName
+     * @return
+     */
+    public static String getPathUpgradeFiles( String strPathSite )
+    {
+    	
+    	String strPath=AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_UPGRADE_DIRECTORY_PATH );
+    	StringBuffer strBuffer=new StringBuffer(strPathSite); 
+    	
+    	for(String strP:strPath.split(ConstanteUtils.CONSTANTE_SEPARATOR_SLASH))
+    	{
+    		strBuffer.append(File.separator);
+    		strBuffer.append(strP);
+    		
+    		
+    	}
+    	
+       return strBuffer.toString();
+    }
+    
+    /**
+     * Retourne l'emplacement du pom
+     *
+     * @param strBasePath
+     * @param strPluginName
+     * @return
+     */
+    public static String getPathUpgradeFile( String strPathSite,String strFileName )
+    {
+    	
+    	StringBuffer strBuffer=new StringBuffer(getPathUpgradeFiles(strPathSite));
+    	strBuffer.append(File.separator);
+    	strBuffer.append(strFileName);
+    	return strBuffer.toString();
+    }
+    
+    
+    
+    
+    
+    
 
     /**
      * Retourne l'emplacement du pom
@@ -402,7 +449,7 @@ public class DeploymentUtils
 
             jo.put( ConstanteUtils.JSON_LOG, strLog );
             jo.put( ConstanteUtils.JSON_RUNNING, result.isRunning(  ) );
-            jo.put( ConstanteUtils.JSON_ID_ERROR, result.getIdError(  ) );
+            jo.put( ConstanteUtils.JSON_ERROR, result.getError(  ) );
             
             for (  Entry<String,String> resultInformations: result.getResultInformations().entrySet()) {
             	
@@ -454,8 +501,8 @@ public class DeploymentUtils
 
             jo.put( ConstanteUtils.JSON_RUNNING,
                 ( result != null ) ? result.isRunning(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            jo.put( ConstanteUtils.JSON_ID_ERROR,
-                ( result != null ) ? result.getIdError(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_ERROR,
+                ( result != null ) ? result.getError(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
         }
         catch ( JSONException e )
         {
@@ -552,15 +599,19 @@ public class DeploymentUtils
     }
 
 
-    public static void addEmptyRefenceItem( ReferenceList referenceList )
+    public static ReferenceList addEmptyRefenceItem( ReferenceList referenceList )
     {
-        if ( referenceList != null )
-        {
-            ReferenceItem referenceItem = new ReferenceItem(  );
-            referenceItem.setCode( ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            referenceItem.setName( ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            referenceList.add( 0, referenceItem );
-        }
+    	ReferenceList referenceList2=new ReferenceList();
+    	
+    	ReferenceItem referenceItem = new ReferenceItem(  );
+        
+    	referenceItem.setCode( ConstanteUtils.CONSTANTE_EMPTY_STRING );
+        referenceItem.setName( ConstanteUtils.CONSTANTE_EMPTY_STRING );
+        
+        referenceList2.add( 0, referenceItem );
+        referenceList2.addAll(referenceList);
+        
+        return referenceList2; 
     }
 
     public static ActionParameter[] getActionParameters( HttpServletRequest request, List<String> listParameterNames )
@@ -610,7 +661,7 @@ public class DeploymentUtils
 	            {
 		            actionParameter = new ActionParameter(  );
 		            actionParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME );
-		            actionParameter.setValue( workkflowContext.getScriptFileItem().getName());
+		            actionParameter.setValue( workkflowContext.getScriptFileItemName());
 		            listActionParameters.add(actionParameter);
 		            
 	            }

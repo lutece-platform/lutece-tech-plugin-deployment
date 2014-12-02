@@ -38,17 +38,19 @@ import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Iterator;
 import java.util.List;
 
 
 /**
  *
- * WarInstallerAction
+ * ExecuteAction
  *
  */
 public class ExecuteAction extends DefaultAction
@@ -101,10 +103,44 @@ public class ExecuteAction extends DefaultAction
 	         if ( strJSONAction != null )
 	         {
 	             JSONObject jo = DeploymentUtils.getJSONOBject( strJSONAction );
-	
+	             JSONObject joStep;
+	             
 	             if ( jo != null )
 	             {
 	                 strResult = jo.getString( strWebserviceActionJsonPropery );
+	                 
+	                 
+	                 
+	                 JSONArray steps=jo.getJSONObject("execution").getJSONArray("steps");
+	                 Iterator<JSONObject> iterator = steps.iterator(  );
+
+	                 while ( iterator.hasNext(  ) )
+	                 {
+	                	 joStep= iterator.next(  ) ;
+	                	 if(joStep.getString("step_name").equals("[ STEP 3 ] : execute"))
+	                	 {
+	                		 
+	                		 commandResult.getLog().append("**************stdout******************* \n" );
+	                		 Iterator<String> iteratStdOut = joStep.getJSONArray("stdout").iterator(  );
+	                		 while ( iteratStdOut.hasNext(  ) )
+	    	                 {
+	                			 commandResult.getLog().append(iteratStdOut.next()+ " \n" );
+	    	                 }
+	                		 commandResult.getLog().append("*************************************** \n" );
+	                		 commandResult.getLog().append("**************Errors******************* \n" );
+	                		 Iterator<String> iteratStdError = joStep.getJSONArray("stderr").iterator(  );
+	                		 
+	                		 while ( iteratStdError.hasNext(  ) )
+	    	                 {
+	                			 commandResult.getLog().append(iteratStdError.next()+ " \n" );
+	    	                 }
+	                		 commandResult.getLog().append("*************************************** \n" );
+	                	 }
+	                	 
+	                 }
+	             
+	                 
+	                 
 	             }
 	         }
     	}
