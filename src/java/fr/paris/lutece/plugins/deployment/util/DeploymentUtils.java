@@ -513,8 +513,8 @@ public class DeploymentUtils
     }
     
     
-    public static JSONObject getJSONForServerAction( String strJspForceRedirect,
-            CommandResult result)
+    public static JSONObject getJSONForServerAction( int nIdApplication,String strCodeEnvironment,String strServerCodeInstance,String strServerApplicationType,String strJspForceRedirect,
+            CommandResult result,List<IAction> listServersActions,Integer newServerStatus)
         {
             JSONObject jo = getJSONForCommandResult(result);
 
@@ -529,7 +529,31 @@ public class DeploymentUtils
             {
                 AppLogService.error( "JSON error : " + e.getMessage(  ) );
             }
+            JSONObject joAction;
+            JSONArray joListAction = new JSONArray(  );
 
+            if ( listServersActions != null )
+            {
+                for ( IAction action : listServersActions )
+                {
+                	if( action.isDisplay() && (action.getStatus()==null||action.getStatus().equals(newServerStatus)))
+                	{
+                	
+	                    joAction = new JSONObject(  );
+	                    joAction.put( ConstanteUtils.JSON_ACTION_CODE, action.getCode() );
+	                    joAction.put( ConstanteUtils.JSON_ACTION_NAME, action.getName(  ) );
+	                    joAction.put( ConstanteUtils.JSON_ACTION_ICON_CSS_CLASS, action.getIconCssClass());
+	                    joListAction.add( joAction );
+                	}
+                }
+            }
+            jo.put( ConstanteUtils.JSON_ACTION_LIST, joListAction );
+            jo.put( ConstanteUtils.JSON_SERVER_STATUS,
+                    ( newServerStatus != null ) ? newServerStatus : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_ID_APPLIACTION,nIdApplication);
+            jo.put( ConstanteUtils.JSON_CODE_ENVIRONMENT,strCodeEnvironment);
+            jo.put( ConstanteUtils.JSON_CODE_SERVER_APPLICATION_INSTANCE ,  strServerCodeInstance);
+            jo.put( ConstanteUtils.JSON_SERVER_APPLICATION_TYPE ,  strServerApplicationType);
             return jo;
         }
 
@@ -585,7 +609,7 @@ public class DeploymentUtils
     	
          commandResult.setLog( new StringBuffer(  ) );
          commandResult.setRunning( true );
-        
+         commandResult.setStatus(CommandResult.STATUS_OK);
     }
 
     public static void stopCommandResult( WorkflowDeploySiteContext context )
@@ -695,8 +719,7 @@ public class DeploymentUtils
 
         for ( IAction action : listAction )
         {
-            referenceList.addItem( getActionKey( action.getCode(  ), action.getServerType(  ) ),
-                action.getI18nKeyName(  ) );
+            referenceList.addItem( getActionKey( action.getCode(  ), action.getServerType(  ) ),action.getName());
         }
 
         return referenceList;

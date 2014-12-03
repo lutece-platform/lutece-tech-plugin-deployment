@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.deployment.web;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.ar.ArabicAnalyzer;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
@@ -975,6 +977,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         		 strCodeServerApplicationInstance , strCodeEnvironment,
         		 strServerAppicationType, request.getLocale(), false, false );
 
+         List<IAction> listNewServersActions=null;
+         Integer nNewServersStatus=null;
+         
          if ( action != null )
          {
         	
@@ -989,7 +994,15 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         		 _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
             		 commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) ) );
         		 commandResult.getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+        		 
         		 DeploymentUtils.stopCommandResult(commandResult);
+        		 
+        		 //get new status
+        		 	serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+                		 strCodeServerApplicationInstance , strCodeEnvironment,
+                		 strServerAppicationType, request.getLocale(), true, true );
+        		 listNewServersActions=serverApplicationInstance.getListServerApplicationAction();
+        		 nNewServersStatus=serverApplicationInstance.getStatus();
         	 }
         	 else
         	 {
@@ -998,7 +1011,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         	 
          }
 
-         JSONObject jo = DeploymentUtils.getJSONForServerAction(strJspFormToDisplay, commandResult);
+         JSONObject jo = DeploymentUtils.getJSONForServerAction(application.getIdApplication(),serverApplicationInstance.getCodeEnvironment(),serverApplicationInstance.getCode(),serverApplicationInstance.getType(),strJspFormToDisplay, commandResult,listNewServersActions,nNewServersStatus);
         
          return jo.toString();
     

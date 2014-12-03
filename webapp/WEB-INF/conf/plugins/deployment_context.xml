@@ -249,7 +249,7 @@
  		p:i18nKeyName="deployment.action.status.tomcat.name"
  		p:usedForStatus="true"
  		p:iconCssClass="icon-refresh icon-white"
- 		p:display="true"
+ 		p:display="false"
  		p:serverType="TOMCAT"
  		/>
  		
@@ -341,7 +341,7 @@
  		p:i18nKeyName="deployment.action.status.mysql.name"
  		p:usedForStatus="true"
  		p:iconCssClass="icon-refresh icon-white"
- 		p:display="true"
+ 		p:display="false"
  		p:serverType="MYSQL"
  		/>
  		

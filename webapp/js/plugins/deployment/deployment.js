@@ -445,6 +445,8 @@ function statusCallbackRunActionServer( json )
 		{
 			setResultActionServerLog( json.log );
 			setResultActionServer( json.result );
+			replaceServerActions(json);
+			replaceServerStatus(json)
 		
 		}
 		addEvent();
@@ -480,6 +482,59 @@ function setResultActionServer( resultInformations )
 	{
 		$('#dump_file_url').html(" <a class='btn btn-primary btn-mini' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
 		$('#dump_file').show();
+	}
+	
+}
+
+
+function replaceServerActions(json)
+{
+	
+	if(json.action_list!=null)
+	{	var newActions='';
+		var action;
+		for (val in json.action_list){
+			action=json.action_list[val];
+			newActions+='<form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-left spaced form_run_action_server">';
+			newActions+='<input name="plugin_name" value="deployment" type="hidden" >';
+			newActions+='<input name="id_application" value="'+json.id_application+'" type="hidden" >';
+			newActions+='<input name="action_code" value="'+action.action_code+'" type="hidden" />'
+			newActions+='<input name="code_environment" value="'+json.code_environment+'" type="hidden" />';
+			newActions+='<input name="code_server_application_instance" value="'+json.code_server_application_instance+'" type="hidden" >';
+			newActions+='<input name="server_application_type" value="'+json.server_application_type+'" type="hidden" >';
+			newActions+=' <button class="btn btn-primary btn-xs btn-flat" type="submit" >';
+			newActions+='<i class="'+action.icon_css_class+'"></i>'+action.name;
+			newActions+='</button>';
+			newActions+='</form>';   
+			
+		}	
+		
+		
+		$('#actions_'+json.code_environment.replace(".", "_")+'_'+json.code_server_application_instance+'_'+json.server_application_type).html(newActions);
+		
+		}
+	
+}
+
+
+function replaceServerStatus(json)
+{
+	
+	if(json.server_status!=null)
+	{	
+		var newStatus='';
+		
+		if(json.server_status==1)
+		{
+			newStatus+='  <span class="label label-success"><i class="glyphicon glyphicon-ok-sign"></i> Activé</span>';
+		}
+		else
+		{
+			newStatus+='  <span class="label label-important"><i class="glyphicon glyphicon-remove-sign"></i> Désactivé</span>';
+			
+		}
+			
+	$('#status_'+json.code_environment.replace(".", "_")+'_'+json.code_server_application_instance+'_'+json.server_application_type).html(newStatus);
 	}
 	
 }

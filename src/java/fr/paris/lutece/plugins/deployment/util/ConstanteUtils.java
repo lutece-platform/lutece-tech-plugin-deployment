@@ -81,10 +81,24 @@ public class ConstanteUtils
     public static final String JSON_RESULT = "result";
     public static final String JSON_ACTION_LIST = "action_list";
     public static final String JSON_ACTION_ID = "id";
+    public static final String JSON_ACTION_CODE = "action_code";
+    public static final String JSON_ACTION_ICON_CSS_CLASS = "icon_css_class";
     public static final String JSON_ACTION_NAME = "name";
+    public static final String JSON_ACTION_STATUS = "status";
+    public static final String JSON_ACTION_DISPLAY = "display";
     public static final String JSON_ACTION_DESCRIPTION = "description";
+    
     public static final String JSON_JSP_FOM_DISPLAY = "jsp_form_display";
     public static final String JSON_FORM_ERROR = "form_error";
+    public static final String JSON_SERVER_STATUS = "server_status";
+    public static final String JSON_ID_APPLIACTION = "id_application";
+    public static final String JSON_CODE_ENVIRONMENT = "code_environment";
+    public static final String JSON_CODE_SERVER_APPLICATION_INSTANCE = "code_server_application_instance";
+    public static final String JSON_SERVER_APPLICATION_TYPE = "server_application_type";
+    
+    
+    
+    
    
     
     
