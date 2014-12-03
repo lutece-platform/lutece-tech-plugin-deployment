@@ -14,7 +14,7 @@ function setResultInformations( resultInformations )
 	
 	if(resultInformations.dump_file_url!=null && resultInformations.dump_file_url!= "")
 	{
-		$('#dump_file_url').html(" <a class='btn btn-primary btn-mini' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
+		$('#dump_file_url').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='glyphicon glyphicon-download'></i></a> ");
 		$('#dump_file').show();
 	}
 	
@@ -212,7 +212,7 @@ function refreshComponantsDatabase()
 function runWorkflowAction( idAction ) 
 {
 	var resultJsp='jsp/admin/plugins/deployment/DoProcessActionJSON.jsp?id_action='+idAction;
-	$('#myModal').modal() ;
+	$('#myModal').modal('show') ;
 	$.getJSON( resultJsp, function(data)
 			{
 		statusCallbackWorkflowAction(data);
@@ -311,7 +311,7 @@ function replaceWorkflowActions(json)
 			newActions+='<input type="hidden" name="id_action" id="id_action" value="'+action.id+'">';
 			newActions+='<div class="form-group">';
 			newActions+='<div class="col-xs-12 col-sm-12 col-md">'
-			newActions+='<button class="btn btn-primary btn-sm" type="submit">'+action.name+'</button>';
+			newActions+='<button class="btn btn-primary btn-flat" type="submit">'+action.name+'</button>';
 			newActions+='</div>';
 			newActions+='</div>';
 			newActions+='<p class="help-block">'+action.description+'</p>';
@@ -361,7 +361,7 @@ function displayTaskForm(json)
 function saveTasksForm(form ) 
 {
 	
-	$('#myModal').modal() ;
+	$('#myModal').modal('show') ;
 	$.ajax({
           url: 'jsp/admin/plugins/deployment/DoSaveTasksFormJSON.jsp',
           type: $(form).attr('method'), 
@@ -377,7 +377,7 @@ function saveTasksForm(form )
 function runActionServer(form ) 
 {
 	
-	$('#myModal').modal() ;
+	$('#myModal').modal('toggle') ;
 	$.ajax({
           url: 'jsp/admin/plugins/deployment/DoRunActionServerJSON.jsp',
           type: $(form).attr('method'), 
@@ -408,19 +408,15 @@ function statusCallbackTasksForm( json )
 	}
 	else
 	{
-		$('#myModal').modal('hide');
+		$('#myModal').modal('toggle');
 		$('#workflow_task_form').hide();
 		replaceWorkflowActions(json);
 		replaceWorkflowState(json);
 		addEvent();
 		
 	}
-	
-	
+
 }
-
-
-
 
 
 function statusCallbackRunActionServer( json )
@@ -433,7 +429,7 @@ function statusCallbackRunActionServer( json )
 	else
 	{
 		
-		$('#myModal').modal('hide');
+		$('#myModal').modal('toggle');
 	
 		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
 		{
@@ -443,7 +439,7 @@ function statusCallbackRunActionServer( json )
 		}
 		else
 		{
-			setResultActionServerLog( json.log );
+			//setResultActionServerLog( json.log );
 			setResultActionServer( json.result );
 			replaceServerActions(json);
 			replaceServerStatus(json)
@@ -456,12 +452,14 @@ function statusCallbackRunActionServer( json )
 
 function displayFormActionServer(json)
 {
-	
 	$.ajax({
 		  url: json.jsp_form_display,
 		  success:function ( data ) {
-			$('#div_form_action_server').html(data);
-			$('#div_form_action_server').show();
+			//$('#div_form_action_server').html(data);
+			//$('#div_form_action_server').show();
+			$('.modal-body').html(data);
+			$('#myModal').modal('toggle');
+			
 		}
 	});
 	
@@ -471,7 +469,7 @@ function displayFormActionServer(json)
 function setResultActionServerLog( log )
 {
 	$('#action_server_log').html(log);
-	$('#action_server_result').show();
+	$('#action_server_result').toggle();
 }
 
 
@@ -480,8 +478,9 @@ function setResultActionServer( resultInformations )
 	
 	if(resultInformations.dump_file_url!=null && resultInformations.dump_file_url!= "")
 	{
-		$('#dump_file_url').html(" <a class='btn btn-primary btn-mini' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
-		$('#dump_file').show();
+		//$('#dump_file_url').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
+		$('.modal-body').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump' > <i class='glyphicon glyphicon-download'></i> Télécharger le dump</a>");
+		$('#myModal').modal('show');
 	}
 	
 }
@@ -502,7 +501,7 @@ function replaceServerActions(json)
 			newActions+='<input name="code_environment" value="'+json.code_environment+'" type="hidden" />';
 			newActions+='<input name="code_server_application_instance" value="'+json.code_server_application_instance+'" type="hidden" >';
 			newActions+='<input name="server_application_type" value="'+json.server_application_type+'" type="hidden" >';
-			newActions+=' <button class="btn btn-primary btn-xs btn-flat" type="submit" >';
+			newActions+=' <button class="btn btn-app" type="submit" >';
 			newActions+='<i class="'+action.icon_css_class+'"></i>'+action.name;
 			newActions+='</button>';
 			newActions+='</form>';   

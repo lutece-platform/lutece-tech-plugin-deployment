@@ -248,7 +248,7 @@
  		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.tomcat.name"
  		p:usedForStatus="true"
- 		p:iconCssClass="icon-refresh icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-refresh "
  		p:display="false"
  		p:serverType="TOMCAT"
  		/>
@@ -258,7 +258,7 @@
  		p:i18nKeyName="deployment.action.startup.tomcat.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="TOMCAT"
  		/>		
@@ -268,7 +268,7 @@
  		p:i18nKeyName="deployment.action.shutdown.tomcat.name"
  		p:usedForStatus="false"
  		p:status="1"
- 		p:iconCssClass="icon-off icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
  		p:serverType="TOMCAT"
  		/>
@@ -277,7 +277,7 @@
  		p:i18nKeyName="deployment.action.rmwork.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-trash icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-trash "
  		p:display="true"
  		p:serverType="TOMCAT"
  		/>
@@ -287,7 +287,7 @@
  		p:i18nKeyName="deployment.action.rmworkwithparams.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-trash icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-trash "
  		p:display="false"
  		p:serverType="TOMCAT"
  		/>	
@@ -297,7 +297,7 @@
  		p:i18nKeyName="deployment.action.warInstaller"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="false"
  		p:serverType="TOMCAT"
  		p:stopWorkflowIfExecutionError="true"
@@ -331,7 +331,7 @@
  		p:i18nKeyName="deployment.action.startup.mysql.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="MYSQL"
  		/>
@@ -340,7 +340,7 @@
  		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.mysql.name"
  		p:usedForStatus="true"
- 		p:iconCssClass="icon-refresh icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-refresh "
  		p:display="false"
  		p:serverType="MYSQL"
  		/>
@@ -351,7 +351,7 @@
  		p:i18nKeyName="deployment.action.shutdown.mysql.name"
  		p:usedForStatus="false"
  		p:status="1"
- 		p:iconCssClass="icon-off icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
  		p:serverType="MYSQL"
  		/>
@@ -362,7 +362,7 @@
  		p:i18nKeyName="deployment.action.dump.mysql.name"
  		p:usedForStatus="false"
  		p:status="1"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="MYSQL"
  		p:stopWorkflowIfExecutionError="true"
@@ -381,17 +381,11 @@
  		p:i18nKeyName="deployment.action.execute.mysql.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="false"
  		p:serverType="MYSQL"
  		p:stopWorkflowIfExecutionError="true"
  		/>	
- 		
- 		
- 		
-
- 		
-
  		
  		
  <!-- ACTIONS HTTPD -->
@@ -401,7 +395,7 @@
  		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.httpd.name"
  		p:usedForStatus="true"
- 		p:iconCssClass="icon-refresh icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-refresh"
  		p:display="true"
  		p:serverType="HTTPD"
  		/>
@@ -412,7 +406,7 @@
  		p:i18nKeyName="deployment.action.shutdown.httpd.name"
  		p:usedForStatus="false"
  		p:status="1"
- 		p:iconCssClass="icon-off icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
  		p:serverType="HTTPD"
  		/>
@@ -425,7 +419,7 @@
  		p:i18nKeyName="deployment.action.startup.httpd.name"
  		p:usedForStatus="false"
  		p:status="0"
- 		p:iconCssClass="icon-play-circle icon-white"
+ 		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="HTTPD"
  		/>		

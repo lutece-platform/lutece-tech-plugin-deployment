@@ -17,9 +17,9 @@
 	             <td> 
 	            	 <div id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">    
 	                 <#if serverApplicationInstance.status?has_content && serverApplicationInstance.status?has_content && serverApplicationInstance.status==1>
-	                 <span class="label label-success"><i class="glyphicon glyphicon-ok-sign"></i> #i18n{portal.util.labelEnabled}</span>
+						<span class="label label-success"><i class="glyphicon glyphicon-ok-sign"></i> #i18n{portal.util.labelEnabled}</span>
 	                 <#else>
-	                 <span class="label label-important"><i class="glyphicon glyphicon-remove-sign"></i> #i18n{portal.util.labelDisabled}</span>
+						<span class="label label-important"><i class="glyphicon glyphicon-remove-sign"></i> #i18n{portal.util.labelDisabled}</span>
 	                 </#if>
 	               </div> 
 	             <td> 
@@ -27,24 +27,18 @@
 	             	<div id="test"></div>
 	             	<div id="actions_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}"> 
 	                  <#list serverApplicationInstance.listServerApplicationAction as action >  
-	                      <#if action.display && ((!action.status?exists)||(action.status?exists &&  serverApplicationInstance.status?has_content &&serverApplicationInstance.status==action.status))>
-	                     
-	                      <form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-left spaced form_run_action_server">
-					  	<input name="plugin_name" value="deployment" type="hidden" >
-					   	<input name="id_application" value="${application.idApplication}" type="hidden" >
-					   	<input name="action_code" value="${action.code}" type="hidden" />
-					
-					   	<input name="code_environment" value="${environment.code}" type="hidden" />
-					   	<input name="code_server_application_instance" value="${serverApplicationInstance.code}" type="hidden" >
-					   	<input name="server_application_type" value="${serverApplicationInstance.type}" type="hidden" >
-					 
-	                     
-	                       <button class="btn btn-primary btn-xs btn-flat" type="submit" >
-	                           <i class="${action.iconCssClass}"></i>${action.name}
-	                       </button>
-	                      
-	                      </form>
-	                      	
+	                    <#if action.display && ((!action.status?exists)||(action.status?exists &&  serverApplicationInstance.status?has_content &&serverApplicationInstance.status==action.status))>
+							<form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-left spaced form_run_action_server">
+								<input name="plugin_name" value="deployment" type="hidden" >
+								<input name="id_application" value="${application.idApplication}" type="hidden" >
+								<input name="action_code" value="${action.code}" type="hidden" />
+								<input name="code_environment" value="${environment.code}" type="hidden" />
+								<input name="code_server_application_instance" value="${serverApplicationInstance.code}" type="hidden" >
+								<input name="server_application_type" value="${serverApplicationInstance.type}" type="hidden" >
+								   <button class="btn btn-app" type="submit" >
+									   <i class="${action.iconCssClass}"></i> ${action.name}
+								   </button>
+							</form>
 	                      </#if>
 	                  </#list>
 	                 </div>	
@@ -63,15 +57,15 @@
 			    <#if error_message?has_content>
 				   	 <div class="callout callout-error">
 				   	 	${error_message}
-					    <a class="btn btn-primary btn-mini" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
+					    <a class="btn btn-primary btn-mini" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}" title="#i18n{deployment.create_application.action_modify_user_account}" >
 					        <i class="glyphicon glyphicon-edit"></i> 
 					    </a>
 				    </div>
 			    <#else>
 			    	<div id="div_form_action_server"></div>
-				     <div id="action_server_result" style="display:none" >
+				     <div id="action_server_result" >
 				    	<p id="action_server_log"></p>
-				        <p id="dump_file" style="display:none" ><strong>#i18n{deployment.deploy_application_process.download_dump}  :</strong><div id="dump_file_url"></div></p> 
+				        <p id="dump_file" ><strong>#i18n{deployment.deploy_application_process.download_dump}  :</strong><div id="dump_file_url"></div></p> 
 					</div>
 		    	      <table class="table table-hover table-condensed">
 		            	<#list environment_list as environment>
@@ -85,12 +79,34 @@
 		        
 		   				</#list>
 		   				</table>
-     
     			</#if>
     		</div>
     	</div>
 	</div>
 </div>
+<div id="myModal"class="modal  fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Actions</h4>
+			</div>
+			<div class="modal-body">
+				<div class="box" style="min-height:100px;border-top:0;">
+					<div class="overlay"></div>
+					<div class="loading-img"></div>
+				</div>
+				<div class="center-block">Une action est en cours, veuillez patienter quelques instants</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
-$(document).ready( function(){ addEvent();});
+$(document).ready( function(){ 
+	addEvent();
+	$("#dump_file").toggle();
+	$("#action_server_log").toggle();
+});
 </script>	
