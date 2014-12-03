@@ -374,21 +374,7 @@ function saveTasksForm(form )
 	
 }
 
-function runActionServer(form ) 
-{
-	
-	$('#myModal').modal('toggle') ;
-	$.ajax({
-          url: 'jsp/admin/plugins/deployment/DoRunActionServerJSON.jsp',
-          type: $(form).attr('method'), 
-          data: $(form).serialize(), 
-          dataType: 'json',
-          success: function(json) { 
-        	  statusCallbackRunActionServer(json); 
-          }
-      });
-	
-}
+
 
 
 
@@ -418,6 +404,30 @@ function statusCallbackTasksForm( json )
 
 }
 
+/**************Servers actions*********************/
+
+function runActionServer(form ) 
+{
+	
+	
+	initModalBody();
+	if ($('#myModal').hasClass('in')==false)
+	{
+		$('#myModal').modal('show') ;
+	}
+	
+	$.ajax({
+          url: 'jsp/admin/plugins/deployment/DoRunActionServerJSON.jsp',
+          type: $(form).attr('method'), 
+          data: $(form).serialize(), 
+          dataType: 'json',
+          success: function(json) { 
+        	  statusCallbackRunActionServer(json); 
+          }
+      });
+	
+}
+
 
 function statusCallbackRunActionServer( json )
 {
@@ -429,7 +439,7 @@ function statusCallbackRunActionServer( json )
 	else
 	{
 		
-		$('#myModal').modal('toggle');
+	
 	
 		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
 		{
@@ -439,6 +449,7 @@ function statusCallbackRunActionServer( json )
 		}
 		else
 		{
+			
 			//setResultActionServerLog( json.log );
 			setResultActionServer( json.result );
 			replaceServerActions(json);
@@ -458,7 +469,7 @@ function displayFormActionServer(json)
 			//$('#div_form_action_server').html(data);
 			//$('#div_form_action_server').show();
 			$('.modal-body').html(data);
-			$('#myModal').modal('toggle');
+			$('#myModal').modal('show');
 			
 		}
 	});
@@ -480,8 +491,14 @@ function setResultActionServer( resultInformations )
 	{
 		//$('#dump_file_url').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
 		$('.modal-body').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump' > <i class='glyphicon glyphicon-download'></i> Télécharger le dump</a>");
-		$('#myModal').modal('show');
+		
 	}
+	else
+	{	
+		$('#myModal').modal('hide');
+	}
+	
+	
 	
 }
 
@@ -538,6 +555,14 @@ function replaceServerStatus(json)
 	
 }
 
+
+function initModalBody()
+{
+	$('.modal-body').html('<div class="box" style="min-height:100px;border-top:0;"><div class="overlay"></div><div class="loading-img"></div></div><div class="center-block">Une action est en cours, veuillez patienter quelques instants</div>');
+}
+
+
+/*****************************************************/
 
 
 
