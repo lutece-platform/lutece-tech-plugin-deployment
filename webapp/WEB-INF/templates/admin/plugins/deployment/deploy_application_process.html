@@ -1,70 +1,109 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="box box-primary">
+			<div class="box-header">
+				<h3 class="box-title">#i18n{deployment.deploy_application_process.table_label} ${application.code} - ${application.name}</h3>
+			</div><!-- /.box-header -->
+			<div class="box-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<form class="form" role="form">
+						<#if deploy_war &&  tag_to_deploy?has_content>
+						  <div class="form-group">
+							<label>#i18n{deployment.deploy_application_process.label_tag_to_deploy}</label>
+							<div class="col-sm-10">
+							  <p class="form-control-static">${tag_to_deploy}</p>
+							</div>
+						  </div>
+						</#if>  
+						<#if deploy_sql>
+							<div class="form-group">
+							<label>#i18n{deployment.deploy_application_process.label_script_name}</label>
+							<div class="col-sm-10">
+							  <p class="form-control-static">${script_name}</p>
+							</div>
+						  </div>
+						</#if>
+						<div class="form-group">
+							<label>#i18n{deployment.deploy_application_process.label_environment} </label>
+							<div class="col-sm-10">
+							  <p class="form-control-static">${environment.name}</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>#i18n{deployment.deploy_application_process.label_server_instance}</label>
+							<div class="col-sm-10">
+							  <p class="form-control-static">${server_instance.name}</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>#i18n{deployment.deploy_application_process.label_state}</label>
+							<div class="col-sm-10">
+							  <p class="form-control-static" id="workflow_state">${state}</p>
+							</div>
+						</div>
+						<div class="form-group" id="dump_file" style="display:none;">
+							<label>#i18n{deployment.deploy_application_process.download_dump}</label>
+							<div class="col-sm-10">
+							  <p class="form-control-static" id="dump_file_url"></p>
+							</div>
+						</div>	
+						</form>						
+					</div>
+					<div class="col-xs-12 col-sm-8 col-md-8">
+						<div id="workflow_actions">
+						<#list action_list as workflow_action>
+							<form class="form-horizontal" method="post" name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
+								<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}">
+								<input type="hidden" id="plugin_name" name="plugin_name" value="deployment">
+								<div class="form-group">
+									<div class="col-xs-12 col-sm-12 col-md">
+										<button class="btn btn-primary btn-flat" type="submit" >
+											<span class="fa fa-play"></span> ${workflow_action.name}
+										</button>
+									</div>
+								</div>
+								<p class="help-block">${workflow_action.description}</p>   
+							</form>
+						</#list>
+						</div> 
+						<div id="workflow_task_form"></div>
+						<div style="display:none"; id="errors" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>#i18n{deployment.deploy_application_process.error_message_title}:
+							<div id="errors_msg"></div>
+						</div>	
+						<textarea class="form-control" id="pre_log" class="text_black" cols="106" rows="15" readonly="readonly"></textarea>
+						<a class="btn btn-default btn-flat" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">
+							<span class="fa fa-remove"></span> #i18n{portal.util.labelCancel}
+						</a>
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
+</div>
+<div id="myModal"class="modal  fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Deploiememnt</h4>
+			</div>
+			<div class="modal-body">
+				<div class="box" style="min-height:100px;border-top:0;">
+					<div class="overlay"></div>
+					<div class="loading-img"></div>
+				</div>
+				<div class="center-block">Une action est en cours, veuillez patienter quelques instants</div>
+			</div>
+			<div class="modal-footer">
+			</div>
+		</div>
+	</div>
+</div>
+ <script type="text/javascript">
+	$(document).ready( function(){
+		addEvent();
+	});
+</script>
 <script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
 <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
-
-<div class="row">
-	<div class="col-xs-12 col-sm-4 col-md-4 well">
-		    <fieldset>
-			    <legend>#i18n{deployment.deploy_application_process.table_label}</legend>
-			
-				<p><strong>#i18n{deployment.deploy_application_process.label_code}:</strong>${application.code}</p> 
-				<p><strong>#i18n{deployment.deploy_application_process.label_name} :</strong>${application.name}</p> 
-				 <#if deploy_war &&  tag_to_deploy?has_content>
-				 	<p><strong>#i18n{deployment.deploy_application_process.label_tag_to_deploy}:</strong>${tag_to_deploy}</p> 
-				 </#if>  
-				  <#if deploy_sql>
-				 	<p><strong>#i18n{deployment.deploy_application_process.label_script_name}:</strong>${script_name}</p> 
-				 </#if>    
-				 <p><strong>#i18n{deployment.deploy_application_process.label_environment}  :</strong>${environment.name}</p>             
-				 <p><strong>#i18n{deployment.deploy_application_process.label_server_instance}  :</strong>${server_instance.name}</p>             
-			 	 <p><strong>#i18n{deployment.deploy_application_process.label_state}  :</strong><div id="workflow_state">${state}</div></p>  
-			     <p id="dump_file" style="display:none" ><strong>#i18n{deployment.deploy_application_process.download_dump}  :</strong><div id="dump_file_url"></div></p> 
-			</fieldset> 	 
- 	 </div>
- 	 
- 	 <div class="col-xs-12 col-sm-4 col-md-7">           
-		    
-		    <div  id="myModal"class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  					<div class="modal-dialog modal-sm">
-    					<div class="modal-content">
-    						<a id="update" href="#"><i class="icon-refresh"></i>Une action est en cours, veuillez patienter quelques instants</a>
-    					</div>
-  					</div>
-			</div>
-		    
-		    
-		    <fieldset>
-				<div id="workflow_actions">
-			           <#list action_list as workflow_action>
-				          	<form class="form-horizontal" method="post" name="workflow_action_${workflow_action.id}" id="workflow_action_${workflow_action.id}" action="jsp/admin/plugins/deployment/DoProcessAction.jsp">
-					  			<input type="hidden" name="id_action" id="id_action" value="${workflow_action.id}">
-					  			<input type="hidden" id="plugin_name" name="plugin_name" value="deployment">
-					  			<div class="form-group">
-									<div class="col-xs-12 col-sm-12 col-md">
-										<button class="btn btn-primary btn-sm" type="submit" >${workflow_action.name}</button>
-									</div>
-					             </div>
-					            <p class="help-block">${workflow_action.description}</p>   
-					          </form>
-			           
-			           </#list>
-			     </div> 
-					
-		    </fieldset>
-		     <div id=workflow_task_form></div>
-		     	<div style="display:none"; id="errors" class="alert alert-danger" role="alert">
-  						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>#i18n{deployment.deploy_application_process.error_message_title}:
- 						  <div id="errors_msg"></div>
-  				</div>	
-		     <div>
-		     	<textarea class="form-control input-sm" id="pre_log" class="text_black" cols="106" rows="15" readonly="readonly"></textarea>
-			 </div>
-			<br>
-			 <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">#i18n{portal.util.labelCancel}</a>
-			 
-			  <script type="text/javascript">
-			  		addEvent();
-			  	</script>
-		</div> 
-		 
-		 
-</div>

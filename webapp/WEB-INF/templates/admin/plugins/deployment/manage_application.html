@@ -1,68 +1,70 @@
-<form class="form-horizontal" method="post"  action="jsp/admin/plugins/deployment/CreateApplication.jsp">
-    <button class="btn btn-primary pull-right" type="submit" >
-        <i class="icon-plus icon-white"></i>
-        <span class="hidden-phone">
-            #i18n{deployment.manage_application.button_create_application}
-        </span>
-    </button>
-</form>
-
-	<div class="well well-small">
-	            <form class="form-search" action="" method="" name="" id="">
-	                <label for="">#i18n{deployment.manage_application.label_search_by_category}</label>
-	                <@combo name="code_category"  items=category_list default_value=category_selected />
-	                 <label for="">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
-	                <@combo name="workgroup"  items=user_workgroup_list default_value=user_workgroup_selected />
-	                 <button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i>&nbsp;#i18n{deployment.manage_application.button_search_by_category}</button>
-	            </form>
-	        </div>
-	<div class="row" >
-
-    <legend>#i18n{contact.manage_contact_lists.tableLabel}</legend>
-
-    <@paginationAdmin paginator=paginator />
-
-    <table class="table table-striped table-condensed">
-        <thead>
-            <tr>
-   				<th>#i18n{deployment.manage_application.column_code}</th>
-                <th>#i18n{deployment.manage_application.column_name}</th>
-                <th>#i18n{deployment.manage_application.column_category}</th>
-                <th>#i18n{deployment.manage_application.column_site_name}</th>
-             	  <th colspan="2">#i18n{deployment.manage_application.navigation}</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            <#list application_list  as application >	                
-            <tr>
-                <td>${application.code}</td>
-                <td>${application.name}</td>
-                <td>${category_map[application.codeCategory]}</td>  
-                <td>${application.siteName}</td>
-               	<td>
-                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/ModifyApplication.jsp?id_application=${application.idApplication}"  title="#i18n{deployment.manage_application.action_modify}" >
-                        <i class="icon-edit icon-white"></i>
-                    </a>
-                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/ViewApplication.jsp?id_application=${application.idApplication}"  title="#i18n{deployment.manage_application.action_view}" >
-                        <i class="icon-eye-open icon-white"></i>
-                    </a>
-                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_war=deploy_war" title="#i18n{deployment.manage_application.action_deploy_war}" >
-                        <i class="icon-play-circle icon-white"></i>
-                    </a>
-                    <a class="btn btn-primary btn-mini" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_sql=deploy_sql" title="#i18n{deployment.manage_application.action_deploy_sql}" >
-                        <i class="icon-upload icon-white"></i>
-                    </a>
-
-                    <a class="btn btn-danger btn-mini" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?id_application=${application.idApplication}" title="#i18n{deployment.manage_application.action_delete}">
-                        <i class="icon-trash icon-white"></i>
-                    </a>
-                </td>
-            </tr>				
-            </#list>
-        </tbody>
-    </table>
-
-    <@paginationAdmin paginator=paginator />
-
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">#i18n{contact.manage_contact_lists.tableLabel}</h3>
+				<div class="box-tools">
+					<form class="form-inline pull-right" method="post"  action="jsp/admin/plugins/deployment/CreateApplication.jsp">
+						<button class="btn btn-primary btn-xs btn-flat" type="submit" >
+							<i class="glyphicon glyphicon-plus"></i>
+							<span class="hidden-xs">
+								#i18n{deployment.manage_application.button_create_application}
+							</span>
+						</button>
+					</form>
+					<form class="form-inline pull-left" action="" method="" name="" id="">
+						<label for="">#i18n{deployment.manage_application.label_search_by_category}</label>
+						<@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control input-xs\"" items=category_list />
+						<label for="">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
+						<div class="input-group">
+							<@comboWithParams name="workgroup" default_value=user_workgroup_selected additionalParameters="class=\"form-control input-xs\"" items=user_workgroup_list />
+							<span class="input-group-btn">
+								<button class="btn btn-primary btn-xs btn-flat" type="submit" ><i class="glyphicon glyphicon-search "></i>&nbsp;#i18n{deployment.manage_application.button_search_by_category}</button>
+							</span>
+						</div>
+					</form>
+				</div>
+			</div><!-- /.box-header -->
+			<div class="box-body table-responsive pad">
+				<table class="table table-hover table-condensed">
+					<thead>
+						<tr>
+							<th>#i18n{deployment.manage_application.column_code}</th>
+							<th>#i18n{deployment.manage_application.column_name}</th>
+							<th>#i18n{deployment.manage_application.column_category}</th>
+							<th>#i18n{deployment.manage_application.column_site_name}</th>
+							  <th colspan="2">#i18n{deployment.manage_application.navigation}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list application_list  as application >	                
+						<tr>
+							<td>${application.code}</td>
+							<td>${application.name}</td>
+							<td>${category_map[application.codeCategory]}</td>  
+							<td>${application.siteName}</td>
+							<td>
+								<a class="btn btn-app" href="jsp/admin/plugins/deployment/ModifyApplication.jsp?id_application=${application.idApplication}"  title="#i18n{deployment.manage_application.action_modify}" >
+									<i class="glyphicon glyphicon-edit "></i> Modifier
+								</a>
+								<a class="btn btn-app" href="jsp/admin/plugins/deployment/ViewApplication.jsp?id_application=${application.idApplication}"  title="#i18n{deployment.manage_application.action_view}" >
+									<i class="glyphicon glyphicon-eye-open "></i> Voir
+								</a>
+								<a class="btn btn-app" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_war=deploy_war" title="#i18n{deployment.manage_application.action_deploy_war}" >
+									<i class="fa fa-cloud-upload"></i> D&eacute;ployer le Site
+								</a>
+								<a class="btn btn-app" href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_sql=deploy_sql" title="#i18n{deployment.manage_application.action_deploy_sql}" >
+									<i class="fa fa-database"></i> D&eacute;ployer un Script
+								</a>
+								<a class="btn btn-app" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?id_application=${application.idApplication}" title="#i18n{deployment.manage_application.action_delete}">
+									<i class="glyphicon glyphicon-trash "></i> Supprimer
+								</a>
+							</td>
+						</tr>				
+						</#list>
+					</tbody>
+				</table>
+			<@paginationAdmin paginator=paginator />
+		</div>
+	</div>
 </div>
