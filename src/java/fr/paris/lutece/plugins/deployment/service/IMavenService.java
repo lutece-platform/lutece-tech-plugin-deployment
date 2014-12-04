@@ -52,4 +52,7 @@ public interface IMavenService
      */
     void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, MavenUser user,
         CommandResult commandResult );
+    
+    
+    String getSiteWarName( String strSiteName );
 }

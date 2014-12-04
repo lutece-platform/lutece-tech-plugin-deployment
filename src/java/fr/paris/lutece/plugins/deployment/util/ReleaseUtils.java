@@ -189,6 +189,7 @@ public final class ReleaseUtils
         Model model = unmarshal( Model.class, is );
 
         String strVersion = model.getVersion(  );
+      
 
         if ( strVersion.contains( "-SNAPSHOT" ) )
         {
@@ -197,6 +198,44 @@ public final class ReleaseUtils
 
         return strVersion;
     }
+    
+    
+    /**
+     * Retourne la version  dans le pom)
+     * @return
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     */
+    public static String getSiteVersion( String strPathLocalSiteName )
+        throws JAXBException, FileNotFoundException
+    {
+        InputStream is = new FileInputStream( DeploymentUtils.getPathPomFile( strPathLocalSiteName ) );
+
+        Model model = unmarshal( Model.class, is );
+
+        String strVersion = model.getVersion(  );
+        return strVersion;
+    }
+    
+    
+    /**
+     * Retourne la version  dans le pom)
+     * @return
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     */
+    public static String getSiteArtifactId( String strPathLocalSiteName )
+        throws JAXBException, FileNotFoundException
+    {
+        InputStream is = new FileInputStream( DeploymentUtils.getPathPomFile( strPathLocalSiteName ) );
+
+        Model model = unmarshal( Model.class, is );
+
+        String strVersion = model.getArtifactId();
+        return strVersion;
+    }
+    
+    
 
     public static String updateReleaseVersion( String strPathLocalSiteName, String strNewVersion, String commitMessage,
         SVNCommitClient svnCommitClient )

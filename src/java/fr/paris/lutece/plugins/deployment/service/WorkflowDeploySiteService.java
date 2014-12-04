@@ -186,9 +186,13 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
+       
+        String strWarGeneratedName=_mavenService.getSiteWarName(application.getSiteName());
+       
+        
         _ftpService.uploadFile( application.getWebAppName(  ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION,
             DeploymentUtils.getPathArchiveGenerated( DeploymentUtils.getPathCheckoutSite( application.getSiteName(  ) ),
-                context.getTagToDeploy(  ), ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
+            		strWarGeneratedName , ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
             serverApplicationInstance.getFtpInfo(  ),
             DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
             context.getCommandResult(  ) ,true);

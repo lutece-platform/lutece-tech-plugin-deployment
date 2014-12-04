@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.deployment.business.MavenGoals;
 import fr.paris.lutece.plugins.deployment.business.MavenUser;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
+import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -50,12 +51,15 @@ import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 
 /**
@@ -80,6 +84,70 @@ public class MavenService implements IMavenService
         _invoker.setLocalRepositoryDirectory( new File( AppPropertiesService.getProperty( 
                     ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY ) ) );
     }
+
+
+    /* (non-Javadoc)
+     * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
+     */
+    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, MavenUser user,
+        CommandResult commandResult )
+    {
+        String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
+
+        List<String> listGoals = MavenGoals.LUTECE_SITE_ASSEMBLY.asList(  );
+        List<String> listGoalsProfile = new ArrayList<String>(  );
+        listGoalsProfile.addAll( listGoals );
+        listGoalsProfile.add( "-P " + strMavenProfile );
+        listGoalsProfile.add( "-U" );
+        mvn( strTagName, strSiteLocalBasePath, listGoalsProfile, commandResult );
+    }
+    
+    
+    public  String getSiteWarName( String strSiteName )
+    {
+	    String strWarGeneratedName=null;
+	    try {
+			String strSiteArtifactId=ReleaseUtils.getSiteArtifactId(DeploymentUtils.getPathCheckoutSite( strSiteName ));
+			String strSiteVersion=ReleaseUtils.getSiteVersion(DeploymentUtils.getPathCheckoutSite( strSiteName ));
+			strWarGeneratedName=strSiteArtifactId+"-"+strSiteVersion;
+	    } catch (FileNotFoundException e) {
+			AppLogService.error(e);
+		} catch (JAXBException e) {
+			
+			AppLogService.error(e);
+		}
+	   return  strWarGeneratedName;
+    }
+
+    /**
+     * Transforme la liste en chaine, pour passer l'argument � la ligne de commande
+     * @param goals
+     * @return
+     */
+    private String getGoalToString( List<String> goals )
+    {
+        StringBuilder sbGoal = new StringBuilder(  );
+
+        for ( String strGoal : goals )
+        {
+            sbGoal.append( strGoal ).append( ConstanteUtils.CONSTANTE_SPACE );
+        }
+
+        return sbGoal.toString(  );
+    }
+
+    //	public static IMavenService getInstance()
+    //	{
+    //		
+    //		if(_singleton ==null)
+    //		{
+    //			_singleton=new MavenService();
+    //		}
+    //		
+    //		return _singleton;
+    //		
+    //	}
+    //	
 
     /**
      * Launches mvn cmd
@@ -153,50 +221,5 @@ public class MavenService implements IMavenService
         //_endTime = new Date(  );
         return null;
     }
-
-    /* (non-Javadoc)
-     * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
-     */
-    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, MavenUser user,
-        CommandResult commandResult )
-    {
-        String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
-
-        List<String> listGoals = MavenGoals.LUTECE_SITE_ASSEMBLY.asList(  );
-        List<String> listGoalsProfile = new ArrayList<String>(  );
-        listGoalsProfile.addAll( listGoals );
-        listGoalsProfile.add( "-P " + strMavenProfile );
-        listGoalsProfile.add( "-U" );
-        mvn( strTagName, strSiteLocalBasePath, listGoalsProfile, commandResult );
+  
     }
-
-    /**
-     * Transforme la liste en chaine, pour passer l'argument � la ligne de commande
-     * @param goals
-     * @return
-     */
-    private String getGoalToString( List<String> goals )
-    {
-        StringBuilder sbGoal = new StringBuilder(  );
-
-        for ( String strGoal : goals )
-        {
-            sbGoal.append( strGoal ).append( ConstanteUtils.CONSTANTE_SPACE );
-        }
-
-        return sbGoal.toString(  );
-    }
-
-    //	public static IMavenService getInstance()
-    //	{
-    //		
-    //		if(_singleton ==null)
-    //		{
-    //			_singleton=new MavenService();
-    //		}
-    //		
-    //		return _singleton;
-    //		
-    //	}
-    //	
-}
