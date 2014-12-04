@@ -1,9 +1,12 @@
 package fr.paris.lutece.plugins.deployment.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+
+import net.sf.json.JSONObject;
 
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
@@ -30,8 +33,8 @@ public class DatabaseService implements IDatabaseService {
 
 		String strPlateformEnvironmentBaseUrl = AppPropertiesService
 				.getProperty(ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL);
-		List<String> listStrDatabases = null;
-		;
+		List<String> listStrDatabases = new ArrayList<String>();
+		
 		String strWebserviceDatabasesJsonObjectName = AppPropertiesService
 				.getProperty(ConstanteUtils.PROPERTY_WEBSERVICE_DATABASES_JSON_OBJECT_NAME);
 		String strWebserviceDatabasesJsonDictionaryName = AppPropertiesService
@@ -50,10 +53,22 @@ public class DatabaseService implements IDatabaseService {
 		}
 
 		if (strJSONServerDatabases != null) {
-			listStrDatabases = DeploymentUtils.getJSONDictionary(
-					strWebserviceDatabasesJsonObjectName,
-					strWebserviceDatabasesJsonDictionaryName,
-					strJSONServerDatabases);
+			
+			boolean  bExecute=false;
+			JSONObject jo = DeploymentUtils.getJSONOBject( strJSONServerDatabases );
+			String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
+            if ( jo != null )
+            {
+            	bExecute = jo.getBoolean( strWebserviceActionJsonPropery );
+            }
+			
+            if(bExecute)
+            {
+				listStrDatabases = DeploymentUtils.getJSONDictionary(
+						strWebserviceDatabasesJsonObjectName,
+						strWebserviceDatabasesJsonDictionaryName,
+						strJSONServerDatabases);
+            }
 
 		}
 

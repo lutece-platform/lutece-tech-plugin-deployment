@@ -182,6 +182,8 @@ public class DeploymentUtils
     {
         List<String> jsonCollection = new ArrayList<String>(  );
         JSONObject jo = (JSONObject) JSONSerializer.toJSON( strJSONFlux );
+        
+   
         JSONArray jsonArray = jo.getJSONObject( objectName ).getJSONArray( dictionaryName );
         Iterator iterator = jsonArray.iterator(  );
 
