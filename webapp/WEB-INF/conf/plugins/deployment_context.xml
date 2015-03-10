@@ -8,75 +8,62 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
-
-
-<!-- DAO -->
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">	
+	
+	<!-- DAO -->
+	
 	<bean id="deployment.applicationDAO"  class="fr.paris.lutece.plugins.deployment.business.ApplicationDAO" />
 	
-
 	<!-- Services --> 	 
+	
 	<bean id="deployment.ApplicationService" class="fr.paris.lutece.plugins.deployment.service.ApplicationService" />
 	<bean id="deployment.EnvironmentService" class="fr.paris.lutece.plugins.deployment.service.EnvironmentService" />
 	<bean id="deployment.ActionService" class="fr.paris.lutece.plugins.deployment.service.ActionService" />
-	<bean id="deployment.ServerApplicationService" class="fr.paris.lutece.plugins.deployment.service.ServerApplicationService" >
-<!--		<property name="environmentService" ref="deployment.EnvironmentService" />-->
-<!--		<property name="actionService" ref="deployment.ActionService" />-->
-	</bean>
-	
-	
+	<bean id="deployment.ServerApplicationService" class="fr.paris.lutece.plugins.deployment.service.ServerApplicationService" />
 	<bean id="deployment.FtpService" class="fr.paris.lutece.plugins.deployment.service.FtpService" />
 	<bean id="deployment.MavenService" class="fr.paris.lutece.plugins.deployment.service.MavenService" />
 	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.SvnService" />
 	<bean id="deployment.WorkflowDeploySiteService" class="fr.paris.lutece.plugins.deployment.service.WorkflowDeploySiteService" />
 	<bean id="deployment.DatabaseService" class="fr.paris.lutece.plugins.deployment.service.DatabaseService" />
+	
 	<!-- Listeners -->
+
 	<bean id="deployment.DeploymentAdminUserFieldListener" class="fr.paris.lutece.plugins.deployment.business.DeploymentAdminUserFieldListener" />
 	<bean id="deployment.AdminUserFieldListenerService" class="fr.paris.lutece.portal.service.user.attribute.AdminUserFieldListenerService" />
-	
+
+
 	<!--ENVIRONMENT -->	
-	
-	<bean id="deployment.environment.dmz.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="dmz.pr"
- 		p:i18nKeyName="deployment.environment.dmz.pr.name"/>
-	<bean id="deployment.environment.dmz.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="dmz.r7"
- 		p:i18nKeyName="deployment.environment.dmz.r7.name"/>
-	<bean id="deployment.environment.ville.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="ville.pr"
- 		p:i18nKeyName="deployment.environment.ville.pr.name"/>
-	<bean id="deployment.environment.ville.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="ville.r7"
- 		p:i18nKeyName="deployment.environment.ville.r7.name"/>
- 		
- 	<bean id="deployment.environment.v1.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="v1.pr"
- 		p:i18nKeyName="deployment.environment.v1.pr.name"/>
-	<bean id="deployment.environment.v1.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype"
- 		p:code="v1.r7"
- 		p:i18nKeyName="deployment.environment.v1.r7.name"/>
- 		
+
+	<bean id="deployment.environment.dmz.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="dmz.pr" p:i18nKeyName="deployment.environment.dmz.pr.name"/>
+	<bean id="deployment.environment.dmz.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="dmz.r7" p:i18nKeyName="deployment.environment.dmz.r7.name"/>
+	<bean id="deployment.environment.ville.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.pr" p:i18nKeyName="deployment.environment.ville.pr.name"/>
+	<bean id="deployment.environment.ville.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.r7" p:i18nKeyName="deployment.environment.ville.r7.name"/>
+ 	<bean id="deployment.environment.v1.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.pr" p:i18nKeyName="deployment.environment.v1.pr.name"/>
+	<bean id="deployment.environment.v1.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.r7" p:i18nKeyName="deployment.environment.v1.r7.name"/>
+	<bean id="deployment.environment.v1.dv" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.dv" p:i18nKeyName="deployment.environment.v1.dv.name"/>
+
  		
  	<!--SERVERS TOMCAT -->		
+
  		
+
     <bean id="deployment.serverApplicationTomcat0001" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
- 		p:code="0001"
- 		p:i18nKeyName="deployment.server_application_instance.tomcat.0001.name"
+		p:code="0001"
+		p:i18nKeyName="deployment.server_application_instance.tomcat.0001.name"
  		p:type="TOMCAT"
  		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTomcat0001">
- 		
- 		<property name="hashMavenProfile">
+		<property name="hashMavenProfile">
 			<map>
 				<entry key="dmz.pr" value="prod" />
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
-				
 			</map>
 		</property>
  	</bean>
- 	
+	
+
     <bean id="deployment.serverApplicationTomcat0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0002"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.0002.name"
@@ -89,41 +76,41 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
-				
 			</map>
 		</property>
- 		
  	</bean>
- 	
- 	<bean id="deployment.serverApplicationTom01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+
+  	<bean id="deployment.serverApplicationTom01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="01"
  		p:i18nKeyName="deployment.server_application_instance.tom.01.name"
  		p:type="TOMCAT"
  		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTom01">
- 		
  		<property name="hashMavenProfile">
 			<map>
 				<entry key="v1.pr" value="prod" />
 				<entry key="v1.r7" value="rec" />
+				<entry key="v1.dv" value="dev" />
 			</map>
 		</property>
  	</bean>
- 	
+
+
  	<bean id="deployment.serverApplicationTom02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="02"
  		p:i18nKeyName="deployment.server_application_instance.tom.02.name"
  		p:type="TOMCAT"
  		p:ftpDirectoryTarget="INSTALLER"
  		p:beanName="deployment.serverApplicationTom02">
- 		
  		<property name="hashMavenProfile">
 			<map>
 				<entry key="v1.pr" value="prod" />
-				<entry key="v1.r7" value="rec" />
+				<entry key="v1.r7" value="rec" />		
+				<entry key="v1.dv" value="dev" />
 			</map>
 		</property>
  	</bean>	
+
    <bean id="deployment.serverApplicationTom03" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="03"
  		p:i18nKeyName="deployment.server_application_instance.tom.03.name"
@@ -134,11 +121,14 @@
  		<property name="hashMavenProfile">
 			<map>
 				<entry key="v1.pr" value="prod" />
-				<entry key="v1.r7" value="rec" />
+				<entry key="v1.r7" value="rec" />			
+				<entry key="v1.dv" value="dev" />
 			</map>
 		</property>
+
  	</bean>	
- 	<bean id="deployment.serverApplicationTomcatbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+	
+	<bean id="deployment.serverApplicationTomcatbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="bo"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.bo.name"
  		p:type="TOMCAT"
@@ -150,11 +140,10 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
-				
 			</map>
 		</property>
- 		
  	</bean>	
+
  	<bean id="deployment.serverApplicationTomcatfo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="fo"
  		p:i18nKeyName="deployment.server_application_instance.tomcat.fo.name"
@@ -167,12 +156,14 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
-				
 			</map>
 		</property>
- 	 </bean>
+	</bean>
+
  	 <!--SERVERS MYSQL -->	
+
  	 
+
 	<bean id="deployment.serverApplicationMysql0001" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0001"
  		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
@@ -180,8 +171,7 @@
  		p:ftpDirectoryDump="DUMPS"
  		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysql0001"/>
- 		
- 		
+
  		
   	<bean id="deployment.serverApplicationMysql0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0002"
@@ -191,8 +181,7 @@
  		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysql0002"/>
  		
- 		
- 		
+
  	<bean id="deployment.serverApplicationMys01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="01"
  		p:i18nKeyName="deployment.server_application_instance.mys.01.name"
@@ -209,7 +198,7 @@
  		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMys02"/>	
  		
- 				
+
  	<bean id="deployment.serverApplicationMysqlfo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="fo"
  		p:i18nKeyName="deployment.server_application_instance.mysql.fo.name"
@@ -217,6 +206,7 @@
  		p:ftpDirectoryDump="DUMPS"
  		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysqlfo"/>
+
   	<bean id="deployment.serverApplicationMysqlbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="bo"
  		p:i18nKeyName="deployment.server_application_instance.mysql.bo.name"
@@ -224,34 +214,34 @@
  		p:ftpDirectoryDump="DUMPS"
  		p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationMysqlbo"/>
- 	
- 	<!--SERVERS HTTPD -->	
+
+ <!--SERVERS HTTPD -->	
+
  	<bean id="deployment.serverApplicationHttpd0001" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0001"
  		p:i18nKeyName="deployment.server_application_instance.httpd.0001.name"
  		p:type="HTTPD"
  		p:ftpDirectoryTarget="DATAS"
  		p:beanName="deployment.serverApplicationHttpd0001"/>
- 			
- 		
- 	<bean id="deployment.serverApplicationHttpd0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+			
+	<bean id="deployment.serverApplicationHttpd0002" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="0002"
  		p:i18nKeyName="deployment.server_application_instance.httpd.0002.name"
  		p:type="HTTPD"
  		p:ftpDirectoryTarget="DATAS"
- 		p:beanName="deployment.serverApplicationHttpd0001"/>
- 		
+		p:beanName="deployment.serverApplicationHttpd0001"/>
+		
  		
  	<!--Actions TOMCAT -->	
- 	
-	 <bean id="deployment.actionStatusTomcat" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+
+ 	<bean id="deployment.actionStatusTomcat" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.tomcat.name"
  		p:usedForStatus="true"
  		p:iconCssClass="glyphicon glyphicon-refresh "
  		p:display="false"
- 		p:serverType="TOMCAT"
- 		/>
+ 		p:serverType="TOMCAT"/>
+
  		
       <bean id="deployment.actionStartUpTomcat" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@STARTUP"
@@ -260,9 +250,9 @@
  		p:status="0"
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
- 		p:serverType="TOMCAT"
- 		/>		
- 		
+ 		p:serverType="TOMCAT"/>		
+
+
  	  <bean id="deployment.actionShutdownTomcat" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@SHUTDOWN"
  		p:i18nKeyName="deployment.action.shutdown.tomcat.name"
@@ -270,18 +260,18 @@
  		p:status="1"
  		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
- 		p:serverType="TOMCAT"
- 		/>
- 		<bean id="deployment.actionRmWork" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
- 		p:code="@RMWORK"
- 		p:i18nKeyName="deployment.action.rmwork.name"
- 		p:usedForStatus="false"
+ 		p:serverType="TOMCAT"/>
+
+	<bean id="deployment.actionRmWork" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+	 	p:code="@RMWORK"
+		p:i18nKeyName="deployment.action.rmwork.name"
+		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="glyphicon glyphicon-trash "
  		p:display="true"
- 		p:serverType="TOMCAT"
- 		/>
- 		
+ 		p:serverType="TOMCAT"/>
+
+ 	
  	<bean id="deployment.actionRmWorkwithParams" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@RMWORK_WITH_PARAMS"
  		p:i18nKeyName="deployment.action.rmworkwithparams.name"
@@ -289,9 +279,10 @@
  		p:status="0"
  		p:iconCssClass="glyphicon glyphicon-trash "
  		p:display="false"
- 		p:serverType="TOMCAT"
- 		/>	
+ 		p:serverType="TOMCAT"/>	
+
 	
+
 	 <bean id="deployment.actionInstall" class="fr.paris.lutece.plugins.deployment.business.WarInstallerAction" scope="prototype"
  		p:code="@WAR_INSTALLER"
  		p:i18nKeyName="deployment.action.warInstaller"
@@ -300,12 +291,16 @@
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="false"
  		p:serverType="TOMCAT"
- 		p:stopWorkflowIfExecutionError="true"
- 		/>
+ 		p:stopWorkflowIfExecutionError="true"/>
+
  		
+
  		
+
  		<!--SERVERS PSQL -->	
+
  	 
+
 	<bean id="deployment.serverApplicationPsq01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="01"
  		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
@@ -313,51 +308,48 @@
  		p:ftpDirectoryTarget="DATAS"
  		p:beanName="deployment.serverApplicationPsq01"/>
  		
- 		
- 		
-  	<bean id="deployment.serverApplicationPsq02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+
+ 	<bean id="deployment.serverApplicationPsq02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="02"
  		p:i18nKeyName="deployment.server_application_instance.mysql.0002.name"
  		p:type="PSQ"
  		p:ftpDirectoryTarget="DATAS"
  		p:beanName="deployment.serverApplicationPsq02"/>
  		 	
-
- 	
  	<!--Actions MYSQL -->	
+
  		
+
       <bean id="deployment.actionStartUpMysql" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
- 		p:code="@STARTUP"
+		p:code="@STARTUP"
  		p:i18nKeyName="deployment.action.startup.mysql.name"
  		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
- 		p:serverType="MYSQL"
- 		/>
+ 		p:serverType="MYSQL"/>
+
  	
+
  	<bean id="deployment.actionStatusMysql" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
- 		p:code="@STATUS"
+		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.mysql.name"
  		p:usedForStatus="true"
  		p:iconCssClass="glyphicon glyphicon-refresh "
  		p:display="false"
- 		p:serverType="MYSQL"
- 		/>
- 		
- 		
- 	 <bean id="deployment.actionShutdownMysql" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+ 		p:serverType="MYSQL"/>
+
+	
+ 	<bean id="deployment.actionShutdownMysql" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@SHUTDOWN"
  		p:i18nKeyName="deployment.action.shutdown.mysql.name"
  		p:usedForStatus="false"
  		p:status="1"
  		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
- 		p:serverType="MYSQL"
- 		/>
- 		
- 		
- 		<bean id="deployment.actionDump" class="fr.paris.lutece.plugins.deployment.business.DumpAction" scope="prototype"
+ 		p:serverType="MYSQL"/>
+
+ 	<bean id="deployment.actionDump" class="fr.paris.lutece.plugins.deployment.business.DumpAction" scope="prototype"
  		p:code="@DUMP"
  		p:i18nKeyName="deployment.action.dump.mysql.name"
  		p:usedForStatus="false"
@@ -365,18 +357,16 @@
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="MYSQL"
- 		p:stopWorkflowIfExecutionError="true"
- 		>
- 		
-	 		<property name="parameters">
+ 		p:stopWorkflowIfExecutionError="true">
+			<property name="parameters">
 				<list>
 					<value>code_database</value>
 				</list>
 			</property>
- 		</bean>	
+   	</bean>	
+
  		
- 		
- 		<bean id="deployment.actionExecute" class="fr.paris.lutece.plugins.deployment.business.ExecuteAction" scope="prototype"
+	<bean id="deployment.actionExecute" class="fr.paris.lutece.plugins.deployment.business.ExecuteAction" scope="prototype"
  		p:code="@EXECUTE"
  		p:i18nKeyName="deployment.action.execute.mysql.name"
  		p:usedForStatus="false"
@@ -384,23 +374,22 @@
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="false"
  		p:serverType="MYSQL"
- 		p:stopWorkflowIfExecutionError="true"
- 		/>	
+ 		p:stopWorkflowIfExecutionError="true"/>	
+
  		
+
  		
+
  <!-- ACTIONS HTTPD -->
- 
- 
+
   	<bean id="deployment.actionStatusHttpd" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
- 		p:code="@STATUS"
+		p:code="@STATUS"
  		p:i18nKeyName="deployment.action.status.httpd.name"
  		p:usedForStatus="true"
  		p:iconCssClass="glyphicon glyphicon-refresh"
  		p:display="true"
- 		p:serverType="HTTPD"
- 		/>
- 		
- 		
+ 		p:serverType="HTTPD"/>
+
  	<bean id="deployment.actionShutdownHttpd" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@SHUTDOWN"
  		p:i18nKeyName="deployment.action.shutdown.httpd.name"
@@ -408,27 +397,17 @@
  		p:status="1"
  		p:iconCssClass="glyphicon glyphicon-off "
  		p:display="true"
- 		p:serverType="HTTPD"
- 		/>
+ 		p:serverType="HTTPD"/>
+
  	
- 
- 	
- 	
- 	 <bean id="deployment.actionStartUpHttpd" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+ 	<bean id="deployment.actionStartUpHttpd" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
  		p:code="@STARTUP"
  		p:i18nKeyName="deployment.action.startup.httpd.name"
  		p:usedForStatus="false"
  		p:status="0"
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
- 		p:serverType="HTTPD"
- 		/>		
+ 		p:serverType="HTTPD"/>		
+
  	
- 
- 		
-  
- 			
- 	
-	
 </beans>
- 	
