@@ -33,25 +33,26 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
-import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import fr.paris.lutece.plugins.deployment.business.Application;
+import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
+
 
 public interface IServerApplicationService
 {
-    List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( String strCodeApplication,
+    List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( Application application,
         String strCodeEnvironment, String strServerApplicationType, Locale locale, boolean withActions,
         boolean withStatus );
 
     void setFtpInfo( ServerApplicationInstance serverApplicationInstance, String strCodeApplication );
 
-    ServerApplicationInstance getServerApplicationInstance( String strCodeApplication, String strServerInstanceCode,
+    ServerApplicationInstance getServerApplicationInstance( Application application, String strServerInstanceCode,
         String strCodeEnvironment, String strServerApplicationType, Locale locale, boolean withActionss,
         boolean withStatus );
 
-    HashMap<String, List<ServerApplicationInstance>> getHashServerApplicationInstance( String strCodeApplication,
+    HashMap<String, List<ServerApplicationInstance>> getHashServerApplicationInstance( Application application,
         String strServerApplicationType, Locale locale, boolean withActions, boolean withStatus );
 }

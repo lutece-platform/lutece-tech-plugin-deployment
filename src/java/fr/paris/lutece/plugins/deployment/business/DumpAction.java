@@ -59,7 +59,7 @@ public class DumpAction extends DefaultAction
 {
 	private IDatabaseService _databaseService = SpringContextService.getBean( "deployment.DatabaseService" );
     @Override
-    public String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter )
     {
     	 
@@ -88,7 +88,7 @@ public class DumpAction extends DefaultAction
 	         {
 	             strJSONDump = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
 	                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-	                     DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
+	                     DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
 	                         serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strDataBase + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH+ConstanteUtils.CONSTANTE_STAR);
 	         }
 	         catch ( Exception e )
@@ -105,7 +105,7 @@ public class DumpAction extends DefaultAction
 	             {
 	                 strResult = jo.getString( strWebserviceActionJsonPropery );
 	             }
-	             commandResult.getResultInformations().put(ConstanteUtils.MARK_DUMP_FILE_URL,"jsp/admin/plugins/deployment/DoDownloadDump.jsp?code_application="+strCodeApplication+"&code_environment="+serverApplicationInstance.getCodeEnvironment()+"&code_server_application_instance_mysql="+serverApplicationInstance.getCode()+"&code_database="+strDataBase+"&plugin_name=deployment" );
+	             commandResult.getResultInformations().put(ConstanteUtils.MARK_DUMP_FILE_URL,"jsp/admin/plugins/deployment/DoDownloadDump.jsp?code_application="+application.getIdApplication()+"&code_environment="+serverApplicationInstance.getCodeEnvironment()+"&code_server_application_instance_mysql="+serverApplicationInstance.getCode()+"&code_database="+strDataBase+"&plugin_name=deployment" );
 	         	
 	          }
     	}
@@ -118,7 +118,7 @@ public class DumpAction extends DefaultAction
     
 
 	@Override
-	public boolean canRunAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+	public boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
             CommandResult commandResult, ActionParameter... parameter) {
 		// TODO Auto-generated method stub
 		String strDataBase=null;
@@ -135,11 +135,11 @@ public class DumpAction extends DefaultAction
    }
 
 	@Override
-	public String getTemplateFormAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,Locale locale) {
+	public String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,Locale locale) {
 		
 		HashMap model = new HashMap(  );
 		
-		model.put(ConstanteUtils.MARK_DATABASE_LIST, DeploymentUtils.getSimpleReferenceList(_databaseService.getDatabases(strCodeApplication, serverApplicationInstance, locale)));
+		model.put(ConstanteUtils.MARK_DATABASE_LIST, DeploymentUtils.getSimpleReferenceList(_databaseService.getDatabases(application.getCode(), serverApplicationInstance, locale)));
 		
 		HtmlTemplate template = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_FORM_ACTION_DUMP,
 				 locale, model );

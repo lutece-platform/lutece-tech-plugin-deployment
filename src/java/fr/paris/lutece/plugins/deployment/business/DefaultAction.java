@@ -48,7 +48,7 @@ public class DefaultAction extends Action
     /* (non-Javadoc)
      * @see fr.paris.lutece.plugins.deployment.business.IAction#run(java.lang.String, fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance)
      */
-    public String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    public String run(Application application, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
@@ -60,7 +60,7 @@ public class DefaultAction extends Action
         {
             strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
+                    DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
                         serverApplicationInstance, this.getCode(  ) ) );
         }
         catch ( Exception e )
@@ -82,14 +82,14 @@ public class DefaultAction extends Action
     }
 
 	@Override
-	public boolean canRunAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+	public boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
             CommandResult commandResult, ActionParameter... parameter){
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	public String getTemplateFormAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+	public String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,
             Locale locale){
 		// TODO Auto-generated method stub
 		return null;

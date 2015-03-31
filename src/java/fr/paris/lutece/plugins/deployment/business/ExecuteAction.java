@@ -56,7 +56,7 @@ import java.util.List;
 public class ExecuteAction extends DefaultAction
 {
     @Override
-    public String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    public String run(Application application, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter )
     {
     	 
@@ -91,7 +91,7 @@ public class ExecuteAction extends DefaultAction
 	         {
 	             strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
 	                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-	                     DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
+	                     DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
 	                         serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strDataBase + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strScriptName);
 	         }
 	         catch ( Exception e )

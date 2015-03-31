@@ -33,7 +33,14 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map.Entry;
+
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
+import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
@@ -43,12 +50,6 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
 
 
 public class ActionService implements IActionService
@@ -73,7 +74,7 @@ public class ActionService implements IActionService
         return serverApplicationAction;
     }
 
-    public List<IAction> getListActionByServerApplicationInstance( String strCodeApplication,
+    public List<IAction> getListActionByServerApplicationInstance( Application application,
         ServerApplicationInstance serverApplicationInstance, Locale locale )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
@@ -86,7 +87,7 @@ public class ActionService implements IActionService
         {
             strJSONActions = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationActions( strCodeApplication,
+                    DeploymentUtils.getPlateformUrlServerApplicationActions( application.getCode(),
                         serverApplicationInstance ) );
         }
         catch ( Exception e )
@@ -150,11 +151,11 @@ public class ActionService implements IActionService
     }
 
     @Override
-    public boolean executeAction( String strCodeApplication, IAction action,
+    public boolean executeAction( Application application, IAction action,
         ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
         // TODO Auto-generated method stub
-          String strResult=action.run( strCodeApplication, serverApplicationInstance, commandResult, parameter );
+          String strResult=action.run( application, serverApplicationInstance, commandResult, parameter );
           boolean bResult=false;
           //set status action
           if(strResult !=null )
@@ -171,22 +172,22 @@ public class ActionService implements IActionService
     }
     
     @Override
-    public boolean canExecuteAction( String strCodeApplication, IAction action,
+    public boolean canExecuteAction( Application application,IAction action,
             ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  )
     {
         // TODO Auto-generated method stub
-        return action.canRunAction(strCodeApplication, serverApplicationInstance, commandResult, parameter);
+        return action.canRunAction(application, serverApplicationInstance, commandResult, parameter);
     }
 
 	
 
 	@Override
-	public String getTemplateFormAction(String strCodeApplication,
+	public String getTemplateFormAction(Application application,
 			IAction action,
 			ServerApplicationInstance serverApplicationInstance,
 			 Locale locale
 			) {
 		// TODO Auto-generated method stub
-		return action.getTemplateFormAction(strCodeApplication, serverApplicationInstance, locale);
+		return action.getTemplateFormAction(application, serverApplicationInstance, locale);
 	}
 }

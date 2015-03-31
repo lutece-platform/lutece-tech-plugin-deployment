@@ -289,12 +289,12 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(  ),
                     getLocale(  ) );
 
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
-                   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+                   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_HTTPD, getLocale(  ), true, true );
 
             ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
@@ -444,7 +444,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
            
             if(bDeployWar)
             {
-            	   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            	   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application,
                            ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
             	  model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
@@ -457,7 +457,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), mavenUser) ;
             refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
           
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application.getCode(  ),
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application,
             		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
               
               HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceMysql, getLocale());
@@ -515,7 +515,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
             
             
-	            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+	            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application,
 	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
 	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT,
 	                    getLocale(  ), false, false );
@@ -528,7 +528,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
             
             
-	            ServerApplicationInstance serverApplicationInstanceMysql = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+	            ServerApplicationInstance serverApplicationInstanceMysql = _serverApplicationService.getServerApplicationInstance( application,
 	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
 	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL,
 	                    getLocale(  ), false, false );
@@ -926,14 +926,14 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
    	 	Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
    	 	IAction action = _actionService.getAction(  DeploymentUtils.getActionKey( strActionCode, strServerAppicationType ), request.getLocale() );
    
-   	 	ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+   	 	ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
     		 strCodeServerApplicationInstance , strCodeEnvironment,
     		 strServerAppicationType, request.getLocale(), false, false );
 
    	 	
 	   	if(action != null)
 	   	{
-	            String strHtmlFormAction =action.getTemplateFormAction(application.getCode(), serverApplicationInstance, request.getLocale());
+	            String strHtmlFormAction =action.getTemplateFormAction(application, serverApplicationInstance, request.getLocale());
 	
 	            Map<String, Object> model = new HashMap<String, Object>(  );
 	
@@ -973,7 +973,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	 Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
          IAction action = _actionService.getAction(  DeploymentUtils.getActionKey( strActionCode, strServerAppicationType ), request.getLocale() );
        
-         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
         		 strCodeServerApplicationInstance , strCodeEnvironment,
         		 strServerAppicationType, request.getLocale(), false, false );
 
@@ -983,7 +983,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          if ( action != null )
          {
         	
-        	 if(action.canRunAction(application.getCode(), serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
+        	 if(action.canRunAction(application, serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
         	 {
         		
         		 
@@ -991,14 +991,14 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         		 commandResult.getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
         		
         		 
-        		 _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
+        		 _actionService.executeAction( application, action, serverApplicationInstance,
             		 commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) ) );
         		 commandResult.getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
         		 
         		 DeploymentUtils.stopCommandResult(commandResult);
         		 
         		 //get new status
-        		 	serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+        		 	serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
                 		 strCodeServerApplicationInstance , strCodeEnvironment,
                 		 strServerAppicationType, request.getLocale(), true, true );
         		 listNewServersActions=serverApplicationInstance.getListServerApplicationAction();
@@ -1025,10 +1025,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	 String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
     	 String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
          String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
-         String strCodeApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
+         String strIdApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
            
+         Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
          
-         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( strCodeApplication,
+         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
         		 strCodeServerApplicationInstanceMysql,
                  strCodeEnvironment, ConstanteUtils.CONSTANTE_SERVER_MYSQL, request.getLocale(), false, false );
        
@@ -1041,7 +1042,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          CommandResult commandResult=new CommandResult();
          
          try {
-			_ftpService.getFile(response.getOutputStream(), serverApplicationInstance.getFtpInfo(  ), DeploymentUtils.getDumpFileDirectory(strCodeApplication, serverApplicationInstance)+"FROM_Z00-"+strCodeDatabase+"-ALL_TABLES.sql", commandResult);
+			_ftpService.getFile(response.getOutputStream(), serverApplicationInstance.getFtpInfo(  ), DeploymentUtils.getDumpFileDirectory(application.getCode(), serverApplicationInstance)+"FROM_Z00-"+strCodeDatabase+"-ALL_TABLES.sql", commandResult);
 		} catch (IOException e) {
 			AppLogService.error(e);
 		}

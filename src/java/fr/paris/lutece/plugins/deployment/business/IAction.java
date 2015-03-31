@@ -71,13 +71,13 @@ public interface IAction
 
     List<String> getParameters(  );
 
-    String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    String run( Application application, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter );
     
-    boolean canRunAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
             CommandResult commandResult, ActionParameter... parameter);
     
-    String getTemplateFormAction(String strCodeApplication, ServerApplicationInstance serverApplicationInstance,Locale locale);
+    String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,Locale locale);
     
     
     

@@ -33,30 +33,31 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
+import java.util.List;
+import java.util.Locale;
+
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
+import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
-
-import java.util.List;
-import java.util.Locale;
 
 
 public interface IActionService
 {
     IAction getAction( String strKey, Locale locale );
 
-    List<IAction> getListActionByServerApplicationInstance( String strCodeApplication,
+    List<IAction> getListActionByServerApplicationInstance(  Application application,
         ServerApplicationInstance serverApplicationInstance, Locale locale );
 
-    boolean executeAction( String strCodeApplication, IAction action,
+    boolean executeAction( Application application, IAction action,
         ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter );
     
-    boolean canExecuteAction( String strCodeApplication, IAction action,
+    boolean canExecuteAction(  Application application, IAction action,
             ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  );
     
          
-    String getTemplateFormAction(String strCodeApplication, IAction action, ServerApplicationInstance serverApplicationInstance,Locale locale);      
+    String getTemplateFormAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance,Locale locale);      
 
     List<IAction> getListAction( Locale locale );
 }

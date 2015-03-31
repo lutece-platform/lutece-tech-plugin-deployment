@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
+import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FtpInfo;
 import fr.paris.lutece.plugins.deployment.business.IAction;
@@ -68,11 +69,11 @@ public class ServerApplicationService implements IServerApplicationService
      * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getListServerApplicationInstance(java.lang.String, java.lang.String)
      */
     public HashMap<String, List<ServerApplicationInstance>> getHashServerApplicationInstance( 
-        String strCodeApplication, String strServerApplicationType, Locale locale, boolean withActions,
+    		Application application, String strServerApplicationType, Locale locale, boolean withActions,
         boolean withStatus )
     {
         HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstance = new HashMap<String, List<ServerApplicationInstance>>(  );
-        List<Environment> listEnvironments = _environmentService.getListEnvironments( strCodeApplication, locale );
+        List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(), locale );
 
         if ( listEnvironments != null )
         {
@@ -82,7 +83,7 @@ public class ServerApplicationService implements IServerApplicationService
             {
                 listServerApplicationInstance = new ArrayList<ServerApplicationInstance>(  );
                 listServerApplicationInstance.addAll( getListServerApplicationInstanceByEnvironment( 
-                        strCodeApplication, environment.getCode(  ), strServerApplicationType, locale, withActions,
+                        application, environment.getCode(  ), strServerApplicationType, locale, withActions,
                         withStatus ) );
                 hashServerApplicationInstance.put( environment.getCode(  ), listServerApplicationInstance );
             }
@@ -91,7 +92,7 @@ public class ServerApplicationService implements IServerApplicationService
         return hashServerApplicationInstance;
     }
 
-    public List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( String strCodeApplication,
+    public List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( Application application,
         String strCodeEnvironment, String strServerApplicationType, Locale locale, boolean withActions,
         boolean withStatus )
     {
@@ -106,7 +107,7 @@ public class ServerApplicationService implements IServerApplicationService
         {
             strJSONServerApplicationInstances = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationInstances( strCodeApplication, strCodeEnvironment,
+                    DeploymentUtils.getPlateformUrlServerApplicationInstances( application.getCode(), strCodeEnvironment,
                         strServerApplicationType ) );
         }
         catch ( Exception e )
@@ -121,7 +122,7 @@ public class ServerApplicationService implements IServerApplicationService
 
             for ( String strServerApplicationInstance : listStrServerApplicationInstance )
             {
-                listServerApplicationInstance.add( getServerApplicationInstance( strCodeApplication,
+                listServerApplicationInstance.add( getServerApplicationInstance( application,
                         strServerApplicationInstance.toLowerCase(  ), strCodeEnvironment, strServerApplicationType,
                         locale, withActions, withStatus ) );
             }
@@ -130,7 +131,7 @@ public class ServerApplicationService implements IServerApplicationService
         return listServerApplicationInstance;
     }
 
-    public ServerApplicationInstance getServerApplicationInstance( String strCodeApplication,
+    public ServerApplicationInstance getServerApplicationInstance( Application application,
         String strServerInstanceCode, String strCodeEnvironment, String strServerType, Locale locale,
         boolean withActions, boolean withStatus )
     {
@@ -146,17 +147,17 @@ public class ServerApplicationService implements IServerApplicationService
         serverApplicationInstance.setCodeEnvironment( strCodeEnvironment );
         serverApplicationInstance.setName( I18nService.getLocalizedString( 
                 serverApplicationInstance.getI18nKeyName(  ), locale ) );
-        setFtpInfo( serverApplicationInstance, strCodeApplication );
+        setFtpInfo( serverApplicationInstance, application.getCode() );
 
         if ( withActions )
         {
             serverApplicationInstance.setListServerApplicationAction( _actionService.getListActionByServerApplicationInstance( 
-                    strCodeApplication, serverApplicationInstance, locale ) );
+                    application, serverApplicationInstance, locale ) );
         }
 
         if ( withStatus )
         {
-            serverApplicationInstance.setStatus( getStatus( strCodeApplication, serverApplicationInstance ) );
+            serverApplicationInstance.setStatus( getStatus( application, serverApplicationInstance ) );
         }
 
         return serverApplicationInstance;
@@ -198,7 +199,7 @@ public class ServerApplicationService implements IServerApplicationService
         return (ServerApplicationInstance) SpringContextService.getBean( strBeanName );
     }
 
-    private Integer getStatus( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
+    private Integer getStatus( Application application, ServerApplicationInstance serverApplicationInstance )
     {
         if ( ( serverApplicationInstance != null ) &&
                 ( serverApplicationInstance.getListServerApplicationAction(  ) != null ) )
@@ -207,7 +208,7 @@ public class ServerApplicationService implements IServerApplicationService
             {
                 if ( action.isUsedForStatus(  ) )
                 {
-                    boolean bResultOk = _actionService.executeAction( strCodeApplication, action,
+                    boolean bResultOk = _actionService.executeAction( application, action,
                             serverApplicationInstance, null );
 
                     return   new Integer( new Boolean( bResultOk ) ? 1 : 0 ) ;

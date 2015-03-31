@@ -42,7 +42,8 @@
 	<bean id="deployment.environment.v1.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.r7" p:i18nKeyName="deployment.environment.v1.r7.name"/>
 	<bean id="deployment.environment.v1.dv" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.dv" p:i18nKeyName="deployment.environment.v1.dv.name"/>
 	<bean id="deployment.environment.v1.pp" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.pp" p:i18nKeyName="deployment.environment.v1.pp.name"/>
-
+	<bean id="deployment.environment.ville.ppr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.ppr" p:i18nKeyName="deployment.environment.ville.ppr.name"/>
+	
  		
  	<!--SERVERS TOMCAT -->		
 
@@ -60,6 +61,7 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
+				<entry key="ville.ppr" value="preprod" />
 			</map>
 		</property>
  	</bean>
@@ -77,6 +79,7 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
+				<entry key="ville.ppr" value="preprod" />
 			</map>
 		</property>
  	</bean>

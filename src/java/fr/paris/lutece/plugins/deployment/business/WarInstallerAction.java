@@ -42,6 +42,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -53,7 +54,7 @@ import java.util.List;
 public class WarInstallerAction extends DefaultAction
 {
     @Override
-    public String run( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance,
         CommandResult commandResult, ActionParameter... parameter )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
@@ -69,24 +70,33 @@ public class WarInstallerAction extends DefaultAction
         {
             strJSONWarInstalled = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
+                    DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
                         serverApplicationInstance, this.getCode(  ) ) );
 
             List<String> listWarInstalls = DeploymentUtils.getJSONDictionary( strWebserviceEnvJsonObjectName,
                     strWebserviceEnvJsonDictionaryName, strJSONWarInstalled );
 
-            if ( !CollectionUtils.isEmpty( listWarInstalls ) )
+            if ( !CollectionUtils.isEmpty( listWarInstalls )   )
+            	
             {
-                strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                        DeploymentUtils.getPlateformUrlServerApplicationAction( strCodeApplication,
-                            serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                        listWarInstalls.get( 0 ) );
-
-                if ( strJSONAction != null )
-                {
-                    AppLogService.info( "Résultat de la commande @WAR_INSTALLER --> " + strJSONAction );
-                }
+            	
+            	for(String strWarName:listWarInstalls)
+            	{
+            		if(strWarName.contains(application.getWebAppName()))
+            		{
+	            		strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
+	                        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
+	                        DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
+	                            serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
+	                            strWarName);
+	
+		                if ( strJSONAction != null )
+		                {
+		                    AppLogService.info( "Résultat de la commande @WAR_INSTALLER --> " + strJSONAction );
+		                }
+		                break;
+            		}
+            	}
             }
         }
         catch ( Exception e )

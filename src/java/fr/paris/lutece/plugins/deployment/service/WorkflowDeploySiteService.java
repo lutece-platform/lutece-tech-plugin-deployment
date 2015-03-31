@@ -167,7 +167,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
 
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
@@ -182,7 +182,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
@@ -206,7 +206,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL, locale, false, false );
        
@@ -228,14 +228,14 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
         IAction action = _actionService.getAction( strActionKey, locale );
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application.getCode(  ),
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
                 context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
                 action.getServerType(  ), locale, false, false );
         boolean bResult;
         if ( action != null )
         {
             context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
-            bResult= _actionService.executeAction( application.getCode(  ), action, serverApplicationInstance,
+            bResult= _actionService.executeAction( application, action, serverApplicationInstance,
                 context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
             if(!bResult && action.isStopWorkflowIfExecutionError() )
             {
