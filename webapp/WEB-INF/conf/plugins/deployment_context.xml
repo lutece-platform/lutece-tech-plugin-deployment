@@ -38,10 +38,14 @@
 	<bean id="deployment.environment.dmz.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="dmz.r7" p:i18nKeyName="deployment.environment.dmz.r7.name"/>
 	<bean id="deployment.environment.ville.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.pr" p:i18nKeyName="deployment.environment.ville.pr.name"/>
 	<bean id="deployment.environment.ville.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.r7" p:i18nKeyName="deployment.environment.ville.r7.name"/>
+ 	<bean id="deployment.environment.ville.fo" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.fo" p:i18nKeyName="deployment.environment.ville.fo.name"/>
+ 	
  	<bean id="deployment.environment.v1.pr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.pr" p:i18nKeyName="deployment.environment.v1.pr.name"/>
 	<bean id="deployment.environment.v1.r7" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.r7" p:i18nKeyName="deployment.environment.v1.r7.name"/>
 	<bean id="deployment.environment.v1.dv" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.dv" p:i18nKeyName="deployment.environment.v1.dv.name"/>
 	<bean id="deployment.environment.v1.pp" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.pp" p:i18nKeyName="deployment.environment.v1.pp.name"/>
+	<bean id="deployment.environment.v1.fo" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="v1.fo" p:i18nKeyName="deployment.environment.v1.fo.name"/>
+ 	
 	<bean id="deployment.environment.ville.ppr" class="fr.paris.lutece.plugins.deployment.business.Environment" scope="prototype" p:code="ville.ppr" p:i18nKeyName="deployment.environment.ville.ppr.name"/>
 	
  		
@@ -62,6 +66,8 @@
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
 				<entry key="ville.ppr" value="preprod" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
  	</bean>
@@ -80,6 +86,8 @@
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
 				<entry key="ville.ppr" value="preprod" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
  	</bean>
@@ -96,6 +104,8 @@
 				<entry key="v1.r7" value="rec" />
 				<entry key="v1.dv" value="dev" />
 				<entry key="v1.pp" value="preprod" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 				
 			</map>
 		</property>
@@ -114,6 +124,8 @@
 				<entry key="v1.r7" value="rec" />		
 				<entry key="v1.dv" value="dev" />
 				<entry key="v1.pp" value="preprod" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
  	</bean>	
@@ -131,6 +143,8 @@
 				<entry key="v1.r7" value="rec" />			
 				<entry key="v1.dv" value="dev" />
 				<entry key="v1.pp" value="preprod" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
 
@@ -148,6 +162,8 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
  	</bean>	
@@ -164,6 +180,8 @@
 				<entry key="dmz.r7" value="rec" />
 				<entry key="ville.pr" value="prod" />
 				<entry key="ville.r7" value="rec" />
+				<entry key="ville.fo" value="formation" />
+				<entry key="v1.fo" value="formation" />
 			</map>
 		</property>
 	</bean>
