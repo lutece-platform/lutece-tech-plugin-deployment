@@ -222,7 +222,15 @@
  		p:type="MYSQL"
  		p:ftpDirectoryDump="DUMPS"
  		p:ftpDirectoryTarget="EXECUTABLES"
- 		p:beanName="deployment.serverApplicationMys02"/>	
+ 		p:beanName="deployment.serverApplicationMys02"/>
+ 		
+ 	<bean id="deployment.serverApplicationMys03" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="03"
+ 		p:i18nKeyName="deployment.server_application_instance.mys.03.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
+ 		p:beanName="deployment.serverApplicationMys03"/>			
  		
 
  	<bean id="deployment.serverApplicationMysqlfo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
