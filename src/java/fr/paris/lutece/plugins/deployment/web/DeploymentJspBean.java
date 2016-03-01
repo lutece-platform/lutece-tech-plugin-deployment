@@ -126,6 +126,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
                 _nDefaultItemsPerPage );
+        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
+        		_strCurrentPageIndex );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
