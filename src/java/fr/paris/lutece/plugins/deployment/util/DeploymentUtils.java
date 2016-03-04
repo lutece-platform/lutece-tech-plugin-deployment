@@ -570,8 +570,18 @@ public class DeploymentUtils
         }
         else if ( workflowDeploySiteContext.isTagSiteBeforeDeploy(  )  )
         {
+        	if(workflowDeploySiteContext.isTagAutomatically())
+        	{
+        		  nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE,
+                          ConstanteUtils.CONSTANTE_ID_NULL );
+        		
+        	}
+        	else
+        	{
+        	
             nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE,
                     ConstanteUtils.CONSTANTE_ID_NULL );
+        	}
         }
         else
         {

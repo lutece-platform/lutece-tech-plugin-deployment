@@ -1066,6 +1066,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
         String strTagSiteBeforeDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
+        String strTagAutomatically= request.getParameter( ConstanteUtils.PARAM_TAG_AUTOMATICALLY);
+        
         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
         String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
         
@@ -1131,6 +1133,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         }
 
         workflowDeploySiteContext.setTagSiteBeforeDeploy( !StringUtils.isEmpty( strTagSiteBeforeDeploy ) );
+        workflowDeploySiteContext.setTagAutomatically( !StringUtils.isEmpty( strTagAutomatically ) );
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
 

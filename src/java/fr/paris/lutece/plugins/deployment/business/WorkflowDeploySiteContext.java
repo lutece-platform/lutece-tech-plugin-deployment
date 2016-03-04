@@ -59,6 +59,7 @@ public class WorkflowDeploySiteContext implements Serializable
     private CommandResult _commandResult;
     private MavenUser _mavenUser;
     private boolean _bDeployWar;
+    private boolean _bTagAutomatically;
     private boolean _bDeploySql;
     private String _strDatabaseName;
     private InputStream _scriptFileItem;
@@ -246,6 +247,14 @@ public class WorkflowDeploySiteContext implements Serializable
 
 	public void setScriptFileSelected(String _scriptFileSelected) {
 		this._scriptFileSelected = _scriptFileSelected;
+	}
+
+	public boolean isTagAutomatically() {
+		return _bTagAutomatically;
+	}
+
+	public void setTagAutomatically(boolean _bDeployWarFast) {
+		this._bTagAutomatically = _bDeployWarFast;
 	}
 
 	

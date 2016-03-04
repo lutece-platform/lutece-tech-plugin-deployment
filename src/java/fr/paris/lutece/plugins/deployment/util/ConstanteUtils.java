@@ -125,6 +125,8 @@ public class ConstanteUtils
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN = "deployment.adminUser.idAttribute.svnLogin";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD = "deployment.adminUser.idAttribute.svnPassword";
     public static final String PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE = "deployment.idWorkflowTagAndDeploySite";
+    public static final String PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE = "deployment.idWorkflowTagAutomaticallyAndDeploySite";
+    
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SITE = "deployment.idWorkflowDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_SITE = "deployment.idWorkflowTagSite";
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT = "deployment.idWorkflowDeployScript";
@@ -224,6 +226,7 @@ public class ConstanteUtils
     public static final String PARAM_SERVER_APPLICATION_TYPE = "server_application_type";
     public static final String PARAM_TAG_SITE_BEFORE_DEPLOY = "tag_site_before_deploy";
     public static final String PARAM_TAG_TO_DEPLOY = "tag_to_deploy";
+    public static final String PARAM_TAG_AUTOMATICALLY = "tag_automatically";
     public static final String PARAM_CODE = "code";
     public static final String PARAM_NAME = "name";
     public static final String PARAM_WEBAPP_NAME = "webapp_name";
