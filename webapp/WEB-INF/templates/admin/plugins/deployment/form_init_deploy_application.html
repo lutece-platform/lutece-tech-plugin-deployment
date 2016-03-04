@@ -95,6 +95,16 @@
 								</div>
 							</div>
 						</div>
+						<div class="form-group" id="tag_automatically">
+							<label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_automatically" >#i18n{deployment.form_init_deploy_application.label_tag_automatically}</label>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="checkbox">
+									<label>
+									<input type="checkbox"  name="tag_automatically">&nbsp;
+									</label>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
 							<label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*</label>
 							<div class="col-xs-12 col-sm-8 col-md-8">
@@ -148,14 +158,17 @@
 
 <script>
 $(document).ready(function(e){
+	$("#tag_automatically").hide();
 	$("#tag_site_before_deploy").click( function(e){
 		if ($(this).is (':checked'))
 		{
 			$("#tag_to_deploy").hide();
+			$("#tag_automatically").hide();
 		}
 		else
 		{
 			$("#tag_to_deploy").show();
+			$("#tag_automatically").show();
 		}	
 			}
 		);
