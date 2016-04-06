@@ -365,7 +365,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	   
        }
 
-        application.setSvnUrlSite( SVNUtils.getSvnUrlSite( application ) );
         _applicationService.createApplication( application, getPlugin(  ) );
 
         return getJspManageApplication( request );
@@ -1227,6 +1226,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         application.setCodeCategory( strCodeCategory );
         application.setSiteName( strSite );
         application.setWorkgroup(strWorkgroup);
+        application.setSvnUrlSite( SVNUtils.getSvnUrlSite( application ) );
 
         return null; // No error
     }
