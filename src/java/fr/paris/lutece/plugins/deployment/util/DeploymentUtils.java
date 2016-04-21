@@ -56,7 +56,7 @@ import fr.paris.lutece.plugins.deployment.business.ActionParameter;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IAction;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
@@ -384,30 +384,47 @@ public class DeploymentUtils
         return nIdParameter;
     }
 
-    public static MavenUser getMavenUser( int nIdAdminUser, Locale locale )
+    public static SvnUser getSvnUser( int nIdAdminUser, Locale locale )
     {
-        String strIdAttributeLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN );
-        String strIdAttributePasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD );
-        String strLoginValue = null;
-        String strPasswordValue = null;
-        MavenUser mavenUser = null;
-        Map<String, Object> mapAttributeUser = AdminUserFieldService.getAdminUserFields( nIdAdminUser, locale );
-
-        if ( mapAttributeUser.containsKey( strIdAttributeLogin ) &&
-                mapAttributeUser.containsKey( strIdAttributePasssword ) )
+        
+    	SvnUser mavenUser = null;
+    	boolean bUsedApplicationAccount= AppPropertiesService.getPropertyBoolean( ConstanteUtils.PROPERTY_SVN_USED_DEPLOYMENT_ACCOUNT ,false);
+        if(!bUsedApplicationAccount)
+        	
         {
-            strLoginValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributeLogin ) ).get( 0 )
-                              .getValue(  );
-            strPasswordValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributePasssword ) ).get( 0 )
-                                 .getValue(  );
-
-            if ( !StringUtils.isEmpty( strLoginValue ) && !( StringUtils.isEmpty( strPasswordValue ) ) )
-            {
-                mavenUser = new MavenUser(  );
-                mavenUser.setLogin( strLoginValue );
-                mavenUser.setPaswword( strPasswordValue );
-            }
+    	
+	    	String strIdAttributeLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN );
+	        String strIdAttributePasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD );
+	        String strLoginValue = null;
+	        String strPasswordValue = null;
+	       
+	        Map<String, Object> mapAttributeUser = AdminUserFieldService.getAdminUserFields( nIdAdminUser, locale );
+	
+	        if ( mapAttributeUser.containsKey( strIdAttributeLogin ) &&
+	                mapAttributeUser.containsKey( strIdAttributePasssword ) )
+	        {
+	            strLoginValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributeLogin ) ).get( 0 )
+	                              .getValue(  );
+	            strPasswordValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributePasssword ) ).get( 0 )
+	                                 .getValue(  );
+	
+	            if ( !StringUtils.isEmpty( strLoginValue ) && !( StringUtils.isEmpty( strPasswordValue ) ) )
+	            {
+	                mavenUser = new SvnUser(  );
+	                mavenUser.setLogin( strLoginValue );
+	                mavenUser.setPassword( strPasswordValue );
+	            }
+	        }
         }
+        else
+        {
+        	String strApplicationLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_LOGIN_APPLICATION_DEPLOYMENT);
+	        String strApplicationPasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_PASSWORD_APPLICATION_DEPLOYMENT );
+	    
+        	 mavenUser = new SvnUser(  );
+             mavenUser.setLogin( strApplicationLogin );
+             mavenUser.setPassword( strApplicationPasssword );
+       }
 
         return mavenUser;
     }
@@ -420,6 +437,7 @@ public class DeploymentUtils
         try
         {
             jo.put( ConstanteUtils.JSON_STATUS, result.getStatus(  ) );
+            
 
             // pour les logs tr�s longs, on ne prend que la fin
             StringBuffer sbLog = result.getLog(  );
@@ -452,6 +470,7 @@ public class DeploymentUtils
             jo.put( ConstanteUtils.JSON_LOG, strLog );
             jo.put( ConstanteUtils.JSON_RUNNING, result.isRunning(  ) );
             jo.put( ConstanteUtils.JSON_ERROR, result.getError(  ) );
+            jo.put( ConstanteUtils.JSON_ERROR_TYPE, result.getErrorType());
             
             for (  Entry<String,String> resultInformations: result.getResultInformations().entrySet()) {
             	
@@ -558,7 +577,8 @@ public class DeploymentUtils
             jo.put( ConstanteUtils.JSON_SERVER_APPLICATION_TYPE ,  strServerApplicationType);
             return jo;
         }
-
+    
+   
     public static int getIdWorkflowSiteDeploy(WorkflowDeploySiteContext workflowDeploySiteContext)
     {
         int nIdWorkflow = ConstanteUtils.CONSTANTE_ID_NULL;
@@ -593,7 +613,7 @@ public class DeploymentUtils
     }
 
     public static HashMap<String, ReferenceList> getHashCategoryListSite( ReferenceList categoryRefList,
-        ISvnService svnService, MavenUser mavenUser )
+        ISvnService svnService, SvnUser mavenUser )
     {
         HashMap<String, ReferenceList> hashCategoryListSite = new HashMap<String, ReferenceList>(  );
         FilterDeployment filter = new FilterDeployment(  );
@@ -633,6 +653,18 @@ public class DeploymentUtils
     {
     	commandResult.setRunning( false );
     }
+    
+    public static void addTechnicalError(CommandResult commandResult,String strError  )
+    {
+    	AppLogService.error(strError);
+    	if(commandResult!=null)
+    	{
+	    	commandResult.setError(strError);
+	    	commandResult.setStatus(CommandResult.STATUS_ERROR);
+	    	commandResult.setRunning(false);
+	    	commandResult.setErrorType(CommandResult.ERROR_TYPE_STOP);
+    	}
+	  }
 
 
     public static ReferenceList addEmptyRefenceItem( ReferenceList referenceList )

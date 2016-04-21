@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
+import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
@@ -109,6 +110,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Checkout  Site...\n" );
         _svnService.doSvnCheckoutSite( application.getSiteName(  ), strSvnCheckoutSiteUrl, context.getMavenUser(  ),
             context.getCommandResult(  ) );
+        //throw RuntimeException for stopping Workflow 
+        if(context.getCommandResult(  ).getStatus()==CommandResult.STATUS_ERROR)
+        {
+     	   throw new RuntimeException("Error Chekout Site");
+        }
         context.getCommandResult(  ).getLog(  ).append( "End Action Checkout   Site...\n" );
 
         return null;
@@ -155,6 +161,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         _svnService.doSvnTagSite( application.getSiteName(  ), application.getSvnUrlSite(  ), context.getTagName(  ),
             context.getNextVersion(  ), context.getTagVersion(  ), context.getMavenUser(  ),
             context.getCommandResult(  ) );
+        //throw RuntimeException for stopping Workflow 
+        if(context.getCommandResult(  ).getStatus()==CommandResult.STATUS_ERROR)
+        {
+     	   throw new RuntimeException("Error During Tag Site");
+        }
         context.getCommandResult(  ).getLog(  ).append( "End Action Tag  Site...\n" );
         // update context status
         context.setTagToDeploy( context.getTagName(  ) );
@@ -173,6 +184,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
         _mavenService.mvnSiteAssembly( application.getSiteName(  ), context.getTagName(  ),
             serverApplicationInstance.getMavenProfile(  ), context.getMavenUser(  ), context.getCommandResult(  ) );
+      //throw RuntimeException for stopping Workflow 
+        if(context.getCommandResult(  ).getStatus()==CommandResult.STATUS_ERROR)
+        {
+     	   throw new RuntimeException("Error During assembly Site");
+        }
         context.getCommandResult(  ).getLog(  ).append( "End Action Assembly  Site...\n" );
 
         return null;
@@ -196,6 +212,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
             serverApplicationInstance.getFtpInfo(  ),
             DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
             context.getCommandResult(  ) ,true);
+      //throw RuntimeException for stopping Workflow 
+       if(context.getCommandResult(  ).getStatus()==CommandResult.STATUS_ERROR)
+       {
+    	   throw new RuntimeException("Error During Deploy Site");
+       }
         context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Site...\n" );
 
         return null;
@@ -215,7 +236,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
       	_ftpService.uploadFile( context.getScriptFileItemName(),context.getScriptFileItem(),serverApplicationInstance.getFtpInfo(  ),
 			    DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
 			    context.getCommandResult(  ),false );
-			
+        //throw RuntimeException for stopping Workflow 
+        if(context.getCommandResult(  ).getStatus()==CommandResult.STATUS_ERROR)
+        {
+     	   throw new RuntimeException("Error During Deploy Script");
+        }	
 		
         context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Script...\n" );
 
@@ -238,9 +263,9 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
             bResult= _actionService.executeAction( application, action, serverApplicationInstance,
                 context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
             if(!bResult && action.isStopWorkflowIfExecutionError() )
-            {
-            	//Stop Workflow Action
-            	throw new RuntimeException("Error During Server Action Execution");
+            {	 context.getCommandResult(  ).setErrorType(CommandResult.ERROR_TYPE_STOP);
+            	//throw RuntimeException for stopping Workflow 
+            	   throw new RuntimeException("Error During Server Action Execution");
             	
             }
             context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );

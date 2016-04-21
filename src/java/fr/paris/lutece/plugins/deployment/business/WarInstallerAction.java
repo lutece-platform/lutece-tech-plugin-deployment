@@ -93,6 +93,7 @@ public class WarInstallerAction extends DefaultAction
 		                if ( strJSONAction != null )
 		                {
 		                    AppLogService.info( "Résultat de la commande @WAR_INSTALLER --> " + strJSONAction );
+		                    
 		                }
 		                break;
             		}
@@ -101,7 +102,9 @@ public class WarInstallerAction extends DefaultAction
         }
         catch ( Exception e )
         {
-            AppLogService.error( e );
+        	
+        	  DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage());  
+        	  AppLogService.error( e );
         }
 
         if ( strJSONAction != null )
@@ -111,6 +114,13 @@ public class WarInstallerAction extends DefaultAction
             if ( jo != null )
             {
                 strResult = jo.getString( strWebserviceActionJsonPropery );
+               if(strResult!=null && !new Boolean( strResult ))
+               {
+               
+            	   DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+strJSONAction);
+
+               }
+               
             }
         }
 

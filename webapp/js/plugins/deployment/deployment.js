@@ -20,7 +20,7 @@ function setResultInformations( resultInformations )
 	
 }
 
-function setErrors( errors)
+function setErrors( errors,errorType)
 {
 	
 	if(errors!=null && errors!= "")
@@ -29,6 +29,17 @@ function setErrors( errors)
 		
 	}
 	$('#errors').show();
+	if(errorType==0)
+	{
+		$('#errors').removeClass('alert-danger');
+		$('#errors').addClass('alert-info');
+		
+	}
+	else
+	{
+		$('#errors').removeClass('alert-info');
+		$('#errors').addClass('alert-danger');
+	}
 	
 }
 
@@ -67,7 +78,7 @@ function statusCallback( json )
 		
 		if(json.status!=1)
 		{
-			setErrors(json.error);
+			setErrors(json.error,json.error_type);
 		}
 		setResultLog( json.log );
 		setResultInformations( json.result );
@@ -235,13 +246,11 @@ function addEvent() {
     	return false;
 	});
     
-    $('#form_action_server').submit( function(){
-    	runActionServer( $(this) );
-    	return false;
-	});
+   
     
     $('.form_run_action_server').submit( function(){
     	runActionServer( $(this) );
+    	
     	return false;
 	});
     
@@ -275,7 +284,7 @@ function statusCallbackWorkflowAction( json )
 			replaceWorkflowState(json);
 			
 		}
-		addEvent();
+		
 	}
 	
 }
@@ -294,6 +303,7 @@ function stopAction( refresh, json )
 	{
 		
 	}
+	$('#myModal').modal('hide');
 }
 
 
@@ -321,6 +331,14 @@ function replaceWorkflowActions(json)
 
 									
 		$('#workflow_actions').html(newActions);
+		//Add Event on new action
+		$('#workflow_actions form').submit( function(){
+		        
+		    	var idAction = $(this).children().first().val();
+		    	runWorkflowAction( idAction);
+				  
+					return false;
+			});
         		
 
 	}
@@ -390,7 +408,7 @@ function statusCallbackTasksForm( json )
 	if(json.form_error!=null && json.form_error!= "" )
 	{
 		$('#task_form_error').html(json.form_error);
-		addEvent();
+		
 	}
 	else
 	{
@@ -398,7 +416,7 @@ function statusCallbackTasksForm( json )
 		$('#workflow_task_form').hide();
 		replaceWorkflowActions(json);
 		replaceWorkflowState(json);
-		addEvent();
+		
 		
 	}
 
@@ -409,13 +427,17 @@ function statusCallbackTasksForm( json )
 function runActionServer(form ) 
 {
 	
-	
-	initModalBody();
+	alert($(form).serialize());
+	//initModalBody();
 	if ($('#myModal').hasClass('in')==false)
 	{
 		$('#myModal').modal('show') ;
 	}
 	
+	$('#myModal div.action_wait').show();
+	$('#myModal div.modal-body div.modal-content').html("");
+	$('#myModal div.modal-body div.error_run_action_server span').html("");
+	$('#myModal div.modal-body div.error_run_action_server').hide();
 	$.ajax({
           url: 'jsp/admin/plugins/deployment/DoRunActionServerJSON.jsp',
           type: $(form).attr('method'), 
@@ -438,13 +460,18 @@ function statusCallbackRunActionServer( json )
 	}
 	else
 	{
-		
-	
-	
 		if(json.jsp_form_display!=null && json.jsp_form_display!= "" )
 		{
-			
+			$('#myModal div.action_wait').hide();
 			displayFormActionServer(json);
+			
+		}
+		else if(json.status==0)
+		{
+			$('#myModal div.action_wait').hide();
+			$('#myModal div.error_run_action_server span').html(json.error);
+			$('#myModal div.modal-body div.error_run_action_server').show();
+	
 			
 		}
 		else
@@ -456,7 +483,7 @@ function statusCallbackRunActionServer( json )
 			replaceServerStatus(json)
 		
 		}
-		addEvent();
+		
 	}
 	
 }
@@ -468,7 +495,7 @@ function displayFormActionServer(json)
 		  success:function ( data ) {
 			//$('#div_form_action_server').html(data);
 			//$('#div_form_action_server').show();
-			$('.modal-body').html(data);
+			$('.modal-body div.modal-content').html(data);
 			$('#myModal').modal('show');
 			
 		}
@@ -486,11 +513,11 @@ function setResultActionServerLog( log )
 
 function setResultActionServer( resultInformations )
 {
-	
 	if(resultInformations.dump_file_url!=null && resultInformations.dump_file_url!= "")
 	{
-		//$('#dump_file_url').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump de sauvegarde' > <i class='icon-upload icon-white'></i></a>");
-		$('.modal-body').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump' > <i class='glyphicon glyphicon-download'></i> Télécharger le dump</a>");
+		
+		$('#myModal div.action_wait').hide();
+		$('#myModal div.modal-body div.modal-content').html(" <a class='btn btn-primary btn-flat btn-block' href='"+resultInformations.dump_file_url+"' title='Télécharger le dump' > <i class='glyphicon glyphicon-download'></i> Télécharger le dump</a>");
 		
 	}
 	else
@@ -525,10 +552,15 @@ function replaceServerActions(json)
 			
 		}	
 		
-		
 		$('#actions_'+json.code_environment.replace(".", "_")+'_'+json.code_server_application_instance+'_'+json.server_application_type).html(newActions);
 		
-		}
+		$('#actions_'+json.code_environment.replace(".", "_")+'_'+json.code_server_application_instance+'_'+json.server_application_type+' form').submit( function(){
+			runActionServer( $(this) );
+	    	
+	    	return false;
+		});
+	}
+	
 	
 }
 
@@ -558,7 +590,7 @@ function replaceServerStatus(json)
 
 function initModalBody()
 {
-	$('.modal-body').html('<div class="box" style="min-height:100px;border-top:0;"><div class="overlay"></div><div class="loading-img"></div></div><div class="center-block">Une action est en cours, veuillez patienter quelques instants</div>');
+	$('.modal-body').html('<div class="box" style="min-height:100px;border-top:0;"><div class="overlay"> <i class="fa fa-refresh fa-spin"></i></div></div><div class="center-block">Une action est en cours, veuillez patienter quelques instants</div><div class="alert alert-danger hide" id="error_run_action_server" role="alert" ><span></span></div>');
 }
 
 

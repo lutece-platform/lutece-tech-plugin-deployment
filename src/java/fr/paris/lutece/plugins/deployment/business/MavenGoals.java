@@ -36,8 +36,9 @@ package fr.paris.lutece.plugins.deployment.business;
 import java.util.Arrays;
 import java.util.List;
 public enum MavenGoals
-{LUTECE_SITE_ASSEMBLY( "clean", "lutece:site-assembly" );
-
+{	
+	LUTECE_SITE_ASSEMBLY( "clean", "lutece:site-assembly"),
+	PACKAGE( "clean", "package" );
     private List<String> _goals;
 
     MavenGoals( String... goals )

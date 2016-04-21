@@ -66,6 +66,10 @@ public class DefaultAction extends Action
         catch ( Exception e )
         {
             AppLogService.error( e );
+          if( commandResult!=null)
+          {
+        	  commandResult.setError("<h1>Erreur  lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage());
+         }
         }
 
         if ( strJSONAction != null )
@@ -75,6 +79,12 @@ public class DefaultAction extends Action
             if ( jo != null )
             {
                 strResult = jo.getString( strWebserviceActionJsonPropery );
+                if(strResult!=null && !new Boolean( strResult ) && commandResult!=null)
+                {
+                
+                	commandResult.setError("<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> : "+strJSONAction);
+
+                }
             }
         }
 

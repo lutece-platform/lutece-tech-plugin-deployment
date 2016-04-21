@@ -93,7 +93,9 @@ public class DumpAction extends DefaultAction
 	         }
 	         catch ( Exception e )
 	         {
-	             AppLogService.error( e );
+	        	  DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage());  
+	        	  AppLogService.error( e );
+	             
 	         }
 	         
 	
@@ -104,6 +106,12 @@ public class DumpAction extends DefaultAction
 	             if ( jo != null )
 	             {
 	                 strResult = jo.getString( strWebserviceActionJsonPropery );
+	                 if(strResult!=null && !new Boolean( strResult ))
+	                 {
+	                 
+	              	   DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+strJSONDump);
+
+	                 }
 	             }
 	             commandResult.getResultInformations().put(ConstanteUtils.MARK_DUMP_FILE_URL,"jsp/admin/plugins/deployment/DoDownloadDump.jsp?code_application="+application.getIdApplication()+"&code_environment="+serverApplicationInstance.getCodeEnvironment()+"&code_server_application_instance_mysql="+serverApplicationInstance.getCode()+"&code_database="+strDataBase+"&plugin_name=deployment" );
 	         	

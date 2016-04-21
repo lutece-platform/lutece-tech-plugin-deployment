@@ -57,7 +57,7 @@ public class WorkflowDeploySiteContext implements Serializable
     private String _strNextVersion;
     private String _strTagVersion;
     private CommandResult _commandResult;
-    private MavenUser _mavenUser;
+    private SvnUser _mavenUser;
     private boolean _bDeployWar;
     private boolean _bTagAutomatically;
     private boolean _bDeploySql;
@@ -186,12 +186,12 @@ public class WorkflowDeploySiteContext implements Serializable
         this._strTagName = strTagName;
     }
 
-    public void setMavenUser( MavenUser _mavenUser )
+    public void setSvnUser( SvnUser _mavenUser )
     {
         this._mavenUser = _mavenUser;
     }
 
-    public MavenUser getMavenUser(  )
+    public SvnUser getMavenUser(  )
     {
         return _mavenUser;
     }

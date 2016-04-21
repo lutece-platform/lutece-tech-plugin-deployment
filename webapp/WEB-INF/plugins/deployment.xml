@@ -26,5 +26,18 @@
            	<feature-icon-url>images/admin/skin/plugins/deployment/deployment.png</feature-icon-url>
         </admin-feature>
    </admin-features>
+   <!-- RBAC Resources -->
+    <rbac-resource-types>
+        <rbac-resource-type>
+            <rbac-resource-type-class>
+                fr.paris.lutece.plugins.deployment.service.ApplicationResourceIdService
+            </rbac-resource-type-class>
+        </rbac-resource-type>
+        <rbac-resource-type>
+            <rbac-resource-type-class>
+                 fr.paris.lutece.plugins.deployment.service.EnvironmentResourceIdService
+            </rbac-resource-type-class>
+        </rbac-resource-type>
+    </rbac-resource-types>
     
  </plug-in>

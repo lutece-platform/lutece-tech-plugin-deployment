@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.deployment.service;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 
 
 public interface IMavenService
@@ -50,7 +50,7 @@ public interface IMavenService
      * @param strDevelopmentVersion la prochaine version de developpement (avec -SNAPSHOT)
      * @return le thread
      */
-    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, MavenUser user,
+    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user,
         CommandResult commandResult );
     
     

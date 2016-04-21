@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.deployment.service;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.MavenGoals;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
@@ -89,7 +89,7 @@ public class MavenService implements IMavenService
     /* (non-Javadoc)
      * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
      */
-    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, MavenUser user,
+    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user,
         CommandResult commandResult )
     {
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
@@ -181,8 +181,9 @@ public class MavenService implements IMavenService
 
             if ( nStatus != 0 )
             {
-                commandResult.setError( commandResult.getLog(  ).toString(  ) );
-                commandResult.setStatus( CommandResult.STATUS_ERROR );
+            	
+            	DeploymentUtils.addTechnicalError(commandResult, commandResult.getLog(  ).toString(  ));
+                
             }
             else
             {
@@ -215,7 +216,8 @@ public class MavenService implements IMavenService
 
             commandResult.getLog(  ).append( errorLog );
             //_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
-            commandResult.setStatus( CommandResult.STATUS_ERROR );
+            DeploymentUtils.addTechnicalError(commandResult,  errorLog );
+            
         }
 
         //_endTime = new Date(  );

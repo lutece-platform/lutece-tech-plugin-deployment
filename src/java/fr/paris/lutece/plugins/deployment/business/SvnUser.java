@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MavenUser
+public class SvnUser
 {
     public static final String MARK_CURRENT_THREAD = "current_thread";
     public static final String MARK_AUTHENTIFICATION_MANAGER = "authentification_manager";
@@ -46,7 +46,7 @@ public class MavenUser
     private String _strPaswword;
     private Map<String, Object> _mUserContext;
 
-    public MavenUser(  )
+    public SvnUser(  )
     {
         setUserContext( new HashMap<String, Object>(  ) );
     }
@@ -61,7 +61,7 @@ public class MavenUser
         return _strLogin;
     }
 
-    public void setPaswword( String strPaswword )
+    public void setPassword( String strPaswword )
     {
         this._strPaswword = strPaswword;
     }

@@ -55,7 +55,7 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCommitClient;
 import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCopyClient;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
@@ -111,7 +111,7 @@ public class SvnService implements ISvnService
     /* (non-Javadoc)
          * @see fr.paris.lutece.plugins.deployment.service.ISvnService#getSites(fr.paris.lutece.plugins.deployment.business.FilterDeploiement, fr.paris.lutece.plugins.deployment.business.User)
          */
-    public ReferenceList getSites( FilterDeployment filter, MavenUser user )
+    public ReferenceList getSites( FilterDeployment filter, SvnUser user )
     {
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
                 user.getPasword(  ) );
@@ -136,7 +136,7 @@ public class SvnService implements ISvnService
     /* (non-Javadoc)
          * @see fr.paris.lutece.plugins.deployment.service.ISvnService#getTagsSite(java.lang.String, fr.paris.lutece.plugins.deployment.business.User)
          */
-    public ReferenceList getTagsSite( String strUrlSite, MavenUser user )
+    public ReferenceList getTagsSite( String strUrlSite, SvnUser user )
     {
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
                 user.getPasword(  ) );
@@ -157,7 +157,7 @@ public class SvnService implements ISvnService
         return listReferenceItems;
     }
 
-    public String doSvnCheckoutSite( String strSiteName, String strSvnUrl, MavenUser user, CommandResult commandResult )
+    public String doSvnCheckoutSite( String strSiteName, String strSvnUrl, SvnUser user, CommandResult commandResult )
     {
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
                 user.getPasword(  ) );
@@ -205,7 +205,7 @@ public class SvnService implements ISvnService
          * @see fr.paris.lutece.plugins.deployment.service.ISvnService#doSvnTagSite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, fr.paris.lutece.plugins.deployment.business.User)
          */
     public String doSvnTagSite( String strSiteName, String strUrlSite, String strTagName, String strNextVersion,
-        String strVersion, MavenUser user, CommandResult commandResult )
+        String strVersion, SvnUser user, CommandResult commandResult )
     {
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
 
@@ -260,13 +260,24 @@ public class SvnService implements ISvnService
             sbLog.append( "Pom updated\n" );
 
             sbLog.append( "Tagging site to " + strTagName + "...\n" );
-            SVNUtils.doTagSite( strSiteName, strTagName, strSrcURL, strDstURL, copyClient );
-            sbLog.append( "Tag done\n" );
-
-            sbLog.append( "Updating pom to next development " + strNextVersion + "\n" );
-            sbLog.append( ReleaseUtils.updateReleaseVersion( strSiteLocalBasePath, strNextVersion,
-                    "[site-release] Update pom version for " + strSiteName, commitClient ) );
-            sbLog.append( "Pom updated\n" );
+            
+            
+            String strErrorDuringTag=SVNUtils.doTagSite( strSiteName, strTagName, strSrcURL, strDstURL, copyClient );
+           
+            if(StringUtils.isEmpty(strErrorDuringTag))
+            {
+	            sbLog.append( "Tag done\n" );
+	
+	            sbLog.append( "Updating pom to next development " + strNextVersion + "\n" );
+	            sbLog.append( ReleaseUtils.updateReleaseVersion( strSiteLocalBasePath, strNextVersion,
+	                    "[site-release] Update pom version for " + strSiteName, commitClient ) );
+	            sbLog.append( "Pom updated\n" );
+            }
+            else
+            {
+            	DeploymentUtils.addTechnicalError(commandResult, strErrorDuringTag);
+            }
+            
         }
         catch ( Exception e )
         {
@@ -297,13 +308,14 @@ public class SvnService implements ISvnService
                                                         _result.getLog(  ).toString(  ),
                                                         e ) );
                                                         **/
+            DeploymentUtils.addTechnicalError(commandResult, errorLog);
         }
 
         return ConstanteUtils.CONSTANTE_EMPTY_STRING;
     }
 
 	@Override
-	public ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, MavenUser user) {
+	public ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, SvnUser user) {
 		
 		
 		CommandResult commandResult=new CommandResult();

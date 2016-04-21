@@ -74,6 +74,7 @@ public class ConstanteUtils
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
     public static final String CONSTANTE_ACTION_EXECUTE = "@EXECUTE";
     public static final String JSON_STATUS = "status";
+    public static final String JSON_ERROR_TYPE = "error_type";
     public static final String JSON_LOG = "log";
     public static final String JSON_RUNNING = "running";
     public static final String JSON_ERROR = "error";
@@ -124,6 +125,12 @@ public class ConstanteUtils
     public static final String PROPERTY_MESSAGE_CONFIRM_REMOVE_APPLICATION = "deployment.message.confirm_remove_application";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN = "deployment.adminUser.idAttribute.svnLogin";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD = "deployment.adminUser.idAttribute.svnPassword";
+    public static final String PROPERTY_SVN_USED_DEPLOYMENT_ACCOUNT = "deployment.svn.usedDeploymentAccount";
+    public static final String PROPERTY_SVN_LOGIN_APPLICATION_DEPLOYMENT = "deployment.svn.svnLoginDeployment";
+    public static final String PROPERTY_SVN_PASSWORD_APPLICATION_DEPLOYMENT = "deployment.svn.svnPasswordDeployment";
+    
+    
+    
     public static final String PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE = "deployment.idWorkflowTagAndDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE = "deployment.idWorkflowTagAutomaticallyAndDeploySite";
     

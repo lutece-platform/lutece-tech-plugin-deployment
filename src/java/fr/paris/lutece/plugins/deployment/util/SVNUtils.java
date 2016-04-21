@@ -127,6 +127,7 @@ public final class SVNUtils
 
         if ( info.getErrorMessage(  ) != null )
         {
+        	
             return info.getErrorMessage(  ).getMessage(  );
         }
 
@@ -179,6 +180,10 @@ public final class SVNUtils
             //            _result.getLog(  ).append( CONSTANTE_NO_LOGIN_PASSWORD );
             //            _result.setStatus( ICommandThread.STATUS_EXCEPTION );
             //            _result.setRunning( false );
+
+
+        	DeploymentUtils.addTechnicalError(result,"Une erreur est survenue lors de la tentative d'authentification avec le svn"+e);
+		      
             StringWriter sw = new StringWriter(  );
             PrintWriter pw = new PrintWriter( sw );
             e.printStackTrace( pw );
@@ -226,9 +231,8 @@ public final class SVNUtils
                 //                _logger.error( e1 );
             }
 
-            //            _result.setLog( _result.getLog(  ).append( errorLog ) );
-            //_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
-            //            _logger.error( e );
+        	DeploymentUtils.addTechnicalError(result,"Une erreur svn est survenue:"+e);
+   		 
         }
 
         return null;

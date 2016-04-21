@@ -40,9 +40,11 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.ReferenceList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -90,6 +92,22 @@ public class EnvironmentService implements IEnvironmentService
         	environment.setName( I18nService.getLocalizedString( environment.getI18nKeyName(  ), locale ) );
         }
         return environment;
+    }
+    
+    public ReferenceList getEnvironmentRefList( Locale locale )
+    {
+        
+    	ReferenceList refListEnv=new ReferenceList();
+    	if ( _hashEnvironements == null )
+        {
+            initHashEnvironments(  );
+        }
+
+        for(Environment environment:_hashEnvironements.values())
+        {
+        	refListEnv.addItem(environment.getCode(),  I18nService.getLocalizedString( environment.getI18nKeyName(  ), locale ));
+         }
+        return refListEnv;
     }
 
     /*

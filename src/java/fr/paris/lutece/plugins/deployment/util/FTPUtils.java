@@ -52,175 +52,66 @@ import java.io.OutputStream;
 
 public class FTPUtils
 {
-    public static String deleteFile( FtpInfo ftpInfo, boolean useSSL )
-    {
-        boolean bError = true;
-        final FTPClient ftp = getFtpClient( ftpInfo );
-
-        try
-        {
-            if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
-            {
-                ftp.logout(  );
-                bError = true;
-            }
-
-            boolean resultat = ftp.deleteFile( "Documents/test.war" );
-
-            if ( resultat )
-            {
-                System.out.println( "Le Fichier a été supprimé" );
-            }
-            else
-            {
-                System.out.println( "Impossible de supprimer ce fichier" );
-            }
-
-            ftp.noop(  ); // check that control connection is working OK
-
-            ftp.logout(  );
-            ftp.disconnect(  );
-        }
-        catch ( FTPConnectionClosedException e )
-        {
-            bError = true;
-            System.err.println( "Server closed connection." );
-            e.printStackTrace(  );
-        }
-        catch ( IOException e )
-        {
-            bError = true;
-            e.printStackTrace(  );
-        }
-        finally
-        {
-            if ( ftp.isConnected(  ) )
-            {
-                try
-                {
-                    ftp.disconnect(  );
-                }
-                catch ( IOException f )
-                {
-                    // do nothing
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static String mvFile( FtpInfo ftpInfo, boolean useSSL )
-    {
-        boolean bError = true;
-        final FTPClient ftp = getFtpClient( ftpInfo );
-
-        try
-        {
-            if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
-            {
-                ftp.logout(  );
-                bError = true;
-            }
-
-            boolean resultat = ftp.rename( "Documents/test.war", "test.war.old" );
-
-            if ( resultat )
-            {
-                System.out.println( "Le fichier a été déplacé" );
-            }
-            else
-            {
-                System.out.println( "Impossible de déplacer le fichier" );
-            }
-
-            ftp.noop(  ); // check that control connection is working OK
-
-            ftp.logout(  );
-            ftp.disconnect(  );
-        }
-        catch ( FTPConnectionClosedException e )
-        {
-            bError = true;
-            AppLogService.error( "Server closed connection." );
-           
-        }
-        catch ( IOException e )
-        {
-            bError = true;
-            AppLogService.error( e);
-        }
-        finally
-        {
-            if ( ftp.isConnected(  ) )
-            {
-                try
-                {
-                    ftp.disconnect(  );
-                }
-                catch ( IOException f )
-                {
-                	 AppLogService.error( "Server closed connection." + f );
-                }
-            }
-        }
-
-        return null;
-    }
-
+   
+    
     
     public static String uploadFile( String fileName, InputStream inputStream, FtpInfo ftpInfo,
             String remoteDirectoryPath, CommandResult commandResult,boolean bBinaryFile )
         {
             final FTPClient ftp = getFtpClient( ftpInfo );
 
-            boolean bError;
-
-            // login
-            try
+            if(ftp != null)
+            	
             {
-                if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
-                {
-                    ftp.logout(  );
-                    bError = true;
-                }
-
-                if(bBinaryFile)
-                {
-                	ftp.setFileType( FTP.BINARY_FILE_TYPE );
-                }
-                ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
-
-                inputStream.close(  );
-
-                ftp.noop(  ); // check that control connection is working OK
-
-                ftp.logout(  );
+		            // login
+		            try
+		            {
+		                if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
+		                {
+		                    ftp.logout(  );
+		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu");
+		                }
+		
+		                if(bBinaryFile)
+		                {
+		                	ftp.setFileType( FTP.BINARY_FILE_TYPE );
+		                }
+		                ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
+		
+		                inputStream.close(  );
+		
+		                ftp.noop(  ); // check that control connection is working OK
+		
+		                ftp.logout(  );
+		            }
+		
+		            catch ( FTPConnectionClosedException e )
+		            {
+		             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage());
+		      	            }
+		            catch ( IOException e )
+		            {
+		            	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP"+e.getMessage());
+		            }
+		            finally
+		            {
+		                if ( ftp.isConnected(  ) )
+		                {
+		                    try
+		                    {
+		                        ftp.disconnect(  );
+		                    }
+		                    catch ( IOException f )
+		                    {
+		                        // do nothing
+		                    }
+		                }
+		            }
             }
-
-            catch ( FTPConnectionClosedException e )
+            else
             {
-                bError = true;
-                AppLogService.error( "Server closed connection." + e );
-            }
-            catch ( IOException e )
-            {
-                bError = true;
-                AppLogService.error( e );
-            }
-            finally
-            {
-                if ( ftp.isConnected(  ) )
-                {
-                    try
-                    {
-                        ftp.disconnect(  );
-                    }
-                    catch ( IOException f )
-                    {
-                        // do nothing
-                    }
-                }
+            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP");
+  
             }
 
             // upload File
@@ -235,15 +126,21 @@ public class FTPUtils
         {
             final FTPClient ftp = getFtpClient( ftpInfo );
 
-            boolean bError;
+            
+            
+            if(ftp != null)
+            	
+            {
 
             // login
             try
             {
                 if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
                 {
+                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu");
+      		      
                     ftp.logout(  );
-                    bError = true;
+                  
                 }
 
                
@@ -259,13 +156,15 @@ public class FTPUtils
 
             catch ( FTPConnectionClosedException e )
             {
-                bError = true;
-                AppLogService.error( "Server closed connection." + e );
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage());
+		      	   
+            
             }
             catch ( IOException e )
             {
-                bError = true;
-                AppLogService.error( e );
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP:"+e.getMessage());
+		      	   
+                
             }
             finally
             {
@@ -281,6 +180,12 @@ public class FTPUtils
                     }
                 }
             }
+            }
+            else
+            {
+            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP");
+  
+            }
 
             // upload File
             return null;
@@ -293,7 +198,7 @@ public class FTPUtils
     {
         final FTPClient ftp = getFtpClient( ftpInfo );
 
-        boolean bError;
+ 
 
         // login
        
@@ -306,7 +211,8 @@ public class FTPUtils
             catch ( FileNotFoundException e )
             {
                 // TODO Auto-generated catch block
-                AppLogService.error(e);
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de l'upload du fichier" +pathLocalFile +":"+e.getMessage());
+    		    
             }
             
             return uploadFile(fileName, input, ftpInfo, remoteDirectoryPath, commandResult,bBinaryFile);
@@ -320,7 +226,6 @@ public class FTPUtils
 
         if ( ftpInfo.getProxyHost(  ) != null )
         {
-            System.out.println( "Using HTTP proxy server: " + ftpInfo.getProxyHost(  ) );
             ftp = new FTPHTTPClient( ftpInfo.getProxyHost(  ), ftpInfo.getProxyPort(  ), ftpInfo.getProxyUserLogin(  ),
                     ftpInfo.getProxyUserPassword(  ) );
         }

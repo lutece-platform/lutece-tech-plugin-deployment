@@ -33,10 +33,12 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
+import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
-public class Application implements AdminWorkgroupResource
+public class Application implements AdminWorkgroupResource,RBACResource
 {
+	public static final String RESOURCE_TYPE = "DEPLOYMENT_APPLICATION";
     private int _nIdApplication;
     private String _strCode;
     private String _strName;
@@ -126,4 +128,16 @@ public class Application implements AdminWorkgroupResource
    {
        _strWorkgroup = workGroup;
    }
+
+@Override
+public String getResourceTypeCode() {
+	// TODO Auto-generated method stub
+	return RESOURCE_TYPE;
+}
+
+@Override
+public String getResourceId() {
+	
+	return Integer.toString(getIdApplication());
+}
 }

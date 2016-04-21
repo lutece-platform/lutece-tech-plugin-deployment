@@ -54,11 +54,16 @@ public class CommandResult implements Cloneable, Serializable
     
     public static int STATUS_ERROR = 0;
     public static int STATUS_OK= 1;
+    public static int ERROR_TYPE_INFO = 0;
+    public static int ERROR_TYPE_STOP = 1;
+    
     
     private StringBuffer _strLog;
     private int _nStatus;
+    private int _nErrorType;
     private boolean _bRunning;
     private String _strError;
+ 
     private Map<String,String> _mResultInformations=new HashMap<String, String>();
     
     /**
@@ -156,4 +161,14 @@ public class CommandResult implements Cloneable, Serializable
 	public void setResultInformations(Map<String,String> _mResultInformations) {
 		this._mResultInformations = _mResultInformations;
 	}
+
+	public int getErrorType() {
+		return _nErrorType;
+	}
+
+	public void setErrorType(int _nErrorType) {
+		this._nErrorType = _nErrorType;
+	}
+
+	
 }

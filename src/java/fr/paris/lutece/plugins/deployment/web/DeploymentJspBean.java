@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.deployment.web;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -50,17 +49,18 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.ar.ArabicAnalyzer;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IAction;
-import fr.paris.lutece.plugins.deployment.business.MavenUser;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
+import fr.paris.lutece.plugins.deployment.service.ApplicationResourceIdService;
 import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
+import fr.paris.lutece.plugins.deployment.service.EnvironmentResourceIdService;
 import fr.paris.lutece.plugins.deployment.service.IActionService;
 import fr.paris.lutece.plugins.deployment.service.IApplicationService;
 import fr.paris.lutece.plugins.deployment.service.IDatabaseService;
@@ -74,12 +74,15 @@ import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.SVNUtils;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -98,6 +101,8 @@ import fr.paris.lutece.util.url.UrlItem;
 public class DeploymentJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DEPLOYMENT_MANAGEMENT = "DEPLOYMENT_MANAGEMENT";
+    
+    private static final String MESSAGE_ACCESS_DENIED = "deployment.message.error.accessDenied";
     private IApplicationService _applicationService = SpringContextService.getBean( "deployment.ApplicationService" );
     private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
     private IServerApplicationService _serverApplicationService = SpringContextService.getBean( 
@@ -169,13 +174,19 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getAdminPage( templateList.getHtml(  ) );
     }
 
-    public String getCreateApplication( HttpServletRequest request )
+    public String getCreateApplication( HttpServletRequest request ) throws AccessDeniedException
     {
+    	
+    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+    			ApplicationResourceIdService.PERMISSION_CREATE, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
        
     	
     	ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
         
-    	MavenUser mavenUser = DeploymentUtils.getMavenUser( getUser(  ).getUserId(  ), getLocale(  ) );
+    	SvnUser mavenUser = DeploymentUtils.getSvnUser( getUser(  ).getUserId(  ), getLocale(  ) );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
@@ -212,14 +223,21 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getAdminPage( templateList.getHtml(  ) );
     }
 
-    public String getModifyApplication( HttpServletRequest request )
+    public String getModifyApplication( HttpServletRequest request ) throws AccessDeniedException
     {
        
     	ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
         
     	String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
-        int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
-        MavenUser mavenUser = DeploymentUtils.getMavenUser( getUser(  ).getUserId(  ), getLocale(  ) );
+      
+    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_MODIFY, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
+    	
+    	int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
+        SvnUser mavenUser = DeploymentUtils.getSvnUser( getUser(  ).getUserId(  ), getLocale(  ) );
 
         // ReferenceList
         ReferenceList refListCategory = _applicationService.getListCategory(  );
@@ -268,11 +286,18 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getAdminPage( templateList.getHtml(  ) );
     }
 
-    public String getViewApplication( HttpServletRequest request )
+    public String getViewApplication( HttpServletRequest request ) throws AccessDeniedException
     {
         AdminUser adminUser = getUser(  );
-        MavenUser mavenUser = DeploymentUtils.getMavenUser( adminUser.getUserId(  ), getLocale(  ) );
+        SvnUser mavenUser = DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) );
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+       
+        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_VIEW, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
+        
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
@@ -321,11 +346,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getAdminPage( template.getHtml(  ) );
     }
 
-    public String doModifyApplication( HttpServletRequest request )
+    public String doModifyApplication( HttpServletRequest request )throws AccessDeniedException
     {
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
+    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_MODIFY, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
+    	
         if ( ( request.getParameter( ConstanteUtils.PARAM_CANCEL ) == null ) &&
                 ( nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL ) )
         {
@@ -348,11 +379,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getJspManageApplication( request );
     }
 
-    public String doCreateApplication( HttpServletRequest request )
+    public String doCreateApplication( HttpServletRequest request )throws AccessDeniedException
     {
         Application application = new Application(  );
         String strError = getApplicationData( request, application );
 
+    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+    			ApplicationResourceIdService.PERMISSION_CREATE, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
+    	
         if ( strError != null )
         {
             return strError;
@@ -377,7 +414,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
      *            The HTTP request
      * @return the confirmation page of delete digg submit
      */
-    public String getConfirmRemoveApplication( HttpServletRequest request )
+    public String getConfirmRemoveApplication( HttpServletRequest request )throws AccessDeniedException
     {
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
@@ -386,7 +423,12 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             return getJspManageApplication( request );
         }
-
+        
+        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_DELETE, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
         String strMessage = ConstanteUtils.PROPERTY_MESSAGE_CONFIRM_REMOVE_APPLICATION;
         UrlItem url = new UrlItem( ConstanteUtils.JSP_REMOVE_APPLICATION );
         url.addParameter( ConstanteUtils.PARAM_ID_APPLICATION, nIdApplication );
@@ -401,9 +443,15 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
      *            The HTTP request
      * @return the confirmation page of delete digg submit
      */
-    public String DoRemoveApplication( HttpServletRequest request )
+    public String DoRemoveApplication( HttpServletRequest request )throws AccessDeniedException
     {
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_DELETE, getUser() ) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
+        
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
         _applicationService.deleteApplication( nIdApplication, getPlugin(  ) );
@@ -411,10 +459,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getJspManageApplication( request );
     }
 
-    public String getFormDeployApplication( HttpServletRequest request )
+    public String getFormDeployApplication( HttpServletRequest request )throws AccessDeniedException
     {
         AdminUser adminUser = getUser(  );
-        MavenUser mavenUser = DeploymentUtils.getMavenUser( adminUser.getUserId(  ), getLocale(  ) );
+        SvnUser svnUser = DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) );
         String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
         
@@ -424,6 +472,16 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         
+        
+        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ) && !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+    	    			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() )  )
+    	{
+        	
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+
+        	
+    	}
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
@@ -435,7 +493,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             return getJspManageApplication( request );
         }
 
-        if ( mavenUser != null )
+        if ( svnUser != null )
         {
             Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
 
@@ -449,13 +507,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                            ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
             	  model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
-            	  ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), mavenUser );
+            	  ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), svnUser );
                   model.put( ConstanteUtils.MARK_SITE_LIST, refListTagSite );
             }
             if(bDeploySql)
             {
             	
-            ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), mavenUser) ;
+            ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), svnUser) ;
             refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
           
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application,
@@ -496,7 +554,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return getAdminPage( template.getHtml(  ) );
     }
 
-    public String getProcessDeployApplication( HttpServletRequest request )
+    public String getProcessDeployApplication( HttpServletRequest request )throws AccessDeniedException
     {
         if ( _nIdCurrentWorkflowDeploySiteContext != null )
         {
@@ -514,8 +572,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             HashMap model = new HashMap(  );
             if(workflowDeploySiteContext.isDeployWar())
             {
-            
-            
+            	
+            	 if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(application.getIdApplication()),
+             			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ) || !RBACService.isAuthorized( Environment.RESOURCE_TYPE, environment.getResourceId(),
+             					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ))
+             	{
+                 	
+             		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+
+                }
+            	 
+            	  
 	            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application,
 	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
 	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT,
@@ -528,6 +595,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             else if(workflowDeploySiteContext.isDeploySql())
             {
             
+	           	 if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(application.getIdApplication()),
+	          			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() ))
+	          	{
+	              	
+	          		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+	
+	             }
             
 	            ServerApplicationInstance serverApplicationInstanceMysql = _serverApplicationService.getServerApplicationInstance( application,
 	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
@@ -733,8 +807,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
      *            the HTTP request
      */
     private void doProcessAction( WorkflowDeploySiteContext workflowDeploySiteContext, int nIdAction, Plugin plugin,
-        Locale locale, HttpServletRequest request )
+        Locale locale, HttpServletRequest request ) 
     {
+    	
+    	
         if ( WorkflowService.getInstance(  )
                                 .canProcessAction( workflowDeploySiteContext.getId(  ),
                     WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdAction, ConstanteUtils.CONSTANTE_ID_NULL,
@@ -742,18 +818,39 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             try
             {
+            	
                 DeploymentUtils.startCommandResult( workflowDeploySiteContext );
+                if (( workflowDeploySiteContext.isDeployWar() && !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(workflowDeploySiteContext.getIdApplication()),
+            			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ))||( workflowDeploySiteContext.isDeploySql() && !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(nIdAction),
+            	    			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() ) )||( !RBACService.isAuthorized( Environment.RESOURCE_TYPE,workflowDeploySiteContext.getCodeEnvironement() ,
+            	    					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ) ))
+            	{
+            		
+                	
+                	throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+            	}
+                
                 WorkflowService.getInstance(  )
                                .doProcessAction( workflowDeploySiteContext.getId(  ),
                     WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdAction, ConstanteUtils.CONSTANTE_ID_NULL,
                     request, locale, false );
-                DeploymentUtils.stopCommandResult( workflowDeploySiteContext );
+                   }
+            catch ( AccessDeniedException e )
+            {
+                AppLogService.error( "Error processing during deployment of application" +
+                    workflowDeploySiteContext.getIdApplication(  ) + "' - cause : " + e.getMessage(  ), e );
             }
             catch ( Exception e )
             {
                 AppLogService.error( "Error processing during deployment of application  '" +
                     workflowDeploySiteContext.getIdApplication(  ) + "' - cause : " + e.getMessage(  ), e );
+                 }
+            finally
+            {
+                DeploymentUtils.stopCommandResult( workflowDeploySiteContext );
+                	
             }
+            
         }
     }
 
@@ -825,7 +922,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         return strReturn;
     }
 
-    public String doDeployApplication( HttpServletRequest request )
+    public String doDeployApplication( HttpServletRequest request )throws AccessDeniedException
     {
         AdminUser adminUser = getUser(  );
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
@@ -858,7 +955,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             }
 	
             
-            workflowContext.setMavenUser( DeploymentUtils.getMavenUser( adminUser.getUserId(  ), getLocale(  ) ) );
+            workflowContext.setSvnUser( DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) ) );
             workflowContext.setIdApplication( application.getIdApplication(  ) );
             workflowContext.setSvnBaseSiteUrl( application.getSvnUrlSite(  ) );
 
@@ -960,7 +1057,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     
     
     
-    public String doRunActionServer( HttpServletRequest request )
+    public String doRunActionServer( HttpServletRequest request )throws AccessDeniedException
     {
     	 CommandResult commandResult=new CommandResult();
     	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
@@ -984,11 +1081,26 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          if ( action != null )
          {
         	
+        	  if ((  !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
+          			ApplicationResourceIdService.PERMISSION_VIEW, getUser() ))||( !RBACService.isAuthorized( Environment.RESOURCE_TYPE,strCodeEnvironment ,
+          	    					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ) ))
+          	{
+          		
+        		  
+        		  commandResult.setError(I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+        		  commandResult.setStatus(CommandResult.STATUS_ERROR);
+        		  
+        		  return DeploymentUtils.getJSONForCommandResult(commandResult).toString();
+              	
+              	//throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+          	}
+        	 
+        	  DeploymentUtils.startCommandResult(commandResult);
+      		
         	 if(action.canRunAction(application, serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
         	 {
         		
         		 
-        		 DeploymentUtils.startCommandResult(commandResult);
         		 commandResult.getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
         		
         		 
