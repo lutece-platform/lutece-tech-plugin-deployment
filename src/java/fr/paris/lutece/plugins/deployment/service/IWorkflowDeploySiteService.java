@@ -60,4 +60,5 @@ public interface IWorkflowDeploySiteService
 
     String executeServerAction( String strActionKey, HttpServletRequest request, WorkflowDeploySiteContext context,
         Locale locale );
+    String initAppContext( WorkflowDeploySiteContext context, Locale locale );
 }

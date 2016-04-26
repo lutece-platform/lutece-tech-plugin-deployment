@@ -31,14 +31,19 @@ function setErrors( errors,errorType)
 	$('#errors').show();
 	if(errorType==0)
 	{
-		$('#errors').removeClass('alert-danger');
-		$('#errors').addClass('alert-info');
-		
+		$('#errors').removeClass('panel-danger');
+		$('#errors').addClass('panel-info');
+		$('#errors_type').html("Information: Une erreur non bloquante est intervenue lors du processus de d&eacute;ploiement ");
+			
 	}
 	else
 	{
-		$('#errors').removeClass('alert-info');
-		$('#errors').addClass('alert-danger');
+		
+		$('#errors').removeClass('panel-info');
+		$('#errors_type').html("Erreur");
+		$('#errors').addClass('panel-danger');
+		$('#errors_type').html("Erreur: Une erreur bloquante est intervenue lors du processus de d&eacute;ploiement ");
+		$('#workflow_actions').html('');
 	}
 	
 }
@@ -241,10 +246,7 @@ function addEvent() {
 			return false;
 	});
 
-    $('#task_form').submit( function(){
-    	saveTasksForm( $(this) );
-    	return false;
-	});
+    
     
    
     
@@ -361,7 +363,7 @@ function replaceWorkflowState(json)
 
 function displayTaskForm(json)
 {
-	
+	$('#workflow_actions').html("");
 	$.ajax({
 		  url: json.jsp_form_display,
 		  success:function ( data ) {
@@ -378,7 +380,7 @@ function displayTaskForm(json)
 
 function saveTasksForm(form ) 
 {
-	
+
 	$('#myModal').modal('show') ;
 	$.ajax({
           url: 'jsp/admin/plugins/deployment/DoSaveTasksFormJSON.jsp',
@@ -399,6 +401,7 @@ function saveTasksForm(form )
 function statusCallbackTasksForm( json )
 {
    
+	$('#myModal').modal('hide');
 	if ( json == null || json == "" )
 	{
 		/* error */
@@ -412,7 +415,7 @@ function statusCallbackTasksForm( json )
 	}
 	else
 	{
-		$('#myModal').modal('toggle');
+		$('#myModal').modal('hide');
 		$('#workflow_task_form').hide();
 		replaceWorkflowActions(json);
 		replaceWorkflowState(json);

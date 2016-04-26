@@ -347,6 +347,15 @@ public class DeploymentUtils
         ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getFtpDirectoryTarget(  );
     }
     
+    public static String getContextDirectoryTarget( String strCodeApplication,
+            ServerApplicationInstance serverApplicationInstance )
+        {
+            return getPlateformUrlServerApplicationInstances( strCodeApplication,
+                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
+            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONTEXT_DIRECTORY_NAME;
+        }
+    
     public static String getDumpFileDirectory( String strCodeApplication,
             ServerApplicationInstance serverApplicationInstance )
         {

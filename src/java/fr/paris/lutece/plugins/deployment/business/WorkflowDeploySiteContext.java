@@ -65,7 +65,9 @@ public class WorkflowDeploySiteContext implements Serializable
     private InputStream _scriptFileItem;
     private String _scriptFileItemName;
     private String _scriptFileSelected;
-
+    private boolean _bInitBdd;
+    private boolean _bInitAppContext;
+    
     public int getId(  )
     {
         return _nId;
@@ -255,6 +257,22 @@ public class WorkflowDeploySiteContext implements Serializable
 
 	public void setTagAutomatically(boolean _bDeployWarFast) {
 		this._bTagAutomatically = _bDeployWarFast;
+	}
+
+	public boolean isInitBdd() {
+		return _bInitBdd;
+	}
+
+	public void setInitBdd(boolean _bInitBdd) {
+		this._bInitBdd = _bInitBdd;
+	}
+
+	public boolean isInitAppContext() {
+		return _bInitAppContext;
+	}
+
+	public void setInitAppContext(boolean _bInitAppContext) {
+		this._bInitAppContext = _bInitAppContext;
 	}
 
 	

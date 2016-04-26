@@ -96,9 +96,7 @@ public class ConstanteUtils
     public static final String JSON_CODE_ENVIRONMENT = "code_environment";
     public static final String JSON_CODE_SERVER_APPLICATION_INSTANCE = "code_server_application_instance";
     public static final String JSON_SERVER_APPLICATION_TYPE = "server_application_type";
-    
-    
-    
+    public static final String CONTEXT_DIRECTORY_NAME="CONTEXT";
     
    
     
@@ -250,6 +248,10 @@ public class ConstanteUtils
     public static final String PARAM_CODE_DATABASE = "code_database";
     public static final String PARAM_SCRIPT_UPLOAD = "script_upload";
     public static final String PARAM_SCRIPT_UPGRADE_SELECTED = "script_upgrade_selected";
+    public static final String PARAM_INIT_DATABASE = "init_database";
+    public static final String PARAM_INIT_APP_CONTEXT = "init_app_context";
+    
+    
     public static final String PARAM_SCRIPT_NAME= "script_name";
     public static final String PARAM_CODE_APPLICATION = "code_application";
     public static final String PARAM_WORKGROUP = "workgroup";
@@ -271,6 +273,8 @@ public class ConstanteUtils
     public static final String TEMPLATE_TASKS_FORM_WORKFLOW = "admin/plugins/deployment/tasks_form_workflow.html";
     public static final String TEMPLATE_FORM_ACTION_SERVER = "admin/plugins/deployment/form_action_server.html";
     public static final String TEMPLATE_FORM_ACTION_DUMP = "admin/plugins/deployment/form_action_dump.html";
+    public static final String TEMPLATE_INIT_DB = "admin/plugins/deployment/init/init_db_template.html";
+    public static final String TEMPLATE_INIT_APP_CONTEXT= "admin/plugins/deployment/init/init_app_context.html";
     
 
     //JSP

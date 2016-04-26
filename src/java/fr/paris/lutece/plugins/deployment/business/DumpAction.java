@@ -113,7 +113,7 @@ public class DumpAction extends DefaultAction
 
 	                 }
 	             }
-	             commandResult.getResultInformations().put(ConstanteUtils.MARK_DUMP_FILE_URL,"jsp/admin/plugins/deployment/DoDownloadDump.jsp?code_application="+application.getIdApplication()+"&code_environment="+serverApplicationInstance.getCodeEnvironment()+"&code_server_application_instance_mysql="+serverApplicationInstance.getCode()+"&code_database="+strDataBase+"&plugin_name=deployment" );
+	             commandResult.getResultInformations().put(ConstanteUtils.MARK_DUMP_FILE_URL,"servlet/plugins/deployment/download?code_application="+application.getIdApplication()+"&code_environment="+serverApplicationInstance.getCodeEnvironment()+"&code_server_application_instance_mysql="+serverApplicationInstance.getCode()+"&code_database="+strDataBase+"&plugin_name=deployment" );
 	         	
 	          }
     	}

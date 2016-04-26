@@ -81,10 +81,19 @@
                         </#list>
                         </div> 
                         
-                        <div style="display:none"; id="errors" class="alert alert-danger" role="alert">
-                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>#i18n{deployment.deploy_application_process.error_message_title}:
-                            <div id="errors_msg"></div>
-                        </div>  
+                    
+                        
+                        <div class="panel panel-danger" style="display:none"; id="errors">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                   <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> <span id="errors_type"></span> 
+                        
+                                </h3>
+                            </div>
+                            <div class="panel-body" id="errors_msg">
+                       
+                            </div>
+                         </div> 
                         <div id="workflow_task_form"></div>
                         <textarea class="form-control" id="pre_log" class="text_black" cols="106" rows="15" readonly="readonly"></textarea>
                         <a class="btn btn-default btn-flat" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">

@@ -15,9 +15,9 @@
                         <button type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_save}" class="btn btn-primary btn-flat" name="save">
                             <span class="fa fa-check"></span> #i18n{workflow.tasks_form_test_workflow.button_save}
                         </button>
-                        <button type="submit" value="#i18n{workflow.tasks_form_test_workflow.button_cancel}" class="btn btn-default btn-flat" name="cancel">
-                            <span class="fa fa-remove"></span> #i18n{workflow.tasks_form_test_workflow.button_cancel}
-                        </button>
+                        <a class="btn btn-default btn-flat"  href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">
+                                <span class="fa fa-remove"></span> #i18n{portal.util.labelCancel}
+                         </a>
                     </div>
                 </div>
             </form>   
@@ -27,6 +27,9 @@
  </div>
  <script type="text/javascript">
     $(document).ready( function(){
-        addEvent();
+        $('#task_form').submit( function(){
+            saveTasksForm( $(this) );
+            return false;
+        });
     });
 </script>   

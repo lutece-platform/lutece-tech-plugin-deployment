@@ -177,7 +177,7 @@ public class SvnService implements ISvnService
             }
             catch ( Exception e )
             {
-            	AppLogService.error( e );
+            	DeploymentUtils.addTechnicalError(commandResult,"errreur lors du checkout du site "+ e.getMessage());
             }
         }
         else

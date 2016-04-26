@@ -1,185 +1,204 @@
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">#i18n{deployment.form_init_deploy_application.table_label} ${application.code} - ${application.name}</h3>
-            </div><!-- /.box-header -->
-           <div class="box-body">
-
-            <#if error_message?has_content>
-                ${error_message}
-                <a class="btn btn-primary btn-xs" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
-                    <i class="glyphicon glyphicon-editclass="glyphicon glyphicon-"></i> 
-                </a>
-            <#else>
-                <script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
-                <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
-                <script type="text/javascript">
-                    <#if deploy_war>
-                        // empty component list and unselect category
-                        initComponantsEnvironment();
-                        var itemsMapServerTomcat = new Object();
-                        <#list server_instance_map_tomcat?keys as environment_key>
+        <div class="col-xs-12 col-sm-8">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">#i18n{deployment.form_init_deploy_application.table_label} ${application.code} - ${application.name}</h3>
+                </div><!-- /.box-header -->
+               <div class="box-body">
+    
+                <#if error_message?has_content>
+                    ${error_message}
+                    <a class="btn btn-primary btn-xs" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}"  title="#i18n{deployment.create_application.action_modify_user_account}" >
+                        <i class="glyphicon glyphicon-editclass="glyphicon glyphicon-"></i> 
+                    </a>
+                <#else>
+                    <script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
+                    <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                        <#if deploy_war>
+                            // empty component list and unselect category
+                            initComponantsEnvironment();
+                            var itemsMapServerTomcat = new Object();
+                            <#list server_instance_map_tomcat?keys as environment_key>
+                                var itemList = new Array();
+                                <#assign listServerApplicationInstance = server_instance_map_tomcat[environment_key!]! /> 
+                                <#list listServerApplicationInstance as serverApplicationInstance>
+                                    var item = new Object();
+                                    item["code"] = "${serverApplicationInstance.code}";
+                                    item["name"] = "${serverApplicationInstance.name}";
+                                    itemList.push(item);
+                                </#list>
+                                itemsMapServerTomcat["${environment_key}"] = itemList;
+                            </#list>
+                        </#if>
+                        <#if deploy_sql>
+                        var itemsMapServerMysql = new Object();
+                        <#list server_instance_map_mysql?keys as environment_key>
                             var itemList = new Array();
-                            <#assign listServerApplicationInstance = server_instance_map_tomcat[environment_key!]! /> 
+                            <#assign listServerApplicationInstance = server_instance_map_mysql[environment_key!]! /> 
                             <#list listServerApplicationInstance as serverApplicationInstance>
                                 var item = new Object();
                                 item["code"] = "${serverApplicationInstance.code}";
                                 item["name"] = "${serverApplicationInstance.name}";
                                 itemList.push(item);
                             </#list>
-                            itemsMapServerTomcat["${environment_key}"] = itemList;
+                            itemsMapServerMysql["${environment_key}"] = itemList;
+                        </#list>
+                        var itemsMapDatabase = new Object();
+                        <#list database_map?keys as database_environment_key>
+                            var itemList = new Array();
+                            <#assign listDatabase = database_map[database_environment_key!]! /> 
+                            <#list listDatabase as database>
+                                var item = new Object();
+                                item["code"] = "${database}";
+                                item["name"] = "${database}";
+                                itemList.push(item);
+                            </#list>
+                            itemsMapDatabase["${database_environment_key}"] = itemList;
                         </#list>
                     </#if>
-                    <#if deploy_sql>
-                    var itemsMapServerMysql = new Object();
-                    <#list server_instance_map_mysql?keys as environment_key>
-                        var itemList = new Array();
-                        <#assign listServerApplicationInstance = server_instance_map_mysql[environment_key!]! /> 
-                        <#list listServerApplicationInstance as serverApplicationInstance>
-                            var item = new Object();
-                            item["code"] = "${serverApplicationInstance.code}";
-                            item["name"] = "${serverApplicationInstance.name}";
-                            itemList.push(item);
-                        </#list>
-                        itemsMapServerMysql["${environment_key}"] = itemList;
-                    </#list>
-                    var itemsMapDatabase = new Object();
-                    <#list database_map?keys as database_environment_key>
-                        var itemList = new Array();
-                        <#assign listDatabase = database_map[database_environment_key!]! /> 
-                        <#list listDatabase as database>
-                            var item = new Object();
-                            item["code"] = "${database}";
-                            item["name"] = "${database}";
-                            itemList.push(item);
-                        </#list>
-                        itemsMapDatabase["${database_environment_key}"] = itemList;
-                    </#list>
+                    </script>
+                    <form class="form-horizontal" method="post" name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp" enctype="multipart/form-data">
+                        <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}">
+                        <input type="hidden" id="plugin_name" name="plugin_name" value="deployment">
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*</label>
+                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                <#if deploy_war>
+                                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsTomcat();\" class=\"form-control\"" />
+                                <#else>
+                                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsMysql();\" class=\"form-control\"" />
+                                </#if>
+                            </div>
+                        </div>
+                        <#if deploy_war>
+                            <input type="hidden" id="deploy_war" name="deploy_war" value="deploy_war">
+                          </#if>
+                        <#if deploy_sql>
+                              <input type="hidden" id="deploy_sql" name="deploy_sql" value="deploy_sql">
+                        </#if>  
+                        <#if deploy_war>
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_tomcat" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_tomcat}*</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                 <select name="code_server_application_instance_tomcat" id="code_server_application_instance_tomcat" class="form-control">
+                                 </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <div class="checkbox">
+                                        <label>
+                                        <input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy">&nbsp;
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="tag_automatically">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_automatically" >#i18n{deployment.form_init_deploy_application.label_tag_automatically}</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <div class="checkbox">
+                                        <label>
+                                        <input type="checkbox"  name="tag_automatically">&nbsp;
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange=\"\" class=\"form-control\"" />
+                                </div>
+                            </div>
+                            <div>
+                                 <div class="checkbox">
+                                        <label>
+                                        <input type="checkbox"  name="init_app_context">&nbsp;Initialiser le contexte de l'application
+                                        </label>
+                                    </div>
+                              </div>
+                        </#if>
+                        <#if deploy_sql>
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <select name="code_server_application_instance_mysql" class="form-control" id="code_server_application_instance_mysql" onchange="refreshComponantsDatabase();"> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_database" >#i18n{deployment.form_init_deploy_application.label_code_database}*</label>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <select name="code_database" id="code_database" class="form-control"> 
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="name" >#i18n{deployment.form_init_deploy_application.label_select_upgrade_script}</label> 
+                                <div class="col-xs-12 col-sm-3 col-md-3">   
+                                     <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
+                                </div>
+                                <div class="col-xs-12 col-sm-2 col-md-2">   
+                                    <p class="form-control-static" >ou #i18n{deployment.form_init_deploy_application.label_script_upload}</p>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-md-3">   
+                                    <input type="file" class="inline" name="script_upload" id="script_upload" ></label>
+                                </div>
+                                <div>
+                                     <div class="checkbox">
+                                        <label>
+                                        <input type="checkbox"  name="init_database">&nbsp;Initialiser la base de donn&eacute;es
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </#if>   
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-2 col-md-8">
+                                <button class="btn btn-primary btn-flat" type="submit" >
+                                    <span class="fa fa-check"></span> #i18n{deployment.form_init_deploy_application.button_deploy}
+                                </button>
+                                <a class="btn btn-default btn-flat" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">
+                                    <span class="fa fa-remove"></span> #i18n{portal.util.labelCancel}
+                                </a>
+                            </div>
+                        </div>
+                    </form>
                 </#if>
-                </script>
-                <form class="form-horizontal" method="post" name="form_init_deploy_application" id="form_init_deploy_application" action="jsp/admin/plugins/deployment/DoDeployApplication.jsp" enctype="multipart/form-data">
-                    <input id="id_application" name="id_application" type="hidden" value="${application.idApplication}">
-                    <input type="hidden" id="plugin_name" name="plugin_name" value="deployment">
-                    <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*</label>
-                        <div class="col-xs-12 col-sm-8 col-md-8">
-                            <#if deploy_war>
-                                <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsTomcat();\" class=\"form-control\"" />
-                            <#else>
-                                <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsMysql();\" class=\"form-control\"" />
-                            </#if>
-                        </div>
-                    </div>
-                    <#if deploy_war>
-                        <input type="hidden" id="deploy_war" name="deploy_war" value="deploy_war">
-                      </#if>
-                    <#if deploy_sql>
-                          <input type="hidden" id="deploy_sql" name="deploy_sql" value="deploy_sql">
-                    </#if>  
-                    <#if deploy_war>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_tomcat" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_tomcat}*</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                             <select name="code_server_application_instance_tomcat" id="code_server_application_instance_tomcat" class="form-control">
-                             </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                                <div class="checkbox">
-                                    <label>
-                                    <input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy">&nbsp;
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group" id="tag_automatically">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_automatically" >#i18n{deployment.form_init_deploy_application.label_tag_automatically}</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                                <div class="checkbox">
-                                    <label>
-                                    <input type="checkbox"  name="tag_automatically">&nbsp;
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                                <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange=\"\" class=\"form-control\"" />
-                            </div>
-                        </div>
-                    </#if>
-                    <#if deploy_sql>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                                <select name="code_server_application_instance_mysql" class="form-control" id="code_server_application_instance_mysql" onchange="refreshComponantsDatabase();"> 
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_database" >#i18n{deployment.form_init_deploy_application.label_code_database}*</label>
-                            <div class="col-xs-12 col-sm-8 col-md-8">
-                                <select name="code_database" id="code_database" class="form-control"> 
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="name" >#i18n{deployment.form_init_deploy_application.label_select_upgrade_script}</label> 
-                            <div class="col-xs-12 col-sm-3 col-md-3">   
-                                 <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
-                            </div>
-                            <div class="col-xs-12 col-sm-2 col-md-2">   
-                                <p class="form-control-static" >ou #i18n{deployment.form_init_deploy_application.label_script_upload}</p>
-                            </div>
-                            <div class="col-xs-12 col-sm-3 col-md-3">   
-                                <input type="file" class="inline" name="script_upload" id="script_upload" ></label>
-                            </div>
-                        </div>
-                    </#if>   
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-2 col-md-8">
-                            <button class="btn btn-primary btn-flat" type="submit" >
-                                <span class="fa fa-check"></span> #i18n{deployment.form_init_deploy_application.button_deploy}
-                            </button>
-                            <a class="btn btn-default btn-flat" href="jsp/admin/plugins/deployment/ManageApplication.jsp?plugin_name=deployment" title="#i18n{portal.util.labelCancel}">
-                                <span class="fa fa-remove"></span> #i18n{portal.util.labelCancel}
-                            </a>
-                        </div>
-                    </div>
-                </form>
-            </#if>
+            </div>
         </div>
-    </div>
-    
-    <div class="col-xs-12 col-sm-3 col-md-3">
-        <div class="box box-warning  box-solid">
-            <div class="box-header">
-                <h3 class="box-title">
-                    <i class="fa fa-warning"></i> ATTENTION !!
-                </h3>
-            </div><!-- /.box-header -->
-            <div class="box-body">
-                <p class="lead">Avant de lancer la <em>première installation</em> effectuer les étapes suivantes:</p>
-                <div class="alert alert-warning">
-                    <h3><i class="fa fa-database fa-lg"></i> Création de la base CORE</h3>
-                    <p>Exécuter le script "init_database_core.sql" sur la base "mysql" </p>
-                    <p><a href="plugins/deployment/init_database_core.sql">T&eacute;l&eacute;charger</a> et uploader ce fichier par <a href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_sql=deploy_sql">U06</a></p>
-                </div>
-                <div class="alert alert-warning">
-                    <h3><i class="fa fa-code fa-lg"></i> Context</h3>
-                    <p>Context : Renommer le fichier app_context.xml en {nom_de_la_webapp}.xml</p>
-                    <p>Editer le pour substituer le tag <code>{app_context}</code> par le nom de la webapp.</p>
-                    <p><a href="plugins/deployment/app_context.xml">T&eacute;l&eacute;charger le fichier app_context.xml et uploader le fichier {nom_de_la_webapp}.xml par FTP dans :</a></p>
-                    <p class="text-info">{CODE_APPLI}/V1/{ENV}/TOM/01/CONTEXT</p>
+       </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="box box-warning  box-solid">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        <i class="fa fa-warning"></i> ATTENTION !!
+                    </h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <p class="lead">Avant de lancer la <em>première installation</em> effectuer les étapes suivantes:</p>
+                    <div class="alert alert-warning">
+                        <h3><i class="fa fa-database fa-lg"></i> Création de la base CORE</h3>
+                        <p>Exécuter le script "init_database_core.sql" sur la base "mysql" </p>
+                        <p><a href="plugins/deployment/init_database_core.sql">T&eacute;l&eacute;charger</a> et uploader ce fichier par <a href="jsp/admin/plugins/deployment/DeployApplication.jsp?id_application=${application.idApplication}&deploy_sql=deploy_sql">U06</a></p>
+                    </div>
+                    <div class="alert alert-warning">
+                        <h3><i class="fa fa-code fa-lg"></i> Context</h3>
+                        <p>Context : Renommer le fichier app_context.xml en {nom_de_la_webapp}.xml</p>
+                        <p>Editer le pour substituer le tag <code>{app_context}</code> par le nom de la webapp.</p>
+                        <p><a href="plugins/deployment/app_context.xml">T&eacute;l&eacute;charger le fichier app_context.xml et uploader le fichier {nom_de_la_webapp}.xml par FTP dans :</a></p>
+                        <p class="text-info">{CODE_APPLI}/V1/{ENV}/TOM/01/CONTEXT</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+     
+</div>  
+
+
 
 <script>
 $(document).ready(function(e){

@@ -39,5 +39,12 @@
             </rbac-resource-type-class>
         </rbac-resource-type>
     </rbac-resource-types>
+    <servlets>
+        <servlet>
+            <servlet-name>downloadServlet</servlet-name>
+            <url-pattern>/servlet/plugins/deployment/download</url-pattern>
+            <servlet-class>fr.paris.lutece.plugins.deployment.web.DownloadServlet</servlet-class>
+        </servlet>
+    </servlets>
     
  </plug-in>

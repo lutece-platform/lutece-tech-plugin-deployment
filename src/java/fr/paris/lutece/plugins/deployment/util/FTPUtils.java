@@ -76,8 +76,13 @@ public class FTPUtils
 		                {
 		                	ftp.setFileType( FTP.BINARY_FILE_TYPE );
 		                }
-		                ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
-		
+		                boolean bStorefile=  ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
+		                
+		                if(bStorefile)
+		                {
+		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors du dépot du fichier en FTP");
+		                }
+		                
 		                inputStream.close(  );
 		
 		                ftp.noop(  ); // check that control connection is working OK
@@ -144,9 +149,14 @@ public class FTPUtils
                 }
 
                
-                ftp.retrieveFile(remoteFilePath, outputStream);
-
-                 //close output stream
+                boolean bRetrieve= ftp.retrieveFile(remoteFilePath, outputStream);
+               
+                if(bRetrieve)
+                {
+                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors de la récupération du fichier en FTP");
+                }
+                outputStream.flush(  );
+                //close output stream
                 outputStream.close();
 
                 ftp.noop(  ); // check that control connection is working OK

@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.deployment.web;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -953,6 +955,14 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 				}
             	workflowContext.setScriptFileItemName(workflowContext.getScriptFileSelected());
             }
+            else if(workflowContext.isInitBdd())
+            {
+            	 HtmlTemplate templateInitScript = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_DB,
+                          getLocale(  ) );
+            	 workflowContext.setDatabaseName("mysql");
+            	 workflowContext.setScriptFileItem(new ByteArrayInputStream(templateInitScript.getHtml().getBytes()));
+            	workflowContext.setScriptFileItemName("init_db.sql");
+            }
 	
             
             workflowContext.setSvnUser( DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) ) );
@@ -1181,6 +1191,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         
         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
         String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
+        String strInitDatabase = request.getParameter( ConstanteUtils.PARAM_INIT_DATABASE );
+        String strInitAppContext = request.getParameter( ConstanteUtils.PARAM_INIT_APP_CONTEXT);
         
         
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
@@ -1215,7 +1227,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         else if ( !StringUtils.isEmpty( strDeploySql ) )
         {
         	scriptItem = mRequest.getFile(ConstanteUtils.PARAM_SCRIPT_UPLOAD);
-        	if( StringUtils.isEmpty(strScriptUpgradeSelected) && ( scriptItem ==null || scriptItem.getSize()==0))
+        	if( StringUtils.isEmpty(strScriptUpgradeSelected) && StringUtils.isEmpty(strInitDatabase)  && ( scriptItem ==null || scriptItem.getSize()==0))
         	{
         		strFieldError = ConstanteUtils.PROPERTY_LABEL_SCRIPT_UPLOAD;
         	}
@@ -1247,7 +1259,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         workflowDeploySiteContext.setTagAutomatically( !StringUtils.isEmpty( strTagAutomatically ) );
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
-
+        workflowDeploySiteContext.setInitAppContext( !StringUtils.isEmpty( strInitAppContext ));
+       
         if ( StringUtils.isEmpty( strTagSiteBeforeDeploy ) )
         {
             workflowDeploySiteContext.setTagToDeploy( strTagToDeploy );
@@ -1256,7 +1269,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( !StringUtils.isEmpty( strDeploySql ) )
         {
         	workflowDeploySiteContext.setDatabaseName(strCodeDatabase);
-        	
+            workflowDeploySiteContext.setInitBdd( !StringUtils.isEmpty( strInitDatabase ) );
+
         	if(!StringUtils.isEmpty(strScriptUpgradeSelected))
         	{
         		workflowDeploySiteContext.setScriptFileSelected(strScriptUpgradeSelected);
