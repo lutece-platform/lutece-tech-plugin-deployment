@@ -32,17 +32,17 @@
                             </#list>
                         </#if>
                         <#if deploy_sql>
-                        var itemsMapServerMysql = new Object();
-                        <#list server_instance_map_mysql?keys as environment_key>
+                        var itemsMapServerSql = new Object();
+                        <#list server_instance_map_sql?keys as environment_key>
                             var itemList = new Array();
-                            <#assign listServerApplicationInstance = server_instance_map_mysql[environment_key!]! /> 
+                            <#assign listServerApplicationInstance = server_instance_map_sql[environment_key!]! /> 
                             <#list listServerApplicationInstance as serverApplicationInstance>
                                 var item = new Object();
-                                item["code"] = "${serverApplicationInstance.code}";
+                                item["code"] = "${serverApplicationInstance.code}_${serverApplicationInstance.type}";
                                 item["name"] = "${serverApplicationInstance.name}";
                                 itemList.push(item);
                             </#list>
-                            itemsMapServerMysql["${environment_key}"] = itemList;
+                            itemsMapServerSql["${environment_key}"] = itemList;
                         </#list>
                         var itemsMapDatabase = new Object();
                         <#list database_map?keys as database_environment_key>
@@ -67,7 +67,7 @@
                                 <#if deploy_war>
                                     <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsTomcat();\" class=\"form-control\"" />
                                 <#else>
-                                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsMysql();\" class=\"form-control\"" />
+                                    <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsSql();\" class=\"form-control\"" />
                                 </#if>
                             </div>
                         </div>
@@ -121,9 +121,9 @@
                         </#if>
                         <#if deploy_sql>
                             <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_mysql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_mysql}*</label>
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_server_application_instance_sql" >#i18n{deployment.form_init_deploy_application.label_code_server_application_instance_sql}*</label>
                                 <div class="col-xs-12 col-sm-8 col-md-8">
-                                    <select name="code_server_application_instance_mysql" class="form-control" id="code_server_application_instance_mysql" onchange="refreshComponantsDatabase();"> 
+                                    <select name="code_server_application_instance_sql" class="form-control" id="code_server_application_instance_sql" onchange="refreshComponantsDatabase();"> 
                                     </select>
                                 </div>
                             </div>
@@ -136,24 +136,22 @@
                             </div>
                             
                             <div class="form-group">
-                                
-                                <label class="control-label col-xs-12 col-sm-2 col-md-2" for="name" >#i18n{deployment.form_init_deploy_application.label_select_upgrade_script}</label> 
-                                <div class="col-xs-12 col-sm-3 col-md-3">   
-                                     <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
+                                <label class="control-label col-xs-12 col-sm-2 col-md-2"  for="name" >#i18n{deployment.form_init_deploy_application.label_select_upgrade_script}</label>
+                                <div class="col-xs-12 col-sm-3"> 
+                                    <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
                                 </div>
-                                <div class="col-xs-12 col-sm-2 col-md-2">   
-                                    <p class="form-control-static" >ou #i18n{deployment.form_init_deploy_application.label_script_upload}</p>
+                                <div class="col-xs-12 col-sm-4"> 
+                                    <label class="sr-only">ou #i18n{deployment.form_init_deploy_application.label_script_upload}</label>
+                                    <input type="file" class="inline" name="script_upload" id="script_upload" title="#i18n{deployment.form_init_deploy_application.label_script_upload}"> 
+                                    <span>ou #i18n{deployment.form_init_deploy_application.label_script_upload}</span>
                                 </div>
-                                <div class="col-xs-12 col-sm-3 col-md-3">   
-                                    <input type="file" class="inline" name="script_upload" id="script_upload" ></label>
-                                </div>
-                                <div>
-                                     <div class="checkbox">
-                                        <label>
-                                        <input type="checkbox"  name="init_database">&nbsp;Initialiser la base de donn&eacute;es
-                                        </label>
-                                    </div>
-                                </div>
+                               <div class="col-xs-12 col-sm-3">
+                                  <div class="checkbox">
+                                    <label>
+                                       <input type="checkbox"  name="init_database">&nbsp;Initialiser la base de donn&eacute;es
+                                    </label>
+                                  </div>
+                               </div>
                             </div>
                         </#if>   
                         <div class="form-group">

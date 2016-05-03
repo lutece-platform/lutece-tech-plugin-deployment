@@ -68,6 +68,9 @@ public class WorkflowDeploySiteContext implements Serializable
     private boolean _bInitBdd;
     private boolean _bInitAppContext;
     
+      
+    
+    
     public int getId(  )
     {
         return _nId;
@@ -274,6 +277,8 @@ public class WorkflowDeploySiteContext implements Serializable
 	public void setInitAppContext(boolean _bInitAppContext) {
 		this._bInitAppContext = _bInitAppContext;
 	}
+
+	
 
 	
 	

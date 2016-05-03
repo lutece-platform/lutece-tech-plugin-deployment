@@ -78,7 +78,7 @@ public class FTPUtils
 		                }
 		                boolean bStorefile=  ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
 		                
-		                if(bStorefile)
+		                if(!bStorefile)
 		                {
 		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors du dépot du fichier en FTP");
 		                }
@@ -151,7 +151,7 @@ public class FTPUtils
                
                 boolean bRetrieve= ftp.retrieveFile(remoteFilePath, outputStream);
                
-                if(bRetrieve)
+                if(!bRetrieve)
                 {
                 	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors de la récupération du fichier en FTP");
                 }

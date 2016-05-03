@@ -321,17 +321,33 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
-                   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application,
+           HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceSql = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceHttpd = _serverApplicationService.getHashServerApplicationInstance( application,
-                    ConstanteUtils.CONSTANTE_SERVER_HTTPD, getLocale(  ), true, true );
-
-            ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
+           
+           HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstancePsq = _serverApplicationService.getHashServerApplicationInstance( application,
+                   ConstanteUtils.CONSTANTE_SERVER_PSQ, getLocale(  ), true, true );
+          
+           
+           for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstanceSql.entrySet()) {
+               String key = entry.getKey();
+               List<ServerApplicationInstance> listServerPsq=entry.getValue();
+               
+               if(hashServerApplicationInstanceSql.containsKey(entry.getKey() )&& hashServerApplicationInstanceSql.get(entry.getKey()) !=null && listServerPsq!=null)
+               {
+               	hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
+               }
+               else
+               {
+               	hashServerApplicationInstanceSql.put(key, listServerPsq);
+               	
+               }
+           }
+               
+           ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
             model.put( ConstanteUtils.MARK_ENVIRONMENT_LIST, refListEnvironements );
             model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL, hashServerApplicationInstanceMysql );
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_HTTPD, hashServerApplicationInstanceHttpd );
-
+            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_SQL, hashServerApplicationInstanceSql );
+         
             model.put( ConstanteUtils.MARK_APPLICATION, application );
         }
         else
@@ -518,15 +534,36 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), svnUser) ;
             refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
           
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = _serverApplicationService.getHashServerApplicationInstance( application,
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceSql = _serverApplicationService.getHashServerApplicationInstance( application,
             		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
               
-              HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceMysql, getLocale());
+            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstancePSQ = _serverApplicationService.getHashServerApplicationInstance( application,
+          		  ConstanteUtils.CONSTANTE_SERVER_PSQ, getLocale(  ), true, true );
+        
+            for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstancePSQ.entrySet()) {
+                String key = entry.getKey();
+                List<ServerApplicationInstance> listServerPsq=entry.getValue();
+                
+                if(hashServerApplicationInstanceSql.containsKey(entry.getKey() )&& hashServerApplicationInstanceSql.get(entry.getKey()) !=null && listServerPsq!=null)
+                {
+                	hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
+                }
+                else
+                {
+                	hashServerApplicationInstanceSql.put(key, listServerPsq);
+                	
+                }
+                
+            }
+            
+            
+            
+            HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceSql, getLocale());
              
-              model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_MYSQL, hashServerApplicationInstanceMysql );
+            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_SQL, hashServerApplicationInstanceSql );
               
-              model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
-              model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
+            model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
+            model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
               
               
               
@@ -605,11 +642,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 	
 	             }
             
-	            ServerApplicationInstance serverApplicationInstanceMysql = _serverApplicationService.getServerApplicationInstance( application,
-	                    workflowDeploySiteContext.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
-	                    workflowDeploySiteContext.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL,
+	           	 
+	           	 String serverType=!StringUtils.isEmpty(workflowDeploySiteContext.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_MYSQL))?ConstanteUtils.CONSTANTE_SERVER_MYSQL:ConstanteUtils.CONSTANTE_SERVER_PSQ;
+	            ServerApplicationInstance serverApplicationInstanceSql = _serverApplicationService.getServerApplicationInstance( application,
+	                    workflowDeploySiteContext.getCodeServerInstance( serverType),
+	                    workflowDeploySiteContext.getCodeEnvironement(  ), serverType,
 	                    getLocale(  ), false, false );
-	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceMysql );
+	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE, serverApplicationInstanceSql );
 	            model.put( ConstanteUtils.MARK_SCRIPT_NAME,workflowDeploySiteContext.getScriptFileItemName() );
 	         }
             
@@ -959,8 +998,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
             	 HtmlTemplate templateInitScript = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_DB,
                           getLocale(  ) );
-            	 workflowContext.setDatabaseName("mysql");
-            	 workflowContext.setScriptFileItem(new ByteArrayInputStream(templateInitScript.getHtml().getBytes()));
+            	workflowContext.setScriptFileItem(new ByteArrayInputStream(templateInitScript.getHtml().getBytes()));
             	workflowContext.setScriptFileItemName("init_db.sql");
             }
 	
@@ -1142,35 +1180,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     
     
     
-    public void doDownloadDump( HttpServletRequest request, HttpServletResponse response )
-    {
-    	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-    	 String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
-    	 String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
-         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
-         String strIdApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
-           
-         Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
-         
-         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-        		 strCodeServerApplicationInstanceMysql,
-                 strCodeEnvironment, ConstanteUtils.CONSTANTE_SERVER_MYSQL, request.getLocale(), false, false );
-       
-    	
-    	 response.setHeader( "Content-Disposition", "attachment ;filename=\"dump_"+strCodeDatabase+ ".sql\";" );
-         response.setHeader( "Pragma", "public" );
-         response.setHeader( "Expires", "0" );
-         response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
-         response.setHeader("Content-Type", "application/octet-stream");
-         CommandResult commandResult=new CommandResult();
-         
-         try {
-			_ftpService.getFile(response.getOutputStream(), serverApplicationInstance.getFtpInfo(  ), DeploymentUtils.getDumpFileDirectory(application.getCode(), serverApplicationInstance)+"FROM_Z00-"+strCodeDatabase+"-ALL_TABLES.sql", commandResult);
-		} catch (IOException e) {
-			AppLogService.error(e);
-		}
-         
-    }
+    
     	
     	
     
@@ -1184,7 +1194,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
 
         String strCodeServerApplicationInstanceTomcat = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT );
-        String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
+        String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
         String strTagSiteBeforeDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
         String strTagAutomatically= request.getParameter( ConstanteUtils.PARAM_TAG_AUTOMATICALLY);
@@ -1193,6 +1203,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
         String strInitDatabase = request.getParameter( ConstanteUtils.PARAM_INIT_DATABASE );
         String strInitAppContext = request.getParameter( ConstanteUtils.PARAM_INIT_APP_CONTEXT);
+      
         
         
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
@@ -1251,8 +1262,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
         if ( !StringUtils.isEmpty( strCodeServerApplicationInstanceMysql ) )
         {
-            workflowDeploySiteContext.setCodeServerInstance( strCodeServerApplicationInstanceMysql,
-                ConstanteUtils.CONSTANTE_SERVER_MYSQL );
+            workflowDeploySiteContext.setCodeServerInstance( strCodeServerApplicationInstanceMysql.split("_")[0],
+            		strCodeServerApplicationInstanceMysql.split("_")[1] );
+           
         }
 
         workflowDeploySiteContext.setTagSiteBeforeDeploy( !StringUtils.isEmpty( strTagSiteBeforeDeploy ) );
@@ -1260,7 +1272,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
         workflowDeploySiteContext.setInitAppContext( !StringUtils.isEmpty( strInitAppContext ));
-       
+        
         if ( StringUtils.isEmpty( strTagSiteBeforeDeploy ) )
         {
             workflowDeploySiteContext.setTagToDeploy( strTagToDeploy );

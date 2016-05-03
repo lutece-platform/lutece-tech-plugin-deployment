@@ -70,6 +70,8 @@ public class ConstanteUtils
     public static final String CONSTANTE_SERVER_MYSQL = "MYSQL";
     public static final String CONSTANTE_SERVER_MYS = "MYS";
     public static final String CONSTANTE_SERVER_HTTPD = "HTTPD";
+    public static final String CONSTANTE_SERVER_PSQ = "PSQ";
+    
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
     public static final String CONSTANTE_ACTION_EXECUTE = "@EXECUTE";
@@ -192,7 +194,7 @@ public class ConstanteUtils
     public static final String MARK_CODE_CATEGORY = "code_category";
     public static final String MARK_ENVIRONMENT_LIST = "environment_list";
     public static final String MARK_SERVER_INSTANCE_MAP_TOMCAT = "server_instance_map_tomcat";
-    public static final String MARK_SERVER_INSTANCE_MAP_MYSQL = "server_instance_map_mysql";
+    public static final String MARK_SERVER_INSTANCE_MAP_SQL = "server_instance_map_sql";
     public static final String MARK_SERVER_INSTANCE_MAP_HTTPD = "server_instance_map_httpd";
     public static final String MARK_DATABASE_MAP = "database_map";
     public static final String MARK_SITE_LIST = "site_list";
@@ -226,7 +228,7 @@ public class ConstanteUtils
     public static final String PARAM_CODE_CATEGORY = "code_category";
     public static final String PARAM_CODE_ENVIRONMENT = "code_environment";
     public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT = "code_server_application_instance_tomcat";
-    public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL = "code_server_application_instance_mysql";
+    public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL = "code_server_application_instance_sql";
     public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE = "code_server_application_instance";
     public static final String PARAM_SERVER_APPLICATION_TYPE = "server_application_type";
     public static final String PARAM_TAG_SITE_BEFORE_DEPLOY = "tag_site_before_deploy";

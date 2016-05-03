@@ -73,8 +73,8 @@
                             <tr><td colspan="5"><h3><span class="fa fa-cogs"></span> Serveurs tomcat</h3></td></tr>
                             <#assign listServerApplicationInstance = server_instance_map_tomcat[environment.code!]! /> 
                              <@tabServerApplicationInstance list_server_application_instance=listServerApplicationInstance environment=environment/>
-                             <tr><td colspan="5"><h3><span class="fa fa-database"></span> Serveurs mysql</h3></td></tr>
-                           <#assign listServerApplicationInstance = server_instance_map_mysql[environment.code!]! /> 
+                             <tr><td colspan="5"><h3><span class="fa fa-database"></span> Serveurs Base de Donn&eacute;es</h3></td></tr>
+                           <#assign listServerApplicationInstance = server_instance_map_sql[environment.code!]! /> 
                            <@tabServerApplicationInstance list_server_application_instance=listServerApplicationInstance environment=environment/>
                 
                         </#list>

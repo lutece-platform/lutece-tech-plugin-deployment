@@ -331,24 +331,26 @@
 
  		
 
- 		<!--SERVERS PSQL -->	
+ 		<!--SERVERS postgresql -->	
 
  	 
 
 	<bean id="deployment.serverApplicationPsq01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="01"
- 		p:i18nKeyName="deployment.server_application_instance.mysql.0001.name"
+ 		p:i18nKeyName="deployment.server_application_instance.psq.01.name"
  		p:type="PSQ"
- 		p:ftpDirectoryTarget="DATAS"
+ 		p:ftpDirectoryDump="DUMPS"
+        p:ftpDirectoryTarget="EXECUTABLES"
  		p:beanName="deployment.serverApplicationPsq01"/>
  		
 
  	<bean id="deployment.serverApplicationPsq02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="02"
- 		p:i18nKeyName="deployment.server_application_instance.mysql.0002.name"
+ 		p:i18nKeyName="deployment.server_application_instance.psq.0002.name"
  		p:type="PSQ"
- 		p:ftpDirectoryTarget="DATAS"
- 		p:beanName="deployment.serverApplicationPsq02"/>
+        p:ftpDirectoryDump="DUMPS"
+        p:ftpDirectoryTarget="EXECUTABLES"
+        p:beanName="deployment.serverApplicationPsq02"/>
  		 	
  	<!--Actions MYSQL -->	
 
@@ -411,6 +413,67 @@
  		p:stopWorkflowIfExecutionError="true"/>	
 
  		
+<!--Actions postgresql -->   
+
+        
+
+      <bean id="deployment.actionStartUpPsq" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+        p:code="@STARTUP"
+        p:i18nKeyName="deployment.action.startup.psq.name"
+        p:usedForStatus="false"
+        p:status="0"
+        p:iconCssClass="glyphicon glyphicon-play-circle "
+        p:display="true"
+        p:serverType="PSQ"/>
+
+    
+
+    <bean id="deployment.actionStatusPsq" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+        p:code="@STATUS"
+        p:i18nKeyName="deployment.action.status.psq.name"
+        p:usedForStatus="true"
+        p:iconCssClass="glyphicon glyphicon-refresh "
+        p:display="false"
+        p:serverType="PSQ"/>
+
+    
+    <bean id="deployment.actionShutdownPsq" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
+        p:code="@SHUTDOWN"
+        p:i18nKeyName="deployment.action.shutdown.psq.name"
+        p:usedForStatus="false"
+        p:status="1"
+        p:iconCssClass="glyphicon glyphicon-off "
+        p:display="true"
+        p:serverType="PSQ"/>
+
+    <bean id="deployment.actionDumpPsq" class="fr.paris.lutece.plugins.deployment.business.DumpAction" scope="prototype"
+        p:code="@DUMP"
+        p:i18nKeyName="deployment.action.dump.psq.name"
+        p:usedForStatus="false"
+        p:status="1"
+        p:iconCssClass="glyphicon glyphicon-play-circle "
+        p:display="true"
+        p:serverType="PSQ"
+        p:stopWorkflowIfExecutionError="true">
+            <property name="parameters">
+                <list>
+                    <value>code_database</value>
+                </list>
+            </property>
+    </bean> 
+
+        
+    <bean id="deployment.actionExecutePsq" class="fr.paris.lutece.plugins.deployment.business.ExecuteAction" scope="prototype"
+        p:code="@EXECUTE"
+        p:i18nKeyName="deployment.action.execute.psq.name"
+        p:usedForStatus="false"
+        p:status="0"
+        p:iconCssClass="glyphicon glyphicon-play-circle "
+        p:display="false"
+        p:serverType="PSQ"
+        p:stopWorkflowIfExecutionError="true"/> 
+
+        
 
  		
 

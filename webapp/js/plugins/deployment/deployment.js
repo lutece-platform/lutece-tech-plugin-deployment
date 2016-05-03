@@ -169,11 +169,11 @@ function refreshComponantsTomcat()
 	}
 }
 
-function refreshComponantsMysql()
+function refreshComponantsSql()
 {
-		var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
+		var selectSql = document.getElementById("code_server_application_instance_sql"); 
 	// first, remove all mysql
-	removeAllOptions( selectMysql );
+	removeAllOptions( selectSql );
 	
 	
 	var selectEnvironment = document.getElementById("code_environment");
@@ -183,13 +183,13 @@ function refreshComponantsMysql()
 	if ( selectedEnvironment != null && selectedEnvironment != "" )
 	{
 	   	// add options Mysql
-		var itemListMysql = itemsMapServerMysql[selectedEnvironment];
+		var itemListSql = itemsMapServerSql[selectedEnvironment];
 		// add empty value
-		addOption( selectMysql,"","",true );
-		for ( var i = 0; i < itemListMysql.length; i++ )
+		addOption( selectSql,"","",true );
+		for ( var i = 0; i < itemListSql.length; i++ )
 		{
-			var item = itemListMysql[i];
-			addOption(selectMysql,item["name"],item["code"],false);
+			var item = itemListSql[i];
+			addOption(selectSql,item["name"],item["code"],false);
 		}
 	}
 }
@@ -199,20 +199,19 @@ function refreshComponantsDatabase()
 {
 	
 	var selectEnvironment = document.getElementById("code_environment");
-	var selectMysql = document.getElementById("code_server_application_instance_mysql"); 
+	var selectSql = document.getElementById("code_server_application_instance_sql"); 
 	
 	var selectDatabase = document.getElementById("code_database"); 
 	// first, remove all mysql
 	removeAllOptions( selectDatabase );
 	
 	var selectedEnvironment = selectEnvironment.options[selectEnvironment.selectedIndex].value;
-	var selectedMysql = selectMysql.options[selectMysql.selectedIndex].value;
-	
-	if ( selectedEnvironment != null && selectedEnvironment != "" && selectedMysql != null && selectedMysql != "" )
+	var selectedSql = selectSql.options[selectSql.selectedIndex].value;
+
+	if ( selectedEnvironment != null && selectedEnvironment != "" && selectedSql != null && selectedSql != "" )
 	{
-	   
-		// add options Mysql
-		var itemListDatabase = itemsMapDatabase[selectedEnvironment+"."+selectedMysql];
+	   // add options Mysql
+		var itemListDatabase = itemsMapDatabase[selectedEnvironment+"."+selectedSql];
 		// add empty value
 		addOption( selectDatabase,"","",true );
 		for ( var i = 0; i < itemListDatabase.length; i++ )

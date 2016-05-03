@@ -85,17 +85,19 @@ public class DownloadServlet extends HttpServlet
 
     	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
     	 String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
-    	 String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_MYSQL );
+    	 String strCodeServerApplicationInstanceSql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
          String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
          String strIdApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
-           
+         String strServerApplicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
+         
          Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
          
          ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-        		 strCodeServerApplicationInstanceMysql,
-                 strCodeEnvironment, ConstanteUtils.CONSTANTE_SERVER_MYSQL, request.getLocale(), false, false );
+        		 strCodeServerApplicationInstanceSql,
+                 strCodeEnvironment, strServerApplicationType, request.getLocale(), false, false );
        
     	
+         
     	 response.setHeader( "Content-Disposition", "attachment ;filename=\"dump_"+strCodeDatabase+ ".sql\";" );
          response.setHeader( "Pragma", "public" );
          response.setHeader( "Expires", "0" );

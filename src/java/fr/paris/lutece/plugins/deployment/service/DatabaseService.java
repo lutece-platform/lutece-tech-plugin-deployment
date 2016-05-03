@@ -100,6 +100,8 @@ public class DatabaseService implements IDatabaseService {
 				strKey.append(serverApplicationInstance.getCodeEnvironment());
 				strKey.append(".");
 				strKey.append(serverApplicationInstance.getCode());
+				strKey.append("_"+serverApplicationInstance.getType());
+				
 				hashDatabases.put(strKey.toString(), lsDatabases);
 			}
 			

@@ -44,6 +44,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
@@ -257,9 +259,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ),
-                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_MYSQL, locale, false, false );
+       
+       String strServerType= !StringUtils.isEmpty(context.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_MYSQL))?ConstanteUtils.CONSTANTE_SERVER_MYSQL:ConstanteUtils.CONSTANTE_SERVER_PSQ;
+       ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+    		   context.getCodeServerInstance( strServerType ),
+                context.getCodeEnvironement(  ),  strServerType, locale, false, false );
        
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Script...\n" );
         
@@ -281,23 +285,28 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
         IAction action = _actionService.getAction( strActionKey, locale );
-        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-                context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
-                action.getServerType(  ), locale, false, false );
-        boolean bResult;
-        if ( action != null )
+        //test if the server instance is in the deployment context
+        if(context.getCodeServerInstance(action.getServerType())!=null)
         {
-            context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
-            bResult= _actionService.executeAction( application, action, serverApplicationInstance,
-                context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
-            if(!bResult && action.isStopWorkflowIfExecutionError() )
-            {	 context.getCommandResult(  ).setErrorType(CommandResult.ERROR_TYPE_STOP);
-            	//throw RuntimeException for stopping Workflow 
-            	   throw new RuntimeException("Error During Server Action Execution");
-            	
-            }
-            context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
-            
+        
+	        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+	                context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
+	                action.getServerType(  ), locale, false, false );
+	        boolean bResult;
+	        if ( action != null )
+	        {
+	            context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
+	            bResult= _actionService.executeAction( application, action, serverApplicationInstance,
+	                context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
+	            if(!bResult && action.isStopWorkflowIfExecutionError() )
+	            {	 context.getCommandResult(  ).setErrorType(CommandResult.ERROR_TYPE_STOP);
+	            	//throw RuntimeException for stopping Workflow 
+	            	   throw new RuntimeException("Error During Server Action Execution");
+	            	
+	            }
+	            context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
+	            
+	        }
         }
 
         return null;
