@@ -329,7 +329,13 @@
 
  		
 
- 		
+     <bean id="deployment.actionInitAppContextTomcat" class="fr.paris.lutece.plugins.deployment.business.InitAppContextAction" scope="prototype"
+        p:code="@INIT_APP_CONTEXT"
+        p:i18nKeyName="deployment.action.initAppContext.tomcat.name"
+        p:usedForStatus="true"
+        p:iconCssClass=""
+        p:display="false"
+        p:serverType="TOMCAT"/>
 
  		<!--SERVERS postgresql -->	
 
@@ -354,6 +360,13 @@
  		 	
  	<!--Actions MYSQL -->	
 
+ 	
+ 	<bean id="deployment.intMysqlDatabase" class="fr.paris.lutece.plugins.deployment.business.InitMysqlDatabase" scope="prototype"
+        p:code="@INIT_MYSQL_DATABASE"
+        p:i18nKeyName="deployment.action.initDatabase.mysql.name"
+        p:iconCssClass=""
+        p:display="false"
+        p:serverType="MYSQL"/>
  		
 
       <bean id="deployment.actionStartUpMysql" class="fr.paris.lutece.plugins.deployment.business.DefaultAction" scope="prototype"
@@ -505,6 +518,58 @@
  		p:iconCssClass="glyphicon glyphicon-play-circle "
  		p:display="true"
  		p:serverType="HTTPD"/>		
+<!--Admin  Manage Application Actions -->
 
+<bean id="deployment.manageApplicationActionModify" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_modify.name"
+        p:iconCssClass="glyphicon glyphicon-edit"
+        p:url="jsp/admin/plugins/deployment/ModifyApplication.jsp?modify=modify"
+        p:i18nKeyTitle="deployment.manage_application.action_modify.title"
+        p:permission="MODIFY"
+  />
+  
+ <bean id="deployment.manageApplicationActionView" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_view.name"
+        p:iconCssClass="fa fa-cubes"
+        p:url="jsp/admin/plugins/deployment/ViewApplication.jsp?view=view"
+        p:i18nKeyTitle="deployment.manage_application.action_view.title"
+        p:permission="VIEW"
+  /> 
+ <bean id="deployment.manageApplicationActionDeployApplication" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_deploy_application.name"
+        p:iconCssClass="fa fa-cloud-upload"
+        p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_war=deploy_war"
+        p:i18nKeyTitle="deployment.manage_application.action_deploy_application.title"
+        p:permission="DEPLOY_APPLICATION"
+  /> 
+   <bean id="deployment.manageApplicationActionDeployScript" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_deploy_script.name"
+        p:iconCssClass="fa fa-database"
+        p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_sql=deploy_sql"
+        p:i18nKeyTitle="deployment.manage_application.action_deploy_script.title"
+        p:permission="DEPLOY_SCRIPT"
+  />
+   <bean id="deployment.manageApplicationActionInitAppContext" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_init_app_context.name"
+        p:iconCssClass="fa fa-code"
+        p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?init_app_context=init_app_context"
+        p:i18nKeyTitle="deployment.manage_application.action_init_app_context.title"
+        p:permission="INIT_APP_CONTEXT"
+  /> 
+  <bean id="deployment.manageApplicationActionInitDatabase" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_init_database.name"
+        p:iconCssClass="fa fa-cogs"
+        p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?init_database=init_database"
+        p:i18nKeyTitle="deployment.manage_application.action_init_database.title"
+        p:permission="INIT_DATABASE"
+  /> 
+   
+  <bean id="deployment.manageApplicationActionDelete" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_delete.name"
+        p:iconCssClass="glyphicon glyphicon-trash"
+        p:url="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?delete=delete"
+        p:i18nKeyTitle="deployment.manage_application.action_delete.title"
+        p:permission="DELETE"
+  />
  	
 </beans>

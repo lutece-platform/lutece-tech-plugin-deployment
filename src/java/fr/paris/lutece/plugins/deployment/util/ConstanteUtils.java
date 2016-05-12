@@ -137,6 +137,10 @@ public class ConstanteUtils
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SITE = "deployment.idWorkflowDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_SITE = "deployment.idWorkflowTagSite";
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT = "deployment.idWorkflowDeployScript";
+    public static final String PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT = "deployment.idWorkflowInitAppContext";
+    public static final String PROPERTY_ID_WORKFLOW_INIT_DATABASE= "deployment.idWorkflowInitDatabase";
+    
+    
     
     public static final String PROPERTY_DEPLOY_SITE_PAGE_TITLE = "deployment.deploy_site.page_title";
     public static final String PROPERTY_MAX_LOG_SIZE = "deployment.maxLogSize";
@@ -213,12 +217,19 @@ public class ConstanteUtils
     public static final String MARK_CONFIG = "config";
     public static final String MARK_DEPLOY_WAR = "deploy_war";
     public static final String MARK_DEPLOY_SQL = "deploy_sql";
+    public static final String MARK_INIT_DATABASE = "init_database";
+    public static final String MARK_INIT_APP_CONTEXT = "init_app_context";
+    public static final String MARK_CAN_CREATE_APPLICATION = "can_create_application";
+    
+    
     public static final String MARK_SCRIPT_NAME = "script_name";
     public static final String MARK_DUMP_FILE_URL = "dump_file_url";
     public static final String MARK_DATABASE_LIST = "database_list";
     public static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     public static final String MARK_USER_WORKGROUP_SELECTED = "user_workgroup_selected";
     public static final String MARK_UPGRADE_FILE_REF_LIST = "upgrade_file_list";
+    public static final String MARK_MANAGE_APPLICATION_ACTIONS = "map_application_actions";
+    
     
 
     //PARAM

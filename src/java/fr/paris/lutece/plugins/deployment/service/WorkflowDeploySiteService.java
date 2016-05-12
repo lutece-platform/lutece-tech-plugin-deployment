@@ -213,7 +213,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
             DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
             context.getCommandResult(  ) ,true);
         //throw RuntimeException for stopping Workflow 
-        stopWorkflowIfTechnicalError("Error During Deploy Script", context.getCommandResult());
+        stopWorkflowIfTechnicalError("Error During Deploy Site", context.getCommandResult());
         
         context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Site...\n" );
 
@@ -293,7 +293,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 	                context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
 	                action.getServerType(  ), locale, false, false );
 	        boolean bResult;
-	        if ( action != null )
+	        if ( action != null  && _actionService.canExecuteAction(application, action, serverApplicationInstance, context.getCommandResult(), DeploymentUtils.getActionParameters( context )))
 	        {
 	            context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
 	            bResult= _actionService.executeAction( application, action, serverApplicationInstance,

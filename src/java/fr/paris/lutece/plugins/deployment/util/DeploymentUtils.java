@@ -597,6 +597,16 @@ public class DeploymentUtils
         	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT,
                      ConstanteUtils.CONSTANTE_ID_NULL );
         }
+        else if(workflowDeploySiteContext.isInitAppContext())
+        {
+        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT,
+                     ConstanteUtils.CONSTANTE_ID_NULL );
+        }
+        else if(workflowDeploySiteContext.isInitBdd())
+        {
+        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE,
+                     ConstanteUtils.CONSTANTE_ID_NULL );
+        }
         else if ( workflowDeploySiteContext.isTagSiteBeforeDeploy(  )  )
         {
         	if(workflowDeploySiteContext.isTagAutomatically())
@@ -718,23 +728,35 @@ public class DeploymentUtils
       
             List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>(  );
             ActionParameter actionParameter;
-            if(workkflowContext.isDeployWar())
+            if(workkflowContext.isDeployWar()||workkflowContext.isInitAppContext())
             {
 	            actionParameter = new ActionParameter(  );
 	            actionParameter.setName( ConstanteUtils.PARAM_TAG_TO_DEPLOY  );
 	            actionParameter.setValue( workkflowContext.getTagToDeploy());
+
 	            listActionParameters.add(actionParameter);
+
+	            
+	            ActionParameter initAppContext = new ActionParameter(  );
+	            initAppContext.setName( ConstanteUtils.PARAM_INIT_APP_CONTEXT  );
+	            initAppContext.setValue( Boolean.toString( workkflowContext.isInitAppContext()));
+	            
+	            
+	            listActionParameters.add(initAppContext);
 	            
 	       }
             
-            if(workkflowContext.isDeploySql())
+            if(workkflowContext.isDeploySql()||workkflowContext.isInitBdd())
             {
-	            actionParameter = new ActionParameter(  );
-	            actionParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE  );
-	            actionParameter.setValue( workkflowContext.getDatabaseName());
-	            listActionParameters.add(actionParameter);
+            	if( !workkflowContext.isInitBdd())
+ 	           	{
+            	 actionParameter = new ActionParameter(  );
+	             actionParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE  );
+	             actionParameter.setValue( workkflowContext.getDatabaseName());
+	             listActionParameters.add(actionParameter);
+ 	           	}
 	            
-	            if(workkflowContext.getScriptFileItem() !=null)
+	            if(workkflowContext.getScriptFileItemName() !=null)
 	            {
 		            actionParameter = new ActionParameter(  );
 		            actionParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME );
@@ -742,7 +764,18 @@ public class DeploymentUtils
 		            listActionParameters.add(actionParameter);
 		            
 	            }
-	        }  
+	           
+	           if( workkflowContext.isInitBdd())
+	           {
+		            actionParameter = new ActionParameter(  );
+		            actionParameter.setName( ConstanteUtils.PARAM_INIT_DATABASE );
+		            actionParameter.setValue( Boolean.toString( workkflowContext.isInitBdd()));
+		            listActionParameters.add(actionParameter);
+	           	}
+		            
+	          }
+	            
+	        
 	       
 
             return listActionParameters.toArray( new ActionParameter[listActionParameters.size(  )] );

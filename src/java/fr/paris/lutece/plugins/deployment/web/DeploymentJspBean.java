@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.deployment.web;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,7 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
@@ -57,8 +54,9 @@ import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IAction;
-import fr.paris.lutece.plugins.deployment.business.SvnUser;
+import fr.paris.lutece.plugins.deployment.business.ManageApplicationAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
+import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.service.ApplicationResourceIdService;
 import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
@@ -151,8 +149,20 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
         List<Application> listApplication = _applicationService.getListApplications( filter, getPlugin(  ) );
         
+        List<ManageApplicationAction> listManageActions=SpringContextService.getBeansOfType(ManageApplicationAction.class);
+        
         //filter by workgroup
         listApplication= (List<Application>) AdminWorkgroupService.getAuthorizedCollection( listApplication, getUser() );
+       
+        HashMap<String, Collection<ManageApplicationAction>> hashManageActions=new HashMap<String, Collection<ManageApplicationAction>>();
+        
+        for(Application application:listApplication)
+        {
+        	hashManageActions.put(Integer.toString(application.getIdApplication()), RBACService.getAuthorizedActionsCollection(listManageActions, application, getUser()));
+       }
+        
+        
+        
         HashMap model = new HashMap(  );
         Paginator paginator = new Paginator( listApplication, _nItemsPerPage, getJspManageApplication( request ),
                 Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
@@ -166,12 +176,16 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         model.put( ConstanteUtils.MARK_NB_ITEMS_PER_PAGE, paginator.getItemsPerPage(  ) );
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_SELECTED, !StringUtils.isEmpty(strWorkgroup)?strWorkgroup:ConstanteUtils.CONSTANTE_ALL);
-        
+        model.put(ConstanteUtils.MARK_MANAGE_APPLICATION_ACTIONS,hashManageActions);
         
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
 
+        model.put(ConstanteUtils.MARK_CAN_CREATE_APPLICATION, RBACService.isAuthorized( Application.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+    			ApplicationResourceIdService.PERMISSION_CREATE, getUser() )  );
         HtmlTemplate templateList = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_MANAGE_APPLICATION,
                 getLocale(  ), model );
+        
+        
 
         return getAdminPage( templateList.getHtml(  ) );
     }
@@ -232,11 +246,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         
     	String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
       
-    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_MODIFY, getUser() ) )
-    	{
-    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-    	}
+    	
     	
     	int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
         SvnUser mavenUser = DeploymentUtils.getSvnUser( getUser(  ).getUserId(  ), getLocale(  ) );
@@ -245,16 +255,16 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         ReferenceList refListCategory = _applicationService.getListCategory(  );
         
         Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+        
+        if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_MODIFY) )
+    	{
+    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+    	}
 
         // build Filter
         HashMap model = new HashMap(  );
 
         
-        //test if the user is authorized to access to the application
-        if(!AdminWorkgroupService.isAuthorized(application, getUser()))
-        {
-        	return getManageApplication(request);
-     	}
         
         if ( mavenUser != null )
         {
@@ -294,11 +304,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         SvnUser mavenUser = DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) );
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
        
-        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_VIEW, getUser() ) )
-    	{
-    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-    	}
+       
         
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
@@ -314,9 +320,18 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( mavenUser != null )
         {
             Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+            
+            if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_VIEW) )
+            {
+            	throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+            }
 
             List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(  ),
                     getLocale(  ) );
+            
+            
+            Collection<Environment> colEnvironmentsFilter= RBACService.getAuthorizedCollection(listEnvironments, EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser());   
+            
 
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application,
                     ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
@@ -328,22 +343,22 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                    ConstanteUtils.CONSTANTE_SERVER_PSQ, getLocale(  ), true, true );
           
            
-           for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstanceSql.entrySet()) {
+           for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstancePsq.entrySet()) {
                String key = entry.getKey();
                List<ServerApplicationInstance> listServerPsq=entry.getValue();
                
                if(hashServerApplicationInstanceSql.containsKey(entry.getKey() )&& hashServerApplicationInstanceSql.get(entry.getKey()) !=null && listServerPsq!=null)
                {
-               	hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
+            	   hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
                }
                else
                {
-               	hashServerApplicationInstanceSql.put(key, listServerPsq);
+            	   hashServerApplicationInstanceSql.put(key, listServerPsq);
                	
                }
            }
                
-           ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
+           ReferenceList refListEnvironements = ReferenceList.convert( colEnvironmentsFilter, "code", "name", false );
             model.put( ConstanteUtils.MARK_ENVIRONMENT_LIST, refListEnvironements );
             model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
             model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_SQL, hashServerApplicationInstanceSql );
@@ -369,16 +384,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
-    	if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_MODIFY, getUser() ) )
-    	{
-    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-    	}
+    	
     	
         if ( ( request.getParameter( ConstanteUtils.PARAM_CANCEL ) == null ) &&
                 ( nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL ) )
         {
             Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+            if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_MODIFY) )
+        	{
+        		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+        	}
+            
             String strError = getApplicationData( request, application );
 
             if ( strError != null )
@@ -442,8 +458,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             return getJspManageApplication( request );
         }
         
-        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_DELETE, getUser() ) )
+        Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+        
+        
+        if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DELETE) )
     	{
     		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
     	}
@@ -464,14 +482,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     public String DoRemoveApplication( HttpServletRequest request )throws AccessDeniedException
     {
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
-        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_DELETE, getUser() ) )
+        int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
+
+        Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+        
+        
+        if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DELETE) )
     	{
     		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
     	}
         
-        int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
-
+      
         _applicationService.deleteApplication( nIdApplication, getPlugin(  ) );
 
         return getJspManageApplication( request );
@@ -483,43 +504,54 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         SvnUser svnUser = DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) );
         String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
+        String strInitDatabase = request.getParameter( ConstanteUtils.PARAM_INIT_DATABASE);
+        String strInitContext= request.getParameter( ConstanteUtils.PARAM_INIT_APP_CONTEXT);
+        
         
         Boolean bDeployWar=!StringUtils.isEmpty(strDeployWar);
         Boolean bDeploySql=!StringUtils.isEmpty(strDeploySql);
+        Boolean bInitDatabase=!StringUtils.isEmpty(strInitDatabase);
+        Boolean bInitContext=!StringUtils.isEmpty(strInitContext);
         
         
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+        int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
+        if ( nIdApplication == ConstanteUtils.CONSTANTE_ID_NULL )
+        {
+            return getJspManageApplication( request );
+        }
         
+        Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+
         
-        if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ) && !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-    	    			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() )  )
+        if (  (bDeployWar &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION)) 
+        	 ||(bDeploySql &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT))
+        	 ||(bInitDatabase &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_DATABASE))
+        	 ||(bInitContext &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT))
+        	)
     	{
         	
     		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
 
         	
     	}
-        int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
-
+      
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
 
         HashMap model = new HashMap(  );
 
-        if ( nIdApplication == ConstanteUtils.CONSTANTE_ID_NULL )
-        {
-            return getJspManageApplication( request );
-        }
+       
 
         if ( svnUser != null )
         {
-            Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
-
+          
             List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(  ),
                     getLocale(  ) );
-
+            
+            
+            Collection<Environment> colEnvironmentsFilter= RBACService.getAuthorizedCollection(listEnvironments, EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser());   
            
-            if(bDeployWar)
+            if(bDeployWar||bInitContext)
             {
             	   HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService.getHashServerApplicationInstance( application,
                            ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
@@ -528,56 +560,66 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             	  ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), svnUser );
                   model.put( ConstanteUtils.MARK_SITE_LIST, refListTagSite );
             }
-            if(bDeploySql)
+            else if(bDeploySql||bInitDatabase)
             {
+        	
             	
-            ReferenceList refListUpgradeFilesList=_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), svnUser) ;
-            refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
-          
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceSql = _serverApplicationService.getHashServerApplicationInstance( application,
-            		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
+            		
+		            ReferenceList refListUpgradeFilesList=!bInitDatabase?_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), svnUser):null ;
+		            if(refListUpgradeFilesList!=null)
+		            {
+		            	refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
+		            }
+		            
+		            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceSql = _serverApplicationService.getHashServerApplicationInstance( application,
+		            		  ConstanteUtils.CONSTANTE_SERVER_MYSQL, getLocale(  ), true, true );
+		              
+		            if(!bInitDatabase)
+		            {
+		           
+			            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstancePSQ = _serverApplicationService.getHashServerApplicationInstance( application,
+			          		  ConstanteUtils.CONSTANTE_SERVER_PSQ, getLocale(  ), true, true );
+			        
+			            for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstancePSQ.entrySet()) {
+			                String key = entry.getKey();
+			                List<ServerApplicationInstance> listServerPsq=entry.getValue();
+			                
+			                if(hashServerApplicationInstanceSql.containsKey(entry.getKey() )&& hashServerApplicationInstanceSql.get(entry.getKey()) !=null && listServerPsq!=null)
+			                {
+			                	hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
+			                }
+			                else
+			                {
+			                	hashServerApplicationInstanceSql.put(key, listServerPsq);
+			                	
+			                }
+			            }
+		             }
+	            
+	            
+	            
+	            HashMap<String, List<String>> hashDatabase =!bInitDatabase?_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceSql, getLocale()):null;
+	             
+	            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_SQL, hashServerApplicationInstanceSql );
+	            model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
+	            model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
               
-            HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstancePSQ = _serverApplicationService.getHashServerApplicationInstance( application,
-          		  ConstanteUtils.CONSTANTE_SERVER_PSQ, getLocale(  ), true, true );
-        
-            for (Map.Entry<String, List<ServerApplicationInstance>> entry : hashServerApplicationInstancePSQ.entrySet()) {
-                String key = entry.getKey();
-                List<ServerApplicationInstance> listServerPsq=entry.getValue();
-                
-                if(hashServerApplicationInstanceSql.containsKey(entry.getKey() )&& hashServerApplicationInstanceSql.get(entry.getKey()) !=null && listServerPsq!=null)
-                {
-                	hashServerApplicationInstanceSql.get(entry.getKey()).addAll(listServerPsq);
-                }
-                else
-                {
-                	hashServerApplicationInstanceSql.put(key, listServerPsq);
-                	
-                }
-                
+              
             }
             
-            
-            
-            HashMap<String, List<String>> hashDatabase =_databaseService.getHashDatabases(application.getCode(  ), hashServerApplicationInstanceSql, getLocale());
-             
-            model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_SQL, hashServerApplicationInstanceSql );
-              
-            model.put( ConstanteUtils.MARK_DATABASE_MAP, hashDatabase );
-            model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
-              
-              
-              
-              }
-            
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql=new HashMap<String, List<ServerApplicationInstance>>();
-            ReferenceList refListEnvironements = ReferenceList.convert( listEnvironments, "code", "name", false );
-            refListEnvironements= DeploymentUtils.addEmptyRefenceItem( refListEnvironements );
+            
+            ReferenceList refListEnvironements = ReferenceList.convert( colEnvironmentsFilter, "code", "name", false );
+             refListEnvironements= DeploymentUtils.addEmptyRefenceItem( refListEnvironements );
 
             model.put( ConstanteUtils.MARK_ENVIRONMENT_LIST, refListEnvironements );
             model.put( ConstanteUtils.MARK_APPLICATION, application );
           
             model.put( ConstanteUtils.MARK_DEPLOY_WAR, bDeployWar );
             model.put( ConstanteUtils.MARK_DEPLOY_SQL,bDeploySql  );
+            model.put( ConstanteUtils.MARK_INIT_DATABASE, bInitDatabase );
+            model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT,bInitContext );
+            
         }
         else
         {
@@ -609,17 +651,22 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                     getLocale(  ) );
 
             HashMap model = new HashMap(  );
-            if(workflowDeploySiteContext.isDeployWar())
+            
+            if (  (workflowDeploySiteContext.isDeployWar() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION,environment)) 
+               	 ||(workflowDeploySiteContext.isDeploySql() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT,environment))
+               	 ||(workflowDeploySiteContext.isInitBdd() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_DATABASE,environment))
+               	 ||(workflowDeploySiteContext.isInitAppContext() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT,environment))
+               	)
             {
             	
-            	 if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(application.getIdApplication()),
-             			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ) || !RBACService.isAuthorized( Environment.RESOURCE_TYPE, environment.getResourceId(),
-             					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ))
-             	{
-                 	
-             		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-
-                }
+            	throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
+            }
+            	
+            
+            if(workflowDeploySiteContext.isDeployWar()||workflowDeploySiteContext.isInitAppContext())
+            {
+            	
+            	
             	 
             	  
 	            ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application,
@@ -631,19 +678,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 	            model.put( ConstanteUtils.MARK_TAG_TO_DEPLOY, workflowDeploySiteContext.getTagToDeploy(  ) );
 
             }
-            else if(workflowDeploySiteContext.isDeploySql())
+            else if(workflowDeploySiteContext.isDeploySql()||workflowDeploySiteContext.isInitBdd())
             {
-            
-	           	 if ( !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(application.getIdApplication()),
-	          			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() ))
-	          	{
-	              	
-	          		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-	
-	             }
-            
-	           	 
-	           	 String serverType=!StringUtils.isEmpty(workflowDeploySiteContext.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_MYSQL))?ConstanteUtils.CONSTANTE_SERVER_MYSQL:ConstanteUtils.CONSTANTE_SERVER_PSQ;
+            	String serverType=!StringUtils.isEmpty(workflowDeploySiteContext.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_MYSQL))?ConstanteUtils.CONSTANTE_SERVER_MYSQL:ConstanteUtils.CONSTANTE_SERVER_PSQ;
 	            ServerApplicationInstance serverApplicationInstanceSql = _serverApplicationService.getServerApplicationInstance( application,
 	                    workflowDeploySiteContext.getCodeServerInstance( serverType),
 	                    workflowDeploySiteContext.getCodeEnvironement(  ), serverType,
@@ -669,7 +706,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             model.put( ConstanteUtils.MARK_ACTION_LIST, listAction );
             model.put( ConstanteUtils.MARK_DEPLOY_WAR, workflowDeploySiteContext.isDeployWar() );
             model.put( ConstanteUtils.MARK_DEPLOY_SQL,workflowDeploySiteContext.isDeploySql( )  );
-         
+            model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT, workflowDeploySiteContext.isInitAppContext());
+            model.put( ConstanteUtils.MARK_INIT_DATABASE,workflowDeploySiteContext.isInitBdd() );
             
             
            
@@ -861,10 +899,16 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
             	
                 DeploymentUtils.startCommandResult( workflowDeploySiteContext );
-                if (( workflowDeploySiteContext.isDeployWar() && !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(workflowDeploySiteContext.getIdApplication()),
-            			ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION, getUser() ))||( workflowDeploySiteContext.isDeploySql() && !RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(nIdAction),
-            	    			ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT, getUser() ) )||( !RBACService.isAuthorized( Environment.RESOURCE_TYPE,workflowDeploySiteContext.getCodeEnvironement() ,
-            	    					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ) ))
+               
+                Application application=_applicationService.getApplication(workflowDeploySiteContext.getIdApplication(), plugin);
+                Environment environment = _environmentService.getEnvironment( workflowDeploySiteContext.getCodeEnvironement(  ),
+                        getLocale(  ) );
+ 
+                if (  (workflowDeploySiteContext.isDeployWar() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION,environment)) 
+                      	 ||(workflowDeploySiteContext.isDeploySql() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT,environment))
+                      	 ||(workflowDeploySiteContext.isInitBdd() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_DATABASE,environment))
+                      	 ||(workflowDeploySiteContext.isInitAppContext() &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT,environment))
+                  )
             	{
             		
                 	
@@ -994,13 +1038,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 				}
             	workflowContext.setScriptFileItemName(workflowContext.getScriptFileSelected());
             }
-            else if(workflowContext.isInitBdd())
-            {
-            	 HtmlTemplate templateInitScript = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_DB,
-                          getLocale(  ) );
-            	workflowContext.setScriptFileItem(new ByteArrayInputStream(templateInitScript.getHtml().getBytes()));
-            	workflowContext.setScriptFileItemName("init_db.sql");
-            }
+
 	
             
             workflowContext.setSvnUser( DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) ) );
@@ -1116,6 +1154,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	 String strActionCode = request.getParameter( ConstanteUtils.PARAM_ACTION_CODE);
     	 String strJspFormToDisplay =null;
     	 
+    	 Environment environment = _environmentService.getEnvironment( strCodeEnvironment,
+                 getLocale(  ) );
+    	 
     	 Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
          IAction action = _actionService.getAction(  DeploymentUtils.getActionKey( strActionCode, strServerAppicationType ), request.getLocale() );
        
@@ -1129,10 +1170,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          if ( action != null )
          {
         	
-        	  if ((  !RBACService.isAuthorized( Application.RESOURCE_TYPE, strIdApplication,
-          			ApplicationResourceIdService.PERMISSION_VIEW, getUser() ))||( !RBACService.isAuthorized( Environment.RESOURCE_TYPE,strCodeEnvironment ,
-          	    					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() ) ))
-          	{
+        	if ( !isAuthorized(application, ApplicationResourceIdService.PERMISSION_VIEW,environment) )
+            {
           		
         		  
         		  commandResult.setError(I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
@@ -1145,7 +1184,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         	 
         	  DeploymentUtils.startCommandResult(commandResult);
       		
-        	 if(action.canRunAction(application, serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
+        	 if(_actionService.canExecuteAction(application,action, serverApplicationInstance, commandResult, DeploymentUtils.getActionParameters( request, action.getParameters(  ) )))
         	 {
         		
         		 
@@ -1165,7 +1204,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         		 listNewServersActions=serverApplicationInstance.getListServerApplicationAction();
         		 nNewServersStatus=serverApplicationInstance.getStatus();
         	 }
-        	 else
+        	 else if(_actionService.getTemplateFormAction(application, action, serverApplicationInstance, getLocale())!=null)
         	 {
         		  strJspFormToDisplay=getJspFormActionServer(request, strActionCode, DeploymentUtils.getIntegerParameter(strIdApplication), strCodeEnvironment, strCodeServerApplicationInstance, strServerAppicationType);
         	 }
@@ -1227,7 +1266,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL;
         }
-        else if ( !StringUtils.isEmpty( strDeploySql ) && StringUtils.isEmpty( strCodeDatabase ) )
+        else if ( !StringUtils.isEmpty( strDeploySql ) && StringUtils.isEmpty( strCodeDatabase ) &&  StringUtils.isEmpty(strInitDatabase) )
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_DATABASE;
         }
@@ -1272,6 +1311,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
         workflowDeploySiteContext.setInitAppContext( !StringUtils.isEmpty( strInitAppContext ));
+        workflowDeploySiteContext.setInitBdd( !StringUtils.isEmpty( strInitDatabase));
+        
         
         if ( StringUtils.isEmpty( strTagSiteBeforeDeploy ) )
         {
@@ -1430,6 +1471,27 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     {
         return AppPathService.getBaseUrl( request ) + ConstanteUtils.JSP_DEPLOY_APPLICATION_PROCESS;
     }
+    
+    
+    
+    
+    private boolean isAuthorized(Application application,String strPermission)
+    {
+    	
+    	return RBACService.isAuthorized( Application.RESOURCE_TYPE,Integer.toString(application.getIdApplication()),
+    			strPermission, getUser() ) && AdminWorkgroupService.isAuthorized(application,getUser());
+    	
+    }
+    
+    private boolean isAuthorized(Application application,String strPermission,Environment environment)
+    {
+    	
+    	return RBACService.isAuthorized( Application.RESOURCE_TYPE, Integer.toString(application.getIdApplication()),
+    			strPermission, getUser() ) && AdminWorkgroupService.isAuthorized(application,getUser()) && RBACService.isAuthorized( Environment.RESOURCE_TYPE, environment.getResourceId(),
+     					EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser() );
+    	
+    }
+    
     
     
 }

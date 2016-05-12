@@ -76,6 +76,12 @@ public class ApplicationResourceIdService extends ResourceIdService
 
     /** Permission for deploying a script */
     public static final String PERMISSION_DEPLOY_SCRIPT = "DEPLOY_SCRIPT";
+    
+    /** Permission for init database */
+    public static final String PERMISSION_INIT_DATABASE = "INIT_DATABASE";
+    
+    /** Permission for init App context */
+    public static final String PERMISSION_INIT_APP_CONTEXT = "INIT_APP_CONTEXT";
 
    
     /** Label resource type */
@@ -86,7 +92,9 @@ public class ApplicationResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_VIEW = "deployment.permission.label.application.view_application";
     private static final String PROPERTY_LABEL_DEPLOY_APPLICATION= "deployment.permission.label.application.deploy_application";
     private static final String PROPERTY_LABEL_DEPLOY_SCRIPT = "deployment.permission.label.application.deploy_script";
-    
+    private static final String PROPERTY_LABEL_INIT_APP_CONTEXT= "deployment.permission.label.application.init_app_context";
+    private static final String PROPERTY_LABEL_INIT_DATABASE= "deployment.permission.label.application.init_database";
+     
     /** Creates a new instance of ApplicationResourceIdService */
     public ApplicationResourceIdService(  )
     {
@@ -140,6 +148,16 @@ public class ApplicationResourceIdService extends ResourceIdService
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_DEPLOY_SCRIPT);
         p.setPermissionTitleKey( PROPERTY_LABEL_DEPLOY_SCRIPT);
+        rt.registerPermission( p );
+        
+        p = new Permission(  );
+        p.setPermissionKey( PERMISSION_INIT_APP_CONTEXT);
+        p.setPermissionTitleKey( PROPERTY_LABEL_INIT_APP_CONTEXT);
+        rt.registerPermission( p );
+        
+        p = new Permission(  );
+        p.setPermissionKey( PERMISSION_INIT_DATABASE);
+        p.setPermissionTitleKey( PROPERTY_LABEL_INIT_DATABASE);
         rt.registerPermission( p );
        
         ResourceTypeManager.registerResourceType( rt );
