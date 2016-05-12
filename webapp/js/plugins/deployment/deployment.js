@@ -429,7 +429,7 @@ function statusCallbackTasksForm( json )
 function runActionServer(form ) 
 {
 	
-	alert($(form).serialize());
+	
 	//initModalBody();
 	if ($('#myModal').hasClass('in')==false)
 	{
