@@ -220,40 +220,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         return null;
     }
     
-    public String initAppContext( WorkflowDeploySiteContext context, Locale locale )
-    {
-        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        
-       
-        	Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-        	 ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-                     context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
-                     context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
-              
-            
-        	HashMap model = new HashMap(  );
-	        model.put(ConstanteUtils.MARK_APPLICATION,application);
-	        
-	        HtmlTemplate templateInitAppContext = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_APP_CONTEXT,
-	              locale ,model );
-	        
-	        context.getCommandResult(  ).getLog(  ).append( "Starting Action  Init App Context...\n" );
-	        
-	        InputStream  iTemplateInitAppContext=new ByteArrayInputStream(templateInitAppContext.getHtml().getBytes());
-	         
-        	_ftpService.uploadFile( application.getWebAppName()+".xml",iTemplateInitAppContext,serverApplicationInstance.getFtpInfo(  ),
-				    DeploymentUtils.getContextDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
-				    context.getCommandResult(  ),false );
-	        //throw RuntimeException for stopping Workflow 
-	      	stopWorkflowIfTechnicalError("Error During Init App Context", context.getCommandResult());
-	        
-			
-	        context.getCommandResult(  ).getLog(  ).append( "End Action Init App Context...\n");
-        
-
-        return null;
-    }
-
+   
     
     public String deployScript( WorkflowDeploySiteContext context, Locale locale )
     {
