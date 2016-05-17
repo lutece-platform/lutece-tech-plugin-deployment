@@ -36,6 +36,8 @@
                             <th>#i18n{deployment.manage_application.column_name}</th>
                             <th>#i18n{deployment.manage_application.column_category}</th>
                             <th>#i18n{deployment.manage_application.column_site_name}</th>
+                            <th>#i18n{deployment.manage_application.column_workgroup}</th>
+                            
                               <th colspan="2">#i18n{deployment.manage_application.navigation}</th>
                         </tr>
                     </thead>
@@ -46,6 +48,7 @@
                                 <td>${application.name}</td>
                                 <td>${category_map[application.codeCategory!]!}</td>  
                                 <td>${application.siteName}</td>
+                                  <td>${application.workgroup!}</td>
                                 <td>
                                 
                                 <#assign list_actions=map_application_actions["${application.idApplication}"]!>
