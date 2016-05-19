@@ -24,7 +24,7 @@ public class InitMysqlDatabase extends DefaultAction
 	
    private IFtpService _ftpService=SpringContextService.getBean( "deployment.FtpService" );
    private IActionService _actionService=SpringContextService.getBean( "deployment.ActionService" );
-   private static final String ACTION_EXECUTE="@EXECUTE";
+   private static final String ACTION_EXECUTE="@EXECUTE_MYSQL";
    private static final String SCRIPT_INIT_NAME="init_db.sql";
    private static final String DATABASE="mysql";
    
@@ -63,8 +63,16 @@ public class InitMysqlDatabase extends DefaultAction
          databaseParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE);
          databaseParameter.setValue(DATABASE);
          
-         ActionParameter[] tabParameters=new ActionParameter[parameter.length+1];
-         tabParameters[parameter.length]=databaseParameter;
+         ActionParameter scriptParameter = new ActionParameter(  );
+         scriptParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME);
+         scriptParameter.setValue(SCRIPT_INIT_NAME);
+         
+         
+         ActionParameter[] tabParameters=new ActionParameter[2];
+
+         tabParameters[0]=databaseParameter;
+         tabParameters[1]=scriptParameter;
+         
       	 if ( action != null  && _actionService.canExecuteAction(application, action, serverApplicationInstance, commandResult, tabParameters))
 	      {
       		
