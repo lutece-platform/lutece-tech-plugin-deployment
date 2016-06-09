@@ -93,6 +93,12 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.3</version>
 		</dependency>
+		 <dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>plugin-asynchronousupload</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+            <type>lutece-plugin</type>
+        </dependency>
 	</dependencies>
 	<properties>
 		<jiraProjectName>DEPLOYMENT</jiraProjectName>
@@ -100,8 +106,8 @@
 	</properties>
 
 	 <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</connection>
+        <connection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</connection>
         <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-deployment</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/technical/plugin-deployment</url>
+        <url>https://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/technical/plugin-deployment</url>
     </scm>
 </project>
