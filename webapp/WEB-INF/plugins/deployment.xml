@@ -3,7 +3,7 @@
     <!-- Plugin Informations -->
     <name>deployment</name>
     <class>fr.paris.lutece.plugins.deployment.service.DeploymentPlugin</class>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <description>deployment.plugin.description</description>
     <documentation/>
     <installation/>
