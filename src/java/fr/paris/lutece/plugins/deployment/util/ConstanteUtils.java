@@ -220,6 +220,7 @@ public class ConstanteUtils
     public static final String MARK_INIT_DATABASE = "init_database";
     public static final String MARK_INIT_APP_CONTEXT = "init_app_context";
     public static final String MARK_CAN_CREATE_APPLICATION = "can_create_application";
+    public static final String MARK_HANDLER = "handler";
     
     
     public static final String MARK_SCRIPT_NAME = "script_name";

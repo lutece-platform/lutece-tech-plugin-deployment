@@ -48,6 +48,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
@@ -69,6 +70,7 @@ import fr.paris.lutece.plugins.deployment.service.IFtpService;
 import fr.paris.lutece.plugins.deployment.service.IServerApplicationService;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.deployment.service.IWorkflowDeploySiteService;
+import fr.paris.lutece.plugins.deployment.uploadhandler.DeploymentUploadHandler;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.SVNUtils;
@@ -101,7 +103,6 @@ import fr.paris.lutece.util.url.UrlItem;
 public class DeploymentJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DEPLOYMENT_MANAGEMENT = "DEPLOYMENT_MANAGEMENT";
-    
     private static final String MESSAGE_ACCESS_DENIED = "deployment.message.error.accessDenied";
     private IApplicationService _applicationService = SpringContextService.getBean( "deployment.ApplicationService" );
     private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
@@ -124,7 +125,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     private int _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_NB_ITEM_PER_PAGE,
             50 );
     private Integer _nIdCurrentWorkflowDeploySiteContext;
-
+    private DeploymentUploadHandler _handler=SpringContextService.getBean( DeploymentUploadHandler.BEAN_NAME );
     public String getManageApplication( HttpServletRequest request )
     {
         String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
@@ -619,7 +620,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             model.put( ConstanteUtils.MARK_DEPLOY_SQL,bDeploySql  );
             model.put( ConstanteUtils.MARK_INIT_DATABASE, bInitDatabase );
             model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT,bInitContext );
-            
+            model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT,bInitContext );
+            model.put(ConstanteUtils.MARK_HANDLER, SpringContextService.getBean( DeploymentUploadHandler.BEAN_NAME ) );
+      
         }
         else
         {
@@ -1248,7 +1251,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
         FileItem scriptItem =null;
 
-  
+      
         
 
         String strFieldError = ConstanteUtils.CONSTANTE_EMPTY_STRING;
@@ -1276,8 +1279,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         }
         else if ( !StringUtils.isEmpty( strDeploySql ) )
         {
-        	scriptItem = mRequest.getFile(ConstanteUtils.PARAM_SCRIPT_UPLOAD);
-        	if( StringUtils.isEmpty(strScriptUpgradeSelected) && StringUtils.isEmpty(strInitDatabase)  && ( scriptItem ==null || scriptItem.getSize()==0))
+            List<FileItem> scriptListItem=	_handler.getListUploadedFiles( ConstanteUtils.PARAM_SCRIPT_UPLOAD, request.getSession(  ) );
+            if( !CollectionUtils.isEmpty(scriptListItem))
+            {
+        	  scriptItem = scriptListItem.get(0);
+        	        
+            }
+          	if( StringUtils.isEmpty(strScriptUpgradeSelected) && StringUtils.isEmpty(strInitDatabase)  && ( scriptItem ==null || scriptItem.getSize()==0))
         	{
         		strFieldError = ConstanteUtils.PROPERTY_LABEL_SCRIPT_UPLOAD;
         	}

@@ -1,3 +1,5 @@
+<#include "/skin/plugins/asynchronousupload/upload_commons.html" />
+<script type="text/javascript" src="jsp/site/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=deploymentUploadHandler"></script>
 <div class="row">
         <div class="col-xs-12 col-sm-12">
             <div class="box box-primary">
@@ -142,11 +144,12 @@
                                     <div class="form-group">
                                         <label class="control-label col-xs-12 col-sm-2 col-md-2"  for="name" >#i18n{deployment.form_init_deploy_application.label_select_upgrade_script}</label>
                                         <div class="col-xs-12 col-sm-3"> 
-                                            <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
+                                                <@comboWithParams name="script_upgrade_selected" default_value="" additionalParameters="onchange=\"\" class=\"form-control\"" items=upgrade_file_list />
                                         </div>
                                         <div class="col-xs-12 col-sm-4"> 
                                             <label class="sr-only">ou #i18n{deployment.form_init_deploy_application.label_script_upload}</label>
-                                            <input type="file" class="inline" name="script_upload" id="script_upload" title="#i18n{deployment.form_init_deploy_application.label_script_upload}"> 
+                                                    <@addFileInputAndfilesBox fieldName="script_upload" handler=handler listUploadedFiles=[] inputCssClass='form-control' multiple=false />
+ 
                                             <span>ou #i18n{deployment.form_init_deploy_application.label_script_upload}</span>
                                         </div>
                                      </div>
