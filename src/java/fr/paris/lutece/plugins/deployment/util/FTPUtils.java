@@ -59,7 +59,8 @@ public class FTPUtils
             String remoteDirectoryPath, CommandResult commandResult,boolean bBinaryFile )
         {
             final FTPClient ftp = getFtpClient( ftpInfo );
-
+            String strRemoteFilePath=remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName;
+            
             if(ftp != null)
             	
             {
@@ -69,18 +70,18 @@ public class FTPUtils
 		                if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
 		                {
 		                    ftp.logout(  );
-		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu");
+		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu"+strRemoteFilePath);
 		                }
 		
 		                if(bBinaryFile)
 		                {
 		                	ftp.setFileType( FTP.BINARY_FILE_TYPE );
 		                }
-		                boolean bStorefile=  ftp.storeFile( remoteDirectoryPath + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + fileName, inputStream );
+		                boolean bStorefile=  ftp.storeFile(strRemoteFilePath , inputStream );
 		                
 		                if(!bStorefile)
 		                {
-		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors du dépot du fichier en FTP");
+		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors du dépot du fichier en FTP "+strRemoteFilePath);
 		                }
 		                
 		                inputStream.close(  );
@@ -92,11 +93,11 @@ public class FTPUtils
 		
 		            catch ( FTPConnectionClosedException e )
 		            {
-		             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage());
+		             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage()+strRemoteFilePath,e);
 		      	            }
 		            catch ( IOException e )
 		            {
-		            	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP"+e.getMessage());
+		            	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP"+e.getMessage()+strRemoteFilePath,e);
 		            }
 		            finally
 		            {
@@ -115,7 +116,7 @@ public class FTPUtils
             }
             else
             {
-            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP");
+            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP"+strRemoteFilePath);
   
             }
 
@@ -142,7 +143,7 @@ public class FTPUtils
             {
                 if ( !ftp.login( ftpInfo.getUserLogin(  ), ftpInfo.getUserPassword(  ) ) )
                 {
-                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu");
+                	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP,le compte FTP n'est pas reconnu"+remoteFilePath);
       		      
                     ftp.logout(  );
                   
@@ -153,7 +154,7 @@ public class FTPUtils
                
                 if(!bRetrieve)
                 {
-                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors de la récupération du fichier en FTP");
+                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors de la récupération du fichier en FTP"+remoteFilePath);
                 }
                 outputStream.flush(  );
                 //close output stream
@@ -166,13 +167,13 @@ public class FTPUtils
 
             catch ( FTPConnectionClosedException e )
             {
-             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage());
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de la fermeture de la connexion FTP:"+e.getMessage()+remoteFilePath,e);
 		      	   
             
             }
             catch ( IOException e )
             {
-             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP:"+e.getMessage());
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors du transfert FTP:"+e.getMessage()+remoteFilePath,e);
 		      	   
                 
             }
@@ -193,7 +194,7 @@ public class FTPUtils
             }
             else
             {
-            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP");
+            	DeploymentUtils.addTechnicalError(commandResult,"Probleme de connexion FTP"+remoteFilePath);
   
             }
 
@@ -221,7 +222,7 @@ public class FTPUtils
             catch ( FileNotFoundException e )
             {
                 // TODO Auto-generated catch block
-             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de l'upload du fichier" +pathLocalFile +":"+e.getMessage());
+             	DeploymentUtils.addTechnicalError(commandResult,"Une erreur est survenue lors de l'upload du fichier" +pathLocalFile +":"+e.getMessage(),e);
     		    
             }
             

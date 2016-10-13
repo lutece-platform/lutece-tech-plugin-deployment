@@ -177,7 +177,7 @@ public class SvnService implements ISvnService
             }
             catch ( Exception e )
             {
-            	DeploymentUtils.addTechnicalError(commandResult,"errreur lors du checkout du site "+ e.getMessage());
+            	DeploymentUtils.addTechnicalError(commandResult,"errreur lors du checkout du site "+ e.getMessage(),e);
             }
         }
         else
@@ -308,7 +308,7 @@ public class SvnService implements ISvnService
                                                         _result.getLog(  ).toString(  ),
                                                         e ) );
                                                         **/
-            DeploymentUtils.addTechnicalError(commandResult, errorLog);
+            DeploymentUtils.addTechnicalError(commandResult, errorLog,e);
         }
 
         return ConstanteUtils.CONSTANTE_EMPTY_STRING;

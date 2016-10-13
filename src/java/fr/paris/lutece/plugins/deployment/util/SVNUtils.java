@@ -182,7 +182,7 @@ public final class SVNUtils
             //            _result.setRunning( false );
 
 
-        	DeploymentUtils.addTechnicalError(result,"Une erreur est survenue lors de la tentative d'authentification avec le svn"+e);
+        	DeploymentUtils.addTechnicalError(result,"Une erreur est survenue lors de la tentative d'authentification avec le svn"+e,e);
 		      
             StringWriter sw = new StringWriter(  );
             PrintWriter pw = new PrintWriter( sw );
@@ -231,7 +231,7 @@ public final class SVNUtils
                 //                _logger.error( e1 );
             }
 
-        	DeploymentUtils.addTechnicalError(result,"Une erreur svn est survenue:"+e);
+        	DeploymentUtils.addTechnicalError(result,"Une erreur svn est survenue:"+e,e);
    		 
         }
 

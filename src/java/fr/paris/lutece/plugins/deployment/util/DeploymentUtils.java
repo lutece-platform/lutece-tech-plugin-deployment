@@ -673,18 +673,31 @@ public class DeploymentUtils
     	commandResult.setRunning( false );
     }
     
+
+    public static void addTechnicalError(CommandResult commandResult,String strError, Exception e  )
+    {
+       
+        if(e!=null)
+        {
+            AppLogService.error(strError,e);
+        }else
+        {
+            AppLogService.error(strError);
+        }
+        
+        if(commandResult!=null)
+        {
+            commandResult.setError(strError);
+            commandResult.setStatus(CommandResult.STATUS_ERROR);
+            commandResult.setRunning(false);
+            commandResult.setErrorType(CommandResult.ERROR_TYPE_STOP);
+        }
+      }
+    
     public static void addTechnicalError(CommandResult commandResult,String strError  )
     {
-    	AppLogService.error(strError);
-    	if(commandResult!=null)
-    	{
-	    	commandResult.setError(strError);
-	    	commandResult.setStatus(CommandResult.STATUS_ERROR);
-	    	commandResult.setRunning(false);
-	    	commandResult.setErrorType(CommandResult.ERROR_TYPE_STOP);
-    	}
-	  }
-
+            addTechnicalError( commandResult, strError ,null);
+     }
 
     public static ReferenceList addEmptyRefenceItem( ReferenceList referenceList )
     {

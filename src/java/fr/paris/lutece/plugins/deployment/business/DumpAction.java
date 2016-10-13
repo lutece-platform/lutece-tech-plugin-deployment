@@ -93,7 +93,7 @@ public class DumpAction extends DefaultAction
 	         }
 	         catch ( Exception e )
 	         {
-	        	  DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage());  
+	        	  DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage(),e);  
 	        	  AppLogService.error( e );
 	             
 	         }
