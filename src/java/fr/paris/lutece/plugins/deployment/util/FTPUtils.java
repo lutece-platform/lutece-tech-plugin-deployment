@@ -80,6 +80,12 @@ public class FTPUtils
 		                boolean bStorefile=  ftp.storeFile(strRemoteFilePath , inputStream );
 		                
 		                if(!bStorefile)
+                        {
+		                    //try again
+		                    bStorefile=  ftp.storeFile(strRemoteFilePath , inputStream );
+                        }
+		                
+		                if(!bStorefile)
 		                {
 		                	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors du dépot du fichier en FTP "+strRemoteFilePath);
 		                }
