@@ -154,8 +154,16 @@ public class FTPUtils
                
                 if(!bRetrieve)
                 {
+                    //Try Again
+                    bRetrieve= ftp.retrieveFile(remoteFilePath, outputStream);        
+                }
+            
+                if(!bRetrieve)
+                {
                 	DeploymentUtils.addTechnicalError(commandResult,"Probleme lors de la récupération du fichier en FTP"+remoteFilePath);
                 }
+                
+                
                 outputStream.flush(  );
                 //close output stream
                 outputStream.close();
