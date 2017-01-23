@@ -50,5 +50,7 @@
             <listener-class>fr.paris.lutece.plugins.deployment.uploadhandler.DeploymentSessionListener</listener-class>
         </listener>
     </listeners>
-    
+    <admin-css-stylesheets>
+      <admin-css-stylesheet>css/admin/portal_admin_deploy.css</admin-css-stylesheet>
+    </admin-css-stylesheets>
  </plug-in>

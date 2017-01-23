@@ -1,88 +1,92 @@
-<script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
-<script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
-
-<#macro tabServerApplicationInstance list_server_application_instance environment >
-    <tr>
-        <th></th>
-         <th>Code</th>
-         <th>Nom</th>
-         <th>Etat</th>
-         <th>Actions</th>
-    </tr>
-     <#list listServerApplicationInstance as serverApplicationInstance>
-             <tr>
-                <td ></td>
-                 <td>${serverApplicationInstance.code}</td>
-                 <td>${serverApplicationInstance.name}</td>
-                 <td> 
-                     <div id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">    
-                     <#if serverApplicationInstance.status?has_content && serverApplicationInstance.status?has_content && serverApplicationInstance.status==1>
-                        <span class="label label-success"><i class="glyphicon glyphicon-ok-sign"></i> #i18n{portal.util.labelEnabled}</span>
-                     <#else>
-                        <span class="label label-important"><i class="glyphicon glyphicon-remove-sign"></i> #i18n{portal.util.labelDisabled}</span>
-                     </#if>
-                   </div> 
-                 <td> 
-                    
-                    <div id="test"></div>
-                    <div id="actions_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}"> 
-                      <#list serverApplicationInstance.listServerApplicationAction as action >  
-                        <#if action.display && ((!action.status?exists)||(action.status?exists &&  serverApplicationInstance.status?has_content &&serverApplicationInstance.status==action.status))>
-                            <form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-left spaced form_run_action_server">
-                                <input name="plugin_name" value="deployment" type="hidden" >
-                                <input name="id_application" value="${application.idApplication}" type="hidden" >
-                                <input name="action_code" value="${action.code}" type="hidden" />
-                                <input name="code_environment" value="${environment.code}" type="hidden" />
-                                <input name="code_server_application_instance" value="${serverApplicationInstance.code}" type="hidden" >
-                                <input name="server_application_type" value="${serverApplicationInstance.type}" type="hidden" >
-                                   <button class="btn btn-app" type="submit" >
-                                       <i class="${action.iconCssClass}"></i> ${action.name}
-                                   </button>
-                            </form>
-                          </#if>
-                      </#list>
-                     </div> 
-                 </td>
-             </tr>              
-    </#list>
+<#macro tabServerApplicationInstance title icon list_server_application_instance environment >
+  <#list listServerApplicationInstance as serverApplicationInstance>
+    <#if serverApplicationInstance.status?has_content && serverApplicationInstance.status?has_content && serverApplicationInstance.status==1>
+      <#assign classTxt="success" >
+    <#else>
+      <#assign classTxt="danger" >
+    </#if>
+    <h3 id="title_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+      <span class="fa fa-${icon}"></span> ${title}
+      <span id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+        <#if classTxt="success">
+          <i class="fa fa-check-circle-o text-success" title="#i18n{portal.util.labelEnabled}"></i>
+        <#else>
+          <i class="fa fa-times-circle-o text-danger" title="#i18n{portal.util.labelDisabled}"></i>
+        </#if>
+      </span>
+    </h3>
+    <p class="lead">Code : ${serverApplicationInstance.code} / Nom : ${serverApplicationInstance.name}</p>
+    <div class="row">
+     <div class="col-xs-12 col-sm-12">
+      <div id="actions_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+       <#list serverApplicationInstance.listServerApplicationAction as action >
+        <#if action.display && ((!action.status?exists)||(action.status?exists &&  serverApplicationInstance.status?has_content &&serverApplicationInstance.status==action.status))>
+         <form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-left spaced form_run_action_server">
+          <input name="plugin_name" value="deployment" type="hidden" >
+          <input name="id_application" value="${application.idApplication}" type="hidden" >
+          <input name="action_code" value="${action.code}" type="hidden" />
+          <input name="code_environment" value="${environment.code}" type="hidden" />
+          <input name="code_server_application_instance" value="${serverApplicationInstance.code}" type="hidden" >
+          <input name="server_application_type" value="${serverApplicationInstance.type}" type="hidden" >
+          <button class="btn btn-<#if action.code='@SHUTDOWN'>danger<#elseif action.code='@STARTUP'>success<#else>primary</#if> btn-flat" type="submit" >
+            <i class="${action.iconCssClass}"></i> ${action.name}
+          </button>
+         </form>
+        </#if>
+      </#list>
+    </div>
+   </div>
+ </div>
+</#list>
 </#macro>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">${application.code} - ${application.name}</h3>
-            </div><!-- /.box-header -->
-           <div class="box-body table-responsive pad">
-                <#if error_message?has_content>
-                     <div class="callout callout-error">
-                        ${error_message}
-                        <a class="btn btn-primary btn-mini" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}" title="#i18n{deployment.create_application.action_modify_user_account}" >
-                            <i class="glyphicon glyphicon-edit"></i> 
-                        </a>
-                    </div>
-                <#else>
-                    <div id="div_form_action_server"></div>
-                     <div id="action_server_result" >
-                        <p id="action_server_log"></p>
-                        <p id="dump_file" ><strong>#i18n{deployment.deploy_application_process.download_dump}  :</strong><div id="dump_file_url"></div></p> 
-                    </div>
-                      <table class="table table-hover table-condensed">
-                        <#list environment_list as environment>
-                            <tr><td colspan="5"><h2 class="text-light-blue"><span class="fa fa-cubes fa-2x"></span>${environment.name}</h2></td></tr>
-                            <tr><td colspan="5"><h3><span class="fa fa-server"></span> Serveurs tomcat</h3></td></tr>
-                            <#assign listServerApplicationInstance = server_instance_map_tomcat[environment.code!]! /> 
-                             <@tabServerApplicationInstance list_server_application_instance=listServerApplicationInstance environment=environment/>
-                             <tr><td colspan="5"><h3><span class="fa fa-database"></span> Serveurs Base de Donn&eacute;es</h3></td></tr>
-                           <#assign listServerApplicationInstance = server_instance_map_sql[environment.code!]! /> 
-                           <@tabServerApplicationInstance list_server_application_instance=listServerApplicationInstance environment=environment/>
-                
-                        </#list>
-                        </table>
-                </#if>
-            </div>
-        </div>
+<h2 class="header-app">${application.code} - ${application.name}</h2>
+<#if error_message?has_content>
+  <div class="callout callout-warning">
+    ${error_message}
+    <a class="btn btn-primary btn-lg" href="jsp/admin/user/ModifyUser.jsp?id_user=${id_user}" title="#i18n{deployment.create_application.action_modify_user_account}" >
+      <i class="fa fa-pencil"></i>
+    </a>
+  </div>
+<#else>
+  <div id="div_form_action_server"></div>
+    <div id="action_server_result" >
+      <p id="action_server_log"></p>
+      <p id="dump_file" >
+        <strong>
+          #i18n{deployment.deploy_application_process.download_dump}  :
+        </strong>
+        <div id="dump_file_url"></div>
+      </p>
     </div>
+    <#list environment_list as environment>
+      <div class="cards">
+        <section class="row">
+          <div class=" col-xs-12 col-sm-3 col-md-2">
+            <div class="icon">
+              <i class="fa fa-cubes"></i>
+            </div>
+          </div>
+          <div class=" col-xs-12 col-sm-9 col-md-10">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12">
+                <h1>${environment.name} </h1>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-6">
+                <#assign listServerApplicationInstance = server_instance_map_tomcat[environment.code!]! />
+                <@tabServerApplicationInstance title='Serveurs d\'Application' icon='server' list_server_application_instance=listServerApplicationInstance environment=environment/>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <#assign listServerApplicationInstance = server_instance_map_sql[environment.code!]! />
+                <@tabServerApplicationInstance title=' Serveurs Base de Donn&eacute;es' icon='database' list_server_application_instance=listServerApplicationInstance environment=environment/>
+              </div>
+            </div>
+          </section>
+        </div>
+      </#list>
+    </#if>
 </div>
 <div id="myModal"class="modal  fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -96,10 +100,10 @@
                        <div class="overlay"> <i class="fa fa-refresh fa-spin"></i></div>
                     </div>
                     <div class="center-block">Une action est en cours, veuillez patienter quelques instants  </div>
-                </div>    
+                </div>
                <div class="modal-content">
                </div>
-               
+
                <div class="alert alert-danger error_run_action_server"  role="alert" >
                  <span></span>
                </div>
@@ -110,10 +114,13 @@
         </div>
     </div>
 </div>
+
+<script src="js/plugins/deployment/selectbox.js" type="text/javascript"></script>
+<script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
 <script type="text/javascript">
-$(document).ready( function(){ 
+$( function(){
     addEvent();
     $("#dump_file").toggle();
     $("#action_server_log").toggle();
 });
-</script>   
+</script>
