@@ -88,7 +88,7 @@ public class FileUtil
             {
                 strFileList.addAll( list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive) );  
             }
-            else if ( fileChild.isFile( ) && ( ( strFileExtension == null ) || file.getName(  ).endsWith( strFileExtension ) ) )
+            else if ( fileChild.isFile( ) && ( ( strFileExtension == null ) || fileChild.getName(  ).endsWith( strFileExtension ) ) )
             {
                 strFileList.add( file.getName(  ) );
             }
