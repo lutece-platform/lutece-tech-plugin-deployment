@@ -126,6 +126,26 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             50 );
     private Integer _nIdCurrentWorkflowDeploySiteContext;
     private DeploymentUploadHandler _handler=SpringContextService.getBean( DeploymentUploadHandler.BEAN_NAME );
+    private FilterDeployment _filterDeployment;
+    
+    /**
+     * @param request
+     *            the HTTP request
+     * @param strRight
+     *            The right
+     * @throws fr.paris.lutece.portal.service.admin.AccessDeniedException
+     *             Access denied exception
+     */
+    @Override
+    public void init( HttpServletRequest request, String strRight ) throws AccessDeniedException
+    {
+        super.init( request, strRight );
+        if ( _filterDeployment == null )
+        {
+            _filterDeployment = new FilterDeployment( );
+        }
+    }
+    
     public String getManageApplication( HttpServletRequest request )
     {
         String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
@@ -142,13 +162,18 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
        
         refListCategory=DeploymentUtils.addEmptyRefenceItem(refListCategory);
 
-        // build Filter
-        FilterDeployment filter = new FilterDeployment(  );
-        filter.setCodeCategory( strCodeCategory );
-        filter.setWorkGroup(strWorkgroup );
+        // build Filter stored in session
+        if ( strCodeCategory != null )
+        {
+            _filterDeployment.setCodeCategory( strCodeCategory );
+        }
+        if ( strWorkgroup != null )
+        {
+            _filterDeployment.setWorkGroup( strWorkgroup );
+        }
         
-
-        List<Application> listApplication = _applicationService.getListApplications( filter, getPlugin(  ) );
+        
+        List<Application> listApplication = _applicationService.getListApplications( _filterDeployment, getPlugin(  ) );
         
         List<ManageApplicationAction> listManageActions=SpringContextService.getBeansOfType(ManageApplicationAction.class);
         
@@ -172,11 +197,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
         model.put( ConstanteUtils.MARK_CATEGORY_MAP, refListCategory.toMap(  ) );
         model.put( ConstanteUtils.MARK_CATEGORY_SELECTED,
-            ( strCodeCategory != null ) ? strCodeCategory : ConstanteUtils.CONSTANTE_ALL );
+            ( _filterDeployment.getCodeCategory( ) != null ) ? _filterDeployment.getCodeCategory( ) : ConstanteUtils.CONSTANTE_ALL );
         model.put( ConstanteUtils.MARK_PAGINATOR, paginator );
         model.put( ConstanteUtils.MARK_NB_ITEMS_PER_PAGE, paginator.getItemsPerPage(  ) );
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
-        model.put( ConstanteUtils.MARK_USER_WORKGROUP_SELECTED, !StringUtils.isEmpty(strWorkgroup)?strWorkgroup:ConstanteUtils.CONSTANTE_ALL);
+        model.put( ConstanteUtils.MARK_USER_WORKGROUP_SELECTED, ( _filterDeployment.getWorkgroup( ) != null ) ? _filterDeployment.getWorkgroup( ): ConstanteUtils.CONSTANTE_ALL);
         model.put(ConstanteUtils.MARK_MANAGE_APPLICATION_ACTIONS,hashManageActions);
         
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
