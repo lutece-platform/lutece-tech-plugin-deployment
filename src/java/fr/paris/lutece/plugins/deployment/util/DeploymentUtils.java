@@ -50,6 +50,7 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
@@ -270,7 +271,15 @@ public class DeploymentUtils
      */
     public static String getPathArchiveGenerated( String strPathSite, String strWarName, String strExtension )
     {
-        return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName +
+        
+       List<String> listFileInTarget=FileUtil.list( strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET , strExtension ,false);
+       if(!CollectionUtils.isEmpty( listFileInTarget ) && listFileInTarget.size( )==1)
+       {
+           return  strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + listFileInTarget.get( 0 );
+       }
+       
+        
+       return  strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName +
         strExtension;
     }
 
