@@ -34,12 +34,8 @@
 package fr.paris.lutece.plugins.deployment.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 
 
 public class FileUtil
@@ -90,7 +86,7 @@ public class FileUtil
             }
             else if ( fileChild.isFile( ) && ( ( strFileExtension == null ) || fileChild.getName(  ).endsWith( strFileExtension ) ) )
             {
-                strFileList.add( file.getName(  ) );
+                strFileList.add( fileChild.getName(  ) );
             }
         }
 
