@@ -84,7 +84,9 @@ public class FileUtil
             {
                 if ( !fileChild.isDirectory(  ) || bRecursive )
                 {
-                    strFileList.addAll( list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive) );
+                    for (String strPath: list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive)) {
+                        strFileList.add( file.getName() + File.separator + strPath );
+                    }
                 }
             }
         }
