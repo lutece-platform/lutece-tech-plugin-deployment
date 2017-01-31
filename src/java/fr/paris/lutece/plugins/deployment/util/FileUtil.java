@@ -90,7 +90,7 @@ public class FileUtil
                 }
             }
         }
-        else if ( ( strFileExtension == null ) || file.getName(  ).endsWith( strFileExtension ) )
+        else if ( file.isFile(  ) && ( ( strFileExtension == null ) || file.getName(  ).endsWith( strFileExtension ) ) )
         {
             strFileList.add( file.getName(  ) );
         }
