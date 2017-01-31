@@ -78,16 +78,19 @@ public class FileUtil
         List<String> strFileList = new ArrayList<String>(  );
         File file = new File( strDirPath );
 
-        for ( File fileChild : file.listFiles( ) )
+        if ( file.isDirectory(  ) )
         {
-            if ( fileChild.isDirectory(  ) && bRecursive )
+            for ( File fileChild : file.listFiles( ) )
             {
-                strFileList.addAll( list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive) );  
+                if ( !fileChild.isDirectory(  ) || bRecursive )
+                {
+                    strFileList.addAll( list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive) );
+                }
             }
-            else if ( fileChild.isFile( ) && ( ( strFileExtension == null ) || fileChild.getName(  ).endsWith( strFileExtension ) ) )
-            {
-                strFileList.add( fileChild.getName(  ) );
-            }
+        }
+        else if ( ( strFileExtension == null ) || file.getName(  ).endsWith( strFileExtension ) )
+        {
+            strFileList.add( file.getName(  ) );
         }
 
         return strFileList;
