@@ -221,8 +221,7 @@ public class ConstanteUtils
     public static final String MARK_INIT_APP_CONTEXT = "init_app_context";
     public static final String MARK_CAN_CREATE_APPLICATION = "can_create_application";
     public static final String MARK_HANDLER = "handler";
-    
-    
+    public static final String MARK_SEARCH_NAME = "search_name";    
     public static final String MARK_SCRIPT_NAME = "script_name";
     public static final String MARK_DUMP_FILE_URL = "dump_file_url";
     public static final String MARK_DATABASE_LIST = "database_list";
@@ -264,6 +263,7 @@ public class ConstanteUtils
     public static final String PARAM_SCRIPT_UPGRADE_SELECTED = "script_upgrade_selected";
     public static final String PARAM_INIT_DATABASE = "init_database";
     public static final String PARAM_INIT_APP_CONTEXT = "init_app_context";
+    public static final String PARAM_SEARCH_NAME = "search_name";
     
     
     public static final String PARAM_SCRIPT_NAME= "script_name";

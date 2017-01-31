@@ -7,7 +7,7 @@
 </#if>
 <form class="form-inline" action="" method="" name="" id="filter-apps" >
   <label for="filter_app" class="sr-only">Chercher sur le nom</label>
-  <input type="text" class="form-control" placeholder="Filter sur le nom" name="filter_app" id="filter_app">
+  <input type="text" class="form-control" placeholder="Filter sur le nom" name="search_name" id="filter_app" value="${search_name}">
   <label for="code_category" class="sr-only">#i18n{deployment.manage_application.label_search_by_category}</label>
   <@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control\"" items=category_list />
   <label for="workgroup" class="sr-only">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
@@ -130,7 +130,7 @@
  </#switch>
 </#macro>
 
-<script>
+<!--<script>
 $("#code_category").change(function(){
   $("#filter-apps").submit();
 });
@@ -147,6 +147,6 @@ $("#filter_app").on("keyup", function () {
     } else {
       $(this).slideDown(200).fadeIn(500);
     }
-  });
+  });     
 });
-</script>
+</script>-->

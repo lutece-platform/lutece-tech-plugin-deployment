@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.deployment.business.IApllicationDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
+import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -80,6 +81,35 @@ public class ApplicationService implements IApplicationService
     public List<Application> getListApplications( FilterDeployment filter, Plugin plugin )
     {
         return _applicationDAO.findByFilter( filter, plugin );
+    }
+    
+    /**
+     * {@inheriteDoc}
+     */
+    @Override
+    public  List<Application> getListApplicationFilteredBySearchName( List<Application> listApp, FilterDeployment filter, Plugin plugin )
+    {
+        List<Application> listAppFiltered = new ArrayList<Application>( );
+        if ( filter.constainsSearchNameFilter( ) )
+        {
+            String strSearchName = filter.getSearchName( );
+            for ( Application app : listApp )
+            {
+                String strSearchIn = new StringBuilder( ).append( app.getCode( ) ).append( " " ).append( app.getName( ) ).toString( );
+ 
+                //remove the application from the list if his name doesnt match.
+                if ( strSearchIn.toLowerCase( ).contains( strSearchName.toLowerCase( ) ) )
+                {
+                    listAppFiltered.add( app );
+                }
+            }
+            return listAppFiltered;
+        }
+        else
+        {
+            //no filter on search name.
+            return listApp;
+        }
     }
 
     public Application getApplication( int nIdApplication, Plugin plugin )

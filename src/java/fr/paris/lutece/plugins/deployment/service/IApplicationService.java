@@ -44,7 +44,16 @@ import java.util.List;
 public interface IApplicationService
 {
     Application getApplication( int nIdApplication, Plugin plugin );
-
+    
+    /**
+     * Return a sublist of applications matching with searchName param
+     * @param listApp
+     * @param filter
+     * @param plugin
+     * @return the list of apps matching with search name 
+     */
+    List<Application> getListApplicationFilteredBySearchName( List<Application> listApp, FilterDeployment filter, Plugin plugin );
+    
     List<Application> getListApplications( FilterDeployment filter, Plugin plugin );
 
     void init(  );

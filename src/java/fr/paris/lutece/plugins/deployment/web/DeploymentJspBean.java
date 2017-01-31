@@ -150,6 +150,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     {
         String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
         String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
+        String strSearchName = request.getParameter( ConstanteUtils.PARAM_SEARCH_NAME );
+        
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
                 _nDefaultItemsPerPage );
         _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
@@ -171,18 +173,25 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             _filterDeployment.setWorkGroup( strWorkgroup );
         }
+        if ( strSearchName != null )
+        {
+            _filterDeployment.setSearchName( strSearchName );
+        }
         
-        
-        List<Application> listApplication = _applicationService.getListApplications( _filterDeployment, getPlugin(  ) );
+        //filter by app type and app workgroup
+        List<Application> listApplications = _applicationService.getListApplications( _filterDeployment,  getPlugin( ) );
         
         List<ManageApplicationAction> listManageActions=SpringContextService.getBeansOfType(ManageApplicationAction.class);
         
+        //filter by search name with java.match
+        listApplications = _applicationService.getListApplicationFilteredBySearchName( listApplications, _filterDeployment, getPlugin(  ) );
+        
         //filter by workgroup
-        listApplication= (List<Application>) AdminWorkgroupService.getAuthorizedCollection( listApplication, getUser() );
-       
+        listApplications = (List<Application>) AdminWorkgroupService.getAuthorizedCollection( listApplications, getUser() );
+        
         HashMap<String, Collection<ManageApplicationAction>> hashManageActions=new HashMap<String, Collection<ManageApplicationAction>>();
         
-        for(Application application:listApplication)
+        for(Application application: listApplications )
         {
         	hashManageActions.put(Integer.toString(application.getIdApplication()), RBACService.getAuthorizedActionsCollection(listManageActions, application, getUser()));
        }
@@ -190,7 +199,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         
         
         HashMap model = new HashMap(  );
-        Paginator paginator = new Paginator( listApplication, _nItemsPerPage, getJspManageApplication( request ),
+        Paginator paginator = new Paginator( listApplications, _nItemsPerPage, getJspManageApplication( request ),
                 Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
 
         model.put( ConstanteUtils.MARK_APPLICATION_LIST, paginator.getPageItems(  ) );
@@ -203,7 +212,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_SELECTED, ( _filterDeployment.getWorkgroup( ) != null ) ? _filterDeployment.getWorkgroup( ): ConstanteUtils.CONSTANTE_ALL);
         model.put(ConstanteUtils.MARK_MANAGE_APPLICATION_ACTIONS,hashManageActions);
-        
+        model.put( ConstanteUtils.MARK_SEARCH_NAME, (_filterDeployment.getSearchName( )!= null ) ? _filterDeployment.getSearchName( ): StringUtils.EMPTY );
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
 
         model.put(ConstanteUtils.MARK_CAN_CREATE_APPLICATION, RBACService.isAuthorized( Application.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
