@@ -1,13 +1,17 @@
+<div class="app-wrapper">
+  <button class="floating-button search visible-xs  type="button" title="#i18n{deployment.manage_application.button_create_application}">
+    <i class="fa fa-search"></i>
+  </button>
 <#if can_create_application>
-   <form class="form-inline" method="post"  action="jsp/admin/plugins/deployment/CreateApplication.jsp">
+   <form class="form-inline" method="post" action="jsp/admin/plugins/deployment/CreateApplication.jsp">
        <button class="floating-button" type="submit" title="#i18n{deployment.manage_application.button_create_application}">
-         +
+         <i class="fa fa-plus"></i>
        </button>
    </form>
 </#if>
-<form class="form-inline" action="" method="" name="" id="filter-apps" >
+<form class="form-inline hidden-xs" action="" method="" name="" id="filter-apps" >
   <label for="filter_app" class="sr-only">Chercher sur le nom</label>
-  <input type="text" class="form-control" placeholder="Filter sur le nom" name="search_name" id="filter_app" value="${search_name}">
+  <input type="text" class="form-control" placeholder="Filter sur le nom" name="filter_app" id="filter_app">
   <label for="code_category" class="sr-only">#i18n{deployment.manage_application.label_search_by_category}</label>
   <@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control\"" items=category_list />
   <label for="workgroup" class="sr-only">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
@@ -19,60 +23,62 @@
   </div>
 </form>
 <div class="cards">
-  <section class="row fav" data-app="TEST">
-    <div class=" col-xs-12 col-sm-3 col-md-2">
-      <div class="icon">
-      <i class="fa fa-cube"></i>
+  <section class="row fav hidden" data-app="TEST">
+    <div class=" col-xs-12 col-sm-1 col-md-1">
+      <div class="icon circle">
+          <i class="fa fa-cube"></i>
       </div>
     </div>
-    <div class=" xs-12 col-sm-9 col-md-10">
-      <h1>AXX - Appli Test [Applicatif]
-      <i class="fa fa-group"></i> BILD
-      <a href="btn btn-link"><i class="fa fa-star fa-fw" title="Enlever des favoris"></i></a>
-        <div class="btn-group" role="group" aria-label="...">
-          <a class="btn btn-link text-primary" href="jsp/admin/plugins/deployment/ModifyApplication.jsp?modify=modify&amp;id_application=24" title="Modifier l'application"><i class="fa fa-pencil"></i> Modifier</a>
-          <a class="btn btn-link text-danger" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?delete=delete&amp;id_application=24" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> Supprimer</a>
-        </div>
+    <div class="col-xs-12 col-sm-9 col-md-9">
+      <h1>
+        <a href="btn btn-link"><i class="fa fa-star fa-fw" title="Enlever des favoris"></i></a>
+        <strong>
+          AXX - Appli Test
+          <span class="btn-group" role="group" aria-label="...">
+            <a class="btn btn-link text-primary" href="jsp/admin/plugins/deployment/ModifyApplication.jsp?modify=modify&amp;id_application=24" title="Modifier l'application"><i class="fa fa-pencil"></i> Modifier</a>
+            <a class="btn btn-link text-danger" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?delete=delete&amp;id_application=24" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> Supprimer</a>
+          </span>
+        </strong>
       </h1>
-      <div class="btn-group" role="group" aria-label="...">
-        <a class="btn btn-primary btn-lg btn-flat" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_war=deploy_war&amp;id_application=24" title="Déployer"><i class="fa fa-cloud-upload"></i> D&eacute;ployer</a>
-        <a class="btn btn-primary btn-lg btn-flat" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_sql=deploy_sql&amp;id_application=24" title="Déployer un Script"><i class="fa fa-database"></i> D&eacute;ployer un Script</a>
-      </div>
-      <div class="btn-group" role="group" aria-label="...">
-        <a class="btn btn-default btn-lg btn-flat" href="jsp/admin/plugins/deployment/ViewApplication.jsp?view=view&amp;id_application=24" title="Visualiser l'application"><i class="fa fa-cubes"></i> Environnements</a>
-        <a class="btn btn-default btn-lg btn-flat" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_app_context=init_app_context&amp;id_application=24" title="Initialisation du contexte TOMCAT"><i class="fa fa-code"></i> Init Tomcat</a>
-        <a class="btn btn-default btn-lg btn-flat" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_database=init_database&amp;id_application=24" title="Initialiser la base de données"><i class="fa fa-cogs"></i> Init MYSQL</a>
-      </div>
+      <a class="button shadow fill-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_war=deploy_war&amp;id_application=24" title="Déployer"><i class="fa fa-cloud-upload"></i> D&eacute;ployer</a>
+      <a class="button shadow fill-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_sql=deploy_sql&amp;id_application=24" title="Déployer un Script"><i class="fa fa-database"></i> D&eacute;ployer un Script</a>
+      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/ViewApplication.jsp?view=view&amp;id_application=24" title="Visualiser l'application"><i class="fa fa-cubes"></i> Environnements</a>
+      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_app_context=init_app_context&amp;id_application=24" title="Initialisation du contexte TOMCAT"><i class="fa fa-code"></i> Init Tomcat</a>
+      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_database=init_database&amp;id_application=24" title="Initialiser la base de données"><i class="fa fa-cogs"></i> Init MYSQL</a>
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2">
+      <h4 class="cat"><strong><i class="fa fa-tag fa-fw"></i> Applicatif</strong></h4>
+      <h4 class=""><strong><i class="fa fa-users fa-fw"></i> BILD</strong></h4>
     </div>
 </section>
 <#if application_list?has_content>
 <#list application_list  as application >
 <#assign list_actions=map_application_actions["${application.idApplication}"]!>
 <section class="row" data-app="${application.code} ${application.name}">
-  <div class="col-xs-12 col-sm-3 col-md-2">
-    <div class="icon">
+  <div class="hidden-xs col-sm-1 col-md-1">
+    <div class="icon circle">
       <i class="fa fa-cube"></i>
     </div>
   </div>
-  <div class=" xs-12 col-sm-9 col-md-10">
-    <h1>${application.code} - ${application.name} [${category_map[application.codeCategory!]!}]
-      <i class="fa fa-group"></i> ${application.workgroup!}
-      <a href="btn btn-link"><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a>
-      <#if list_actions??>
-        <div class="btn-group" role="group" aria-label="...">
-          <@getToolbar actions=list_actions appId=application.idApplication type='app' />
-        </div>
-      </#if>
+  <div class="col-xs-12 col-sm-9 col-md-9">
+    <h1><a href="btn btn-link"><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a>
+      <strong>${application.code} - ${application.name}
+        <#if list_actions??>
+          <span class="btn-group" role="group" aria-label="...">
+            <@getToolbar actions=list_actions appId=application.idApplication type='app' />
+          </span>
+        </#if>
+      </strong>
     </h1>
     <!-- <p>${application.siteName}</p> -->
     <#if list_actions??>
-      <div class="btn-group" role="group" aria-label="...">
-        <@getToolbar actions=list_actions appId=application.idApplication type='deploy' />
-      </div>
-      <div class="btn-group" role="group" aria-label="...">
-        <@getToolbar actions=list_actions appId=application.idApplication type='env' />
-      </div>
+      <@getToolbar actions=list_actions appId=application.idApplication type='deploy' />
+      <@getToolbar actions=list_actions appId=application.idApplication type='env' />
     </#if>
+  </div>
+  <div class="col-xs-12 col-sm-2 col-md-2">
+    <h4 class="cat"><strong><i class="fa fa-tag fa-fw"></i> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong></h4>
+    <h4><strong><i class="fa fa-group fa-fw"></i> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong></h4>
   </div>
 </section>
 </#list>
@@ -92,10 +98,16 @@
    <#list actions as action >
     <#switch action.permission>
     <#case "MODIFY">
-      <a class="btn btn-link text-primary" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+      <a class="btn btn-link text-primary" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+        <span class="visible-xs visible-sm"><i class="${action.iconCssClass}"></i></span>
+      </a>
       <#break>
     <#case "DELETE">
-      <a class="btn btn-link text-danger" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+      <a class="btn btn-link text-danger" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+        <span class="visible-xs visible-sm"><i class="${action.iconCssClass}"></i></span>
+      </a>
       <#break>
     </#switch>
    </#list>
@@ -104,10 +116,16 @@
   <#list actions as action >
    <#switch action.permission>
     <#case "DEPLOY_APPLICATION">
-      <a class="btn btn-primary btn-lg btn-flat" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+      <a class="button shadow fill-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+        <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+      </a>
       <#break>
     <#case "DEPLOY_SCRIPT">
-      <a class="btn btn-primary btn-lg btn-flat" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+      <a class="button shadow fill-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+        <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+      </a>
       <#break>
     </#switch>
   </#list>
@@ -116,21 +134,37 @@
    <#list actions as action >
     <#switch action.permission>
       <#case "VIEW">
-        <a class="btn btn-default btn-lg btn-flat" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+          <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+          <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+        </a>
         <#break>
       <#case "INIT_APP_CONTEXT">
-        <a class="btn btn-default btn-lg btn-flat" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+          <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+          <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+        </a>
         <#break>
       <#case "INIT_DATABASE">
-        <a class="btn btn-default btn-lg btn-flat" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" ><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</a>
+        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+          <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+          <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+        </a>
         <#break>
     </#switch>
    </#list>
   <#break>
  </#switch>
 </#macro>
+</div>
+<script>
 
-<!--<script>
+$( function(){
+  $(".search").click( function(){
+      $("#filter-apps").toggleClass("hidden-xs");
+  });
+});
+
 $("#code_category").change(function(){
   $("#filter-apps").submit();
 });
@@ -147,6 +181,7 @@ $("#filter_app").on("keyup", function () {
     } else {
       $(this).slideDown(200).fadeIn(500);
     }
-  });     
+  });
 });
-</script>-->
+
+</script>

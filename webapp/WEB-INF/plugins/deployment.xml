@@ -51,6 +51,7 @@
         </listener>
     </listeners>
     <admin-css-stylesheets>
+      <admin-css-stylesheet>css/admin/butns.min.css</admin-css-stylesheet>
       <admin-css-stylesheet>css/admin/portal_admin_deploy.css</admin-css-stylesheet>
     </admin-css-stylesheets>
  </plug-in>
