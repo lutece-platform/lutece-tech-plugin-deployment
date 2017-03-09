@@ -1,11 +1,5 @@
 <#include "/skin/plugins/asynchronousupload/upload_commons.html" />
-
-<h2 class="header-app">
-  <span>${application.code} - ${application.name}</span>
-  <a class="button transition fill-whitish-black" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=${application.code}">
-    <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>
-  </a>
-</h2>
+<h2 class="header-app">${application.code} - ${application.name}</h2>
 <div class="cards">
   <section class="row">
     <div class=" col-xs-12 col-sm-3 col-md-2">
@@ -78,9 +72,9 @@
             <label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_environment" >#i18n{deployment.form_init_deploy_application.label_code_environment}*</label>
             <div class="col-xs-12 col-sm-8 col-md-8">
             <#if deploy_war||init_app_context>
-              <@comboWithParams name="code_environment" default_value="all" items=environment_list! additionalParameters="onchange=\"refreshComponantsTomcat();\" class=\"form-control\"" />
+              <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsTomcat();\" class=\"form-control\"" />
             <#else>
-              <@comboWithParams name="code_environment" default_value="all" items=environment_list! additionalParameters="onchange=\"refreshComponantsSql();\" class=\"form-control\"" />
+              <@comboWithParams name="code_environment" default_value="all" items=environment_list additionalParameters="onchange=\"refreshComponantsSql();\" class=\"form-control\"" />
             </#if>
             </div>
           </div>
@@ -123,11 +117,9 @@
                   </div>
                 </div>
                 <div class="form-group" id="tag_to_deploy_group">
-                  <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy">
-                   #i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*
-                  </label>
-                  <div class="col-xs-12 col-sm-8 col-md-8">
-                    <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list! additionalParameters="onchange=\"\" class=\"form-control\"" />
+                  <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_to_deploy}*</label>
+                    <div class="col-xs-12 col-sm-8 col-md-8">
+                      <@comboWithParams name="tag_to_deploy" default_value="all" items=site_list additionalParameters="onchange=\"\" class=\"form-control\"" />
                   </div>
                 </div>
               </#if>
@@ -173,7 +165,6 @@
     </div>
   </section>
 </div>
-
 
 <script type="text/javascript" src="jsp/site/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=deploymentUploadHandler&maxFileSize=2048576000"></script>
 <script>
