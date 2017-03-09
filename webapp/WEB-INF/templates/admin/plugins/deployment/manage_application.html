@@ -1,92 +1,71 @@
 <div class="app-wrapper">
-  <button class="floating-button search visible-xs  type="button" title="#i18n{deployment.manage_application.button_create_application}">
+  <button class="floating-button search visible-xs"  type="button" title="#i18n{deployment.manage_application.button_create_application}">
     <i class="fa fa-search"></i>
   </button>
-<#if can_create_application>
-   <form class="form-inline" method="post" action="jsp/admin/plugins/deployment/CreateApplication.jsp">
-       <button class="floating-button" type="submit" title="#i18n{deployment.manage_application.button_create_application}">
-         <i class="fa fa-plus"></i>
-       </button>
-   </form>
-</#if>
-<form class="form-inline hidden-xs" action="" method="" name="" id="filter-apps" >
-  <label for="filter_app" class="sr-only">Chercher sur le nom</label>
-  <input type="text" class="form-control" placeholder="Filter sur le nom" name="search_name" id="filter_app">
-  <label for="code_category" class="sr-only">#i18n{deployment.manage_application.label_search_by_category}</label>
-  <@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control\"" items=category_list />
-  <label for="workgroup" class="sr-only">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
-  <div class="input-group">
-    <@comboWithParams name="workgroup" default_value=user_workgroup_selected additionalParameters="class=\"form-control\"" items=user_workgroup_list />
-    <span class="input-group-btn">
-      <button class="btn btn-default btn-flat" type="submit" title="#i18n{deployment.manage_application.button_search_by_category}"><i class="fa fa-search "></i> </button>
-    </span>
-  </div>
-</form>
-<div class="cards">
-  <section class="row fav hidden" data-app="TEST">
-    <div class=" col-xs-12 col-sm-1 col-md-1">
-      <div class="icon circle">
-          <i class="fa fa-cube"></i>
+  <#if can_create_application>
+     <form class="form-inline" method="post" action="jsp/admin/plugins/deployment/CreateApplication.jsp">
+         <button class="floating-button" type="submit" title="#i18n{deployment.manage_application.button_create_application}">
+           <i class="fa fa-plus"></i>
+         </button>
+     </form>
+  </#if>
+  <form class="form-inline hidden-xs" action="" method="" name="" id="filter-apps" >
+    <label for="filter_app" class="sr-only">Chercher sur le nom</label>
+    <input type="text" class="form-control" placeholder="Filter sur le nom" name="search_name" id="filter_app" value="${search_name!}">
+    <label for="code_category" class="sr-only">#i18n{deployment.manage_application.label_search_by_category}</label>
+    <@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control\"" items=category_list />
+    <label for="workgroup" class="sr-only">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
+    <div class="input-group">
+      <@comboWithParams name="workgroup" default_value=user_workgroup_selected additionalParameters="class=\"form-control\"" items=user_workgroup_list />
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-flat" type="submit" title="#i18n{deployment.manage_application.button_search_by_category}"><i class="fa fa-search "></i> </button>
+      </span>
+    </div>
+  </form>
+<#if application_list?has_content>
+  <#list application_list  as application >
+    <#assign list_actions=map_application_actions["${application.idApplication}"]!>
+    <div class="box box-widget widget-app collapsed-box" data-app="${application.code?lower_case} ${application.name?lower_case}">
+      <div class="info-box">
+        <span class="info-box-icon bg-aqua"><i class="fa fa-cube"></i></span>
+        <div class="info-box-content">
+          <div class="col-xs-6 col-sm-8">
+            <h4>
+              <a href="btn btn-link"><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a>
+              <strong>
+              ${application.code} - ${application.name}
+              <#if list_actions??>
+                <span class="btn-group" role="group" aria-label="...">
+                  <@getToolbar actions=list_actions appId=application.idApplication type='app' />
+                </span>
+              </#if>
+            </strong>
+          </h4>
+          <!-- <p>${application.siteName}</p> -->
+          <#if list_actions??>
+            <@getToolbar actions=list_actions appId=application.idApplication type='deploy' />
+            <@getToolbar actions=list_actions appId=application.idApplication type='env' />
+          </#if>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <h4>
+            <strong><i class="fa fa-tag fa-fw"></i> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong>
+            <strong><i class="fa fa-group fa-fw"></i> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong>
+          </h4>
+        </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-      <h1>
-        <a href="btn btn-link"><i class="fa fa-star fa-fw" title="Enlever des favoris"></i></a>
-        <strong>
-          AXX - Appli Test
-          <span class="btn-group" role="group" aria-label="...">
-            <a class="btn btn-link text-primary" href="jsp/admin/plugins/deployment/ModifyApplication.jsp?modify=modify&amp;id_application=24" title="Modifier l'application"><i class="fa fa-pencil"></i> Modifier</a>
-            <a class="btn btn-link text-danger" href="jsp/admin/plugins/deployment/ConfirmRemoveApplication.jsp?delete=delete&amp;id_application=24" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> Supprimer</a>
-          </span>
-        </strong>
-      </h1>
-      <a class="button shadow fill-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_war=deploy_war&amp;id_application=24" title="Déployer"><i class="fa fa-cloud-upload"></i> D&eacute;ployer</a>
-      <a class="button shadow fill-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_sql=deploy_sql&amp;id_application=24" title="Déployer un Script"><i class="fa fa-database"></i> D&eacute;ployer un Script</a>
-      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/ViewApplication.jsp?view=view&amp;id_application=24" title="Visualiser l'application"><i class="fa fa-cubes"></i> Environnements</a>
-      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_app_context=init_app_context&amp;id_application=24" title="Initialisation du contexte TOMCAT"><i class="fa fa-code"></i> Init Tomcat</a>
-      <a class="button transition border-blue" href="jsp/admin/plugins/deployment/DeployApplication.jsp?init_database=init_database&amp;id_application=24" title="Initialiser la base de données"><i class="fa fa-cogs"></i> Init MYSQL</a>
-    </div>
-    <div class="col-xs-12 col-sm-2 col-md-2">
-      <h4 class="cat"><strong><i class="fa fa-tag fa-fw"></i> Applicatif</strong></h4>
-      <h4 class=""><strong><i class="fa fa-users fa-fw"></i> BILD</strong></h4>
-    </div>
-</section>
-<#if application_list?has_content>
-<#list application_list  as application >
-<#assign list_actions=map_application_actions["${application.idApplication}"]!>
-<section class="row" data-app="${application.code} ${application.name}">
-  <div class="hidden-xs col-sm-1 col-md-1">
-    <div class="icon circle">
-      <i class="fa fa-cube"></i>
-    </div>
   </div>
-  <div class="col-xs-12 col-sm-9 col-md-9">
-    <h1><a href="btn btn-link"><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a>
-      <strong>${application.code} - ${application.name}
-        <#if list_actions??>
-          <span class="btn-group" role="group" aria-label="...">
-            <@getToolbar actions=list_actions appId=application.idApplication type='app' />
-          </span>
-        </#if>
-      </strong>
-    </h1>
-    <!-- <p>${application.siteName}</p> -->
-    <#if list_actions??>
-      <@getToolbar actions=list_actions appId=application.idApplication type='deploy' />
-      <@getToolbar actions=list_actions appId=application.idApplication type='env' />
-    </#if>
-  </div>
-  <div class="col-xs-12 col-sm-2 col-md-2">
-    <h4 class="cat"><strong><i class="fa fa-tag fa-fw"></i> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong></h4>
-    <h4><strong><i class="fa fa-group fa-fw"></i> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong></h4>
-  </div>
-</section>
-</#list>
-<@paginationAdmin paginator=paginator form=1 showcount=0 showall=1 />
+  </#list>
+  <@paginationAdmin paginator=paginator form=1 showcount=0 showall=1 />
 <#else>
-  <div class="callout callout-warning">
-    <h3>Pas d'applications pour ces crit&egrave;res !</h3>
-    <a href="jsp/admin/plugins/deployment/ManageApplication.jsp" class="btn btn-primary btn-lg" class="btn btn">Voir toutes les applications</a>
+  <div class="app-wrapper">
+    <div class="callout callout-warning">
+      <h3>Pas d'applications pour ces crit&egrave;res !</h3>
+      <a href="jsp/admin/plugins/deployment/ManageApplication.jsp" class="btn btn-primary btn-lg" class="btn btn">
+        Voir toutes les applications
+      </a>
+    </div>
   </div>
 </#if>
 </div>
@@ -116,13 +95,13 @@
   <#list actions as action >
    <#switch action.permission>
     <#case "DEPLOY_APPLICATION">
-      <a class="button shadow fill-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <a class="button shadow fill-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
       </a>
       <#break>
     <#case "DEPLOY_SCRIPT">
-      <a class="button shadow fill-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <a class="button shadow fill-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
       </a>
@@ -134,19 +113,19 @@
    <#list actions as action >
     <#switch action.permission>
       <#case "VIEW">
-        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
         <#break>
       <#case "INIT_APP_CONTEXT">
-        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
         <#break>
       <#case "INIT_DATABASE">
-        <a class="button transition border-blue" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
@@ -159,6 +138,11 @@
 </div>
 <script>
 
+$( function(){
+  $(".search").click( function(){
+      $("#filter-apps").toggleClass("hidden-xs");
+  });
+});
 
 $("#code_category").change(function(){
   $("#filter-apps").submit();
@@ -166,17 +150,9 @@ $("#code_category").change(function(){
 $("#workgroup").change(function(){
   $("#filter-apps").submit();
 });
-/* Filter plugins list */
-$("#filter_app").on("keyup", function () {
-  var search = $("#filter_app").val();
-  $(".row").each(function (index) {
-    var appName = $(this).attr("data-app");
-    if (appName.match(search ) == null) {
-      $(this).slideUp(200).fadeOut(500);
-    } else {
-      $(this).slideDown(200).fadeIn(500);
-    }
-  });
-});
 
+/* Filter apps list */
+$("#filter_app").blur(function () {
+  $("#filter-apps").submit();
+});
 </script>
