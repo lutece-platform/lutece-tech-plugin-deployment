@@ -12,6 +12,7 @@ body { background: #F1F1F1; font-family: 'Roboto', sans-serif }
 #admin-wrapper .content-header{ min-height:50px; width:100%; top:40px; z-index: 400; background-color: #2D7DBC; position: fixed; border-bottom: 0; padding: 15px 0 0 15px }
 #admin-wrapper .content-header h1 small{ color: #DEDEDE }
 #admin-wrapper .content-header h1 a{ color: #fff }
+#admin-wrapper .content{ padding: 50px 30px}
 #admin-wrapper .content .app-wrapper{ padding: 0 30px }
 
 .main-header{ position: fixed }
