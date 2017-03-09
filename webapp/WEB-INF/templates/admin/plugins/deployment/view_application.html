@@ -5,8 +5,24 @@
     <#else>
       <#assign classTxt="danger" >
     </#if>
-    <div class="row app-server">
+    <div class="row">
       <div class="col-xs-12 col-sm-3">
+          <h3 class="type-server-title" id="title_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+            <span class="fa fa-${icon}"></span> ${title}
+          </h3>
+      </div>
+      <div class="col-xs-12 col-sm-9">
+        <span id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+          <#if classTxt="success">
+            <i class="fa fa-2x fa-check-circle-o text-success" title="#i18n{portal.util.labelEnabled}"></i>
+          <#else>
+            <i class="fa fa-2x fa-times-circle-o text-danger" title="#i18n{portal.util.labelDisabled}"></i>
+          </#if>
+        </span>
+      </div>
+    </div>
+    <div class="row app-server">
+      <!-- <div class="col-xs-12 col-sm-3">
           <h3 id="title_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
             <span class="fa fa-${icon}"></span> ${title}
             <span class="pull-right" id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
@@ -17,7 +33,7 @@
               </#if>
             </span>
         </h3>
-      </div>
+      </div> -->
       <div class="col-xs-12 col-sm-4">
         <h3 class="lead">Code : ${serverApplicationInstance.code} / Nom : ${serverApplicationInstance.name}</h3>
       </div>
@@ -66,6 +82,7 @@
       </p>
     </div>
     <#list environment_list as environment>
+
       <div class="cards">
         <section class="row">
           <div class="hidden-xs col-sm-1 col-md-1">
@@ -89,7 +106,7 @@
     </#list>
   </#if>
 
-<div id="myModal"class="modal  fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div id="myModal"class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">

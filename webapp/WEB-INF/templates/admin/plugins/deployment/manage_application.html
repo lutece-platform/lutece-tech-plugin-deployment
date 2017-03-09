@@ -31,7 +31,7 @@
         <div class="info-box-content">
           <div class="col-xs-6 col-sm-8">
             <h4>
-              <a href="btn btn-link"><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a>
+              <!-- <a href=""><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a> -->
               <strong>
               ${application.code} - ${application.name}
               <#if list_actions??>
@@ -49,8 +49,10 @@
         </div>
         <div class="col-xs-12 col-sm-4">
           <h4>
-            <strong><i class="fa fa-tag fa-fw"></i> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong>
-            <strong><i class="fa fa-group fa-fw"></i> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong>
+            <strong><a title="Filter sur la catégorie" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&workgroup=all&code_category=${category_map[application.codeCategory]!}"><i class="fa fa-tag fa-fw"></i></a> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong>
+          </h4>
+          <h4>
+            <strong><a title="Filter sur le groupe" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&code_category=&workgroup=${application.workgroup!}"><i class="fa fa-group fa-fw"></i></a> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong>
           </h4>
         </div>
       </div>
@@ -60,11 +62,16 @@
   <@paginationAdmin paginator=paginator form=1 showcount=0 showall=1 />
 <#else>
   <div class="app-wrapper">
-    <div class="callout callout-warning">
-      <h3>Pas d'applications pour ces crit&egrave;res !</h3>
-      <a href="jsp/admin/plugins/deployment/ManageApplication.jsp" class="btn btn-primary btn-lg" class="btn btn">
-        Voir toutes les applications
-      </a>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12">
+          <div class="callout callout-warning">
+            <h3>Pas d'applications pour ces crit&egrave;res !</h3>
+            <a href="jsp/admin/plugins/deployment/ManageApplication.jsp" class="btn btn-primary btn-lg" class="btn btn">
+              Voir toutes les applications
+            </a>
+          </div>
+      </div>
     </div>
   </div>
 </#if>
