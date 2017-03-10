@@ -250,6 +250,7 @@ public class ConstanteUtils
     public static final String PARAM_WEBAPP_NAME = "webapp_name";
     public static final String PARAM_SITE = "site";
     public static final String PARAM_ID_APPLICATION = "id_application";
+    public static final String PARAM_MAVEN_PROFIL = "maven_profil";
     public static final String PARAM_CANCEL = "cancel";
     public static final String PARAM_ID_ACTION = "id_action";
     public static final String PARAM_ACTION_CODE = "action_code";

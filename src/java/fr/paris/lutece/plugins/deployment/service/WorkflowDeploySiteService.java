@@ -68,8 +68,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>(  );
     @Inject
     ISvnService _svnService;
-    @Inject
-    IMavenService _mavenService;
+    
     @Inject
     IEnvironmentService _environmentService;
     @Inject
@@ -185,8 +184,8 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
-        _mavenService.mvnSiteAssembly( application.getSiteName(  ), context.getTagName(  ),
-            serverApplicationInstance.getMavenProfile(  ), context.getMavenUser(  ), context.getCommandResult(  ) );
+        MavenService.getService( ).mvnSiteAssembly( application.getSiteName(  ), context.getTagName(  ),
+            serverApplicationInstance.getMavenProfile(application.getIdApplication( )  ), context.getMavenUser(  ), context.getCommandResult(  ) );
         //throw RuntimeException for stopping Workflow 
         stopWorkflowIfTechnicalError("Error During assembly Site", context.getCommandResult());
         context.getCommandResult(  ).getLog(  ).append( "End Action Assembly  Site...\n" );
@@ -203,7 +202,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
        
-        String strWarGeneratedName=_mavenService.getSiteWarName(application.getSiteName());
+        String strWarGeneratedName= MavenService.getService( ).getSiteWarName(application.getSiteName());
        
         
         _ftpService.uploadFile( application.getWebAppName(  ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION,

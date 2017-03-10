@@ -221,6 +221,8 @@ function stopAction( refresh, json ){
 	$('#myModal').modal('hide');
 }
 
+
+
 function replaceWorkflowActions(json){
 	if(json.action_list!=null){
 		var newActions='';
@@ -406,5 +408,44 @@ function replaceServerStatus(json) {
 function initModalBody() {
 	$('.modal-body').html('<div class="box" style=""><div class="overlay"> <i class="fa fa-refresh fa-spin"></i></div></div><div class="center-block">Une action est en cours, veuillez patienter quelques instants</div><div class="alert alert-danger hide" id="error_run_action_server" role="alert" ><span></span></div>');
 }
+
+function displayChangeMavenProfile(idApplication,codeEnvironment,codeServerApplicationInstance,serverApplicationType,mvnProfile){
+	
+    $('#myModal').modal('show') ;
+	$('#myModal div.action_wait').hide();
+	
+	$('#myModal div.modal-body div.modal-content').html('<form action="jsp/admin/plugins/deployment/DoModifyMavenProfil.jsp?plugin_name=deployment" method="post" name="form_modify_profil">'
+														    +'<input name="plugin_name" value="deployment" type="hidden" >'
+														    +'<input name="id_application" value="'+idApplication+'" type="hidden" >'
+														    +'<input name="code_environment" value="'+codeEnvironment+'" type="hidden" />'
+														    +'<input name="code_server_application_instance" value="'+codeServerApplicationInstance+'" type="hidden" >'
+														    +'<input name="server_application_type" value="'+serverApplicationType+'" type="hidden" >'
+														    +'<div class="form-group">'
+															+'<label for="maven_profil">Nom du profile Maven</label>'
+															+'<div>'
+															+'<input type="text" name="maven_profil" class="form-control" value="'+mvnProfile+'">'
+															+'</div>'
+															+'</div>'
+															+'<button class="btn btn-primary btn-falt" type="submit">'
+															+'<span class="fa fa-check"></span> Modifier le profil Maven'
+															+'</button>'
+														    +'</form>');
+	$('#myModal div.modal-body div.error_run_action_server span').html("");
+	$('#myModal div.modal-body div.error_run_action_server').hide();
+
+}
+
+$(function() {
+	
+	$('.modify_maven_profile').click(function(e){
+		var idApplication = $(this).data("id-application");
+		var codeEnvironment= $(this).data("code-environment");
+		var codeServerApplicationInstance= $(this).data("code-server-application-instance");
+		var serverApplicationType= $(this).data("server-application-type");
+		var mvnProfile= $(this).data("mvn-profile");
+		
+		displayChangeMavenProfile(idApplication,codeEnvironment,codeServerApplicationInstance,serverApplicationType,mvnProfile);
+	});
+});
 
 /*****************************************************/

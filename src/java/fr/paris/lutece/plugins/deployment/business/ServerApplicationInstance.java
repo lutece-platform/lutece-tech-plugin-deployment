@@ -36,6 +36,10 @@ package fr.paris.lutece.plugins.deployment.business;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.deployment.service.MavenService;
+
 
 public class ServerApplicationInstance
 {
@@ -53,6 +57,8 @@ public class ServerApplicationInstance
     private String _strBeanName;
     private Integer _nStatus;
     private List<IAction> _listServerApplicationAction;
+    
+    
 
     public String getName(  )
     {
@@ -114,15 +120,19 @@ public class ServerApplicationInstance
         return _ftpInfo;
     }
 
-    public String getMavenProfile(  )
+    public String getMavenProfile( int nIdApplication )
     {
-        if ( ( _strCodeEnvironment != null ) && ( _hashMavenProfile != null ) &&
-                _hashMavenProfile.containsKey( _strCodeEnvironment ) )
+       String strMavenProfile= MavenService.getService( ).getMvnProfilSaved( Integer.toString( nIdApplication ), _strCodeEnvironment, _strCode);
+        if(StringUtils.isEmpty(strMavenProfile))
         {
-            return _hashMavenProfile.get( _strCodeEnvironment );
+            if ( ( _strCodeEnvironment != null ) && ( _hashMavenProfile != null ) &&
+                    _hashMavenProfile.containsKey( _strCodeEnvironment ) )
+            {
+                return _hashMavenProfile.get( _strCodeEnvironment );
+            }
         }
 
-        return null;
+        return strMavenProfile;
     }
 
     public void setType( String _strType )

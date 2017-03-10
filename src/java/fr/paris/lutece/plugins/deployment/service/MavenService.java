@@ -40,6 +40,8 @@ import fr.paris.lutece.plugins.deployment.business.SvnUser;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -71,12 +73,26 @@ public class MavenService implements IMavenService
 {
     //private static IMavenService _singleton;
     private Invoker _invoker;
-
+    private static IMavenService _singleton;
     private MavenService(  )
     {
-        init(  );
+        
     }
 
+    
+    public static  IMavenService getService()
+    {
+        
+        if(_singleton==null)
+        {
+            
+            _singleton = SpringContextService.getBean( 
+                    "deployment.MavenService" );
+            
+            _singleton.init( );
+        }
+        return _singleton;
+    }
     public void init(  )
     {
         _invoker = new DefaultInvoker(  );
@@ -101,6 +117,21 @@ public class MavenService implements IMavenService
         listGoalsProfile.add( "-U" );
         mvn( strTagName, strSiteLocalBasePath, listGoalsProfile, commandResult );
     }
+    
+    
+    
+    public void saveMvnProfilName(String strProfilValue,String strIdApplication,String strCodeEnvironment,String strCodeServerApplicationInstance)
+    {
+        
+        DatastoreService.setDataValue( strIdApplication+"_"+strCodeEnvironment+"_"+strCodeServerApplicationInstance, strProfilValue);
+    }
+    
+    public String getMvnProfilSaved(String strIdApplication,String strCodeEnvironment,String strCodeServerApplicationInstance)
+    {
+        
+        return DatastoreService.getDataValue( strIdApplication+"_"+strCodeEnvironment+"_"+strCodeServerApplicationInstance, null);
+    }
+    
     
     
     public  String getSiteWarName( String strSiteName )
@@ -223,5 +254,8 @@ public class MavenService implements IMavenService
         //_endTime = new Date(  );
         return null;
     }
+    
+    
+    
   
     }

@@ -54,6 +54,11 @@
              </form>
           </#if>
         </#list>
+        <#if serverApplicationInstance.getMavenProfile(application.idApplication)??>
+          <button class="btn btn-success btn-flat modify_maven_profile" data-id-application="${application.idApplication}" data-code-environment="${environment.code}"  data-code-server-application-instance="${serverApplicationInstance.code}"  data-server-application-type="${serverApplicationInstance.type}" data-mvn-profile="${serverApplicationInstance.getMavenProfile(application.idApplication)}"  type="button" >
+                <i class="fa fa-cubes"></i>Modifier le profile Maven
+          </button>
+        </#if> 
         </div>
      </div>
  </div>

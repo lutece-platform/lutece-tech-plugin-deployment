@@ -34,25 +34,32 @@
 package fr.paris.lutece.plugins.deployment.service;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
-import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.SvnUser;
-
 
 public interface IMavenService
 {
     /**
-     *
+     * 
      * mvnReleasePrepare
-     * @param strBasePath chemin sur le disque pour l'acces au composant
-     * @param strPluginName le nom du composant
-     * @param strReleaseVersion la version a release
-     * @param strTag le nom du tag
-     * @param strDevelopmentVersion la prochaine version de developpement (avec -SNAPSHOT)
+     * 
+     * @param strBasePath
+     *            chemin sur le disque pour l'acces au composant
+     * @param strPluginName
+     *            le nom du composant
+     * @param strReleaseVersion
+     *            la version a release
+     * @param strTag
+     *            le nom du tag
+     * @param strDevelopmentVersion
+     *            la prochaine version de developpement (avec -SNAPSHOT)
      * @return le thread
      */
-    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user,
-        CommandResult commandResult );
-    
-    
+    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user, CommandResult commandResult );
+
     String getSiteWarName( String strSiteName );
+
+    String getMvnProfilSaved( String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance );
+
+    void saveMvnProfilName( String strProfilValue, String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance );
+    void init(  );
 }

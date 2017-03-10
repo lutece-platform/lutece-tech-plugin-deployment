@@ -67,9 +67,11 @@ import fr.paris.lutece.plugins.deployment.service.IApplicationService;
 import fr.paris.lutece.plugins.deployment.service.IDatabaseService;
 import fr.paris.lutece.plugins.deployment.service.IEnvironmentService;
 import fr.paris.lutece.plugins.deployment.service.IFtpService;
+import fr.paris.lutece.plugins.deployment.service.IMavenService;
 import fr.paris.lutece.plugins.deployment.service.IServerApplicationService;
 import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.deployment.service.IWorkflowDeploySiteService;
+import fr.paris.lutece.plugins.deployment.service.MavenService;
 import fr.paris.lutece.plugins.deployment.uploadhandler.DeploymentUploadHandler;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
@@ -108,6 +110,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
     private IServerApplicationService _serverApplicationService = SpringContextService.getBean( 
             "deployment.ServerApplicationService" );
+    
     private ISvnService _svnService = SpringContextService.getBean( "deployment.SvnService" );
     
     private IDatabaseService _databaseService = SpringContextService.getBean( "deployment.DatabaseService" );
@@ -1253,6 +1256,34 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          return jo.toString();
     
     }
+    
+    public String doModifyMavenProfil(HttpServletRequest request )throws AccessDeniedException
+    {
+         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+         String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
+         String strCodeServerApplicationInstance = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE );
+         String strServerAppicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
+         String strMavenProfil= request.getParameter( ConstanteUtils.PARAM_MAVEN_PROFIL );
+         
+         
+         Environment environment = _environmentService.getEnvironment( strCodeEnvironment,
+                 getLocale(  ) );
+         
+         Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
+       
+            
+         if ( isAuthorized(application, ApplicationResourceIdService.PERMISSION_VIEW,environment) )
+        {
+            
+             MavenService.getService( ).saveMvnProfilName( strMavenProfil, strIdApplication, strCodeEnvironment, strCodeServerApplicationInstance );
+        }
+                   
+         return getJspManageApplication( request );
+    
+    }
+    
+    
     
     
     
