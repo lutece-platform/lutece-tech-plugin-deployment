@@ -1279,7 +1279,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
              MavenService.getService( ).saveMvnProfilName( strMavenProfil, strIdApplication, strCodeEnvironment, strCodeServerApplicationInstance );
         }
                    
-         return getJspManageApplication( request );
+         return getJspViewApplication( request ,DeploymentUtils.getIntegerParameter( strIdApplication ));
     
     }
     
@@ -1487,6 +1487,16 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     {
         return AppPathService.getBaseUrl( request ) + ConstanteUtils.JSP_MANAGE_APPLICATION;
     }
+    
+    
+    private String getJspViewApplication( HttpServletRequest request, int nIdApplication )
+    {
+        UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + ConstanteUtils.JSP_VIEW_APPLICATION);
+        url.addParameter( ConstanteUtils.PARAM_ID_APPLICATION, nIdApplication );
+        
+        return url.getUrl(  );
+    }
+
 
     /**
      * return url of the jsp manage commentaire

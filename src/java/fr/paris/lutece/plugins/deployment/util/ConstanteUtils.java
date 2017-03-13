@@ -294,6 +294,7 @@ public class ConstanteUtils
 
     //JSP
     public static final String JSP_MANAGE_APPLICATION = "jsp/admin/plugins/deployment/ManageApplication.jsp";
+    public static final String JSP_VIEW_APPLICATION = "jsp/admin/plugins/deployment/ViewApplication.jsp";
     public static final String JSP_REMOVE_APPLICATION = "jsp/admin/plugins/deployment/DoRemoveApplication.jsp";
     public static final String JSP_TASK_FORM = "jsp/admin/plugins/deployment/TasksFormWorkflow.jsp";
     public static final String JSP_FORM_SERVER_ACTION = "jsp/admin/plugins/deployment/FormServerAction.jsp";
