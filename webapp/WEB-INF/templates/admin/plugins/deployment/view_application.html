@@ -5,24 +5,8 @@
     <#else>
       <#assign classTxt="danger" >
     </#if>
-    <div class="row">
-      <div class="col-xs-12 col-sm-3">
-          <h3 class="type-server-title" id="title_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
-            <span class="fa fa-${icon}"></span> ${title}
-          </h3>
-      </div>
-      <div class="col-xs-12 col-sm-9">
-        <span id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
-          <#if classTxt="success">
-            <i class="fa fa-2x fa-check-circle-o text-success" title="#i18n{portal.util.labelEnabled}"></i>
-          <#else>
-            <i class="fa fa-2x fa-times-circle-o text-danger" title="#i18n{portal.util.labelDisabled}"></i>
-          </#if>
-        </span>
-      </div>
-    </div>
     <div class="row app-server">
-      <!-- <div class="col-xs-12 col-sm-3">
+      <div class="col-xs-12 col-sm-3">
           <h3 id="title_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
             <span class="fa fa-${icon}"></span> ${title}
             <span class="pull-right" id="status_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
@@ -33,12 +17,20 @@
               </#if>
             </span>
         </h3>
-      </div> -->
+      </div>
       <div class="col-xs-12 col-sm-4">
         <h3 class="lead">Code : ${serverApplicationInstance.code} / Nom : ${serverApplicationInstance.name}</h3>
       </div>
       <div class="col-xs-12 col-sm-5">
         <div class="pull-left" id="actions_${environment.code?replace(".","_")}_${serverApplicationInstance.code}_${serverApplicationInstance.type}">
+            <#if serverApplicationInstance.type=='TOMCAT'>
+              <form action="#" method="post" name="form_action_server"  class="form-inline pull-right spaced form_run_action_server">
+               
+              <button class="btn btn-primary btn-flat modify_maven_profile btn-flat" data-id-application="${application.idApplication}" data-code-environment="${environment.code}"  data-code-server-application-instance="${serverApplicationInstance.code}"  data-server-application-type="${serverApplicationInstance.type}" data-mvn-profile="${serverApplicationInstance.getMavenProfile(application.idApplication)}"  type="button" >
+                    <i class="fa fa-cubes"></i> Modifier le profile Maven
+              </button>
+            </form>  
+            </#if> 
           <#list serverApplicationInstance.listServerApplicationAction as action >
             <#if action.display && ((!action.status?exists)||(action.status?exists &&  serverApplicationInstance.status?has_content &&serverApplicationInstance.status==action.status))>
              <form action="jsp/admin/plugins/deployment/DoRunActionServer.jsp?plugin_name=deployment" method="post" name="form_action_server"  class="form-inline pull-right spaced form_run_action_server">
@@ -51,14 +43,11 @@
               <button class="btn btn-<#if action.code='@SHUTDOWN'>danger<#elseif action.code='@STARTUP'>success<#else>primary</#if> btn-flat" type="submit" >
                 <i class="${action.iconCssClass}"></i> ${action.name}
               </button>
+            
              </form>
           </#if>
         </#list>
-        <#if serverApplicationInstance.getMavenProfile(application.idApplication)??>
-          <button class="btn btn-success btn-flat modify_maven_profile" data-id-application="${application.idApplication}" data-code-environment="${environment.code}"  data-code-server-application-instance="${serverApplicationInstance.code}"  data-server-application-type="${serverApplicationInstance.type}" data-mvn-profile="${serverApplicationInstance.getMavenProfile(application.idApplication)}"  type="button" >
-                <i class="fa fa-cubes"></i>Modifier le profile Maven
-          </button>
-        </#if> 
+       
         </div>
      </div>
  </div>
@@ -87,7 +76,6 @@
       </p>
     </div>
     <#list environment_list as environment>
-
       <div class="cards">
         <section class="row">
           <div class="hidden-xs col-sm-1 col-md-1">
@@ -111,7 +99,7 @@
     </#list>
   </#if>
 
-<div id="myModal"class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div id="myModal"class="modal  fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
