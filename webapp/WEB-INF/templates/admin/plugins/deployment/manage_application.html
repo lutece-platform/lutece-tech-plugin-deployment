@@ -25,11 +25,11 @@
 <#if application_list?has_content>
   <#list application_list  as application >
     <#assign list_actions=map_application_actions["${application.idApplication}"]!>
-    <div class="box box-widget widget-app collapsed-box" data-app="${application.code?lower_case} ${application.name?lower_case}">
+    <div class="box box-widget widget-app collapsed-box " data-app="${application.code?lower_case} ${application.name?lower_case}">
       <div class="info-box">
         <span class="info-box-icon bg-aqua"><i class="fa fa-cube"></i></span>
-        <div class="info-box-content">
-          <div class="col-xs-6 col-sm-8">
+        <div class="info-box-content clearfix">
+          <div class="col-xs-12 col-sm-9">
             <h4>
               <!-- <a href=""><i class="fa fa-star-o fa-fw" title="Ajouter aux favoris"></i></a> -->
               <strong>
@@ -47,7 +47,7 @@
             <@getToolbar actions=list_actions appId=application.idApplication type='env' />
           </#if>
         </div>
-        <div class="col-xs-12 col-sm-4">
+        <div class="hidden-xs col-sm-3">
           <h4>
             <strong><a title="Filter sur la catégorie" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&workgroup=all&code_category=${category_map[application.codeCategory]!}"><i class="fa fa-tag fa-fw"></i></a> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong>
           </h4>
