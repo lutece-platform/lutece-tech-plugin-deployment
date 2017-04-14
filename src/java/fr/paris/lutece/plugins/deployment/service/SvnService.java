@@ -239,19 +239,19 @@ public class SvnService implements ISvnService
                 } );
 
             copyClient.setEventHandler( new ISVNEventHandler(  )
+            {
+                public void checkCancelled(  ) throws SVNCancelException
                 {
-                    public void checkCancelled(  ) throws SVNCancelException
-                    {
-                        // Do nothing
-                    }
+                    // Do nothing
+                }
 
-                    public void handleEvent( SVNEvent event, double progress )
-                        throws SVNException
-                    {
-                        sbLog.append( ( ( event.getAction(  ) == SVNEventAction.COPY ) ? "Tag " : event.getAction(  ) ) +
-                            " " + ObjectUtils.toString( event.getFile(  ) ) + "\n" );
-                    }
-                } );
+                public void handleEvent( SVNEvent event, double progress )
+                    throws SVNException
+                {
+                    sbLog.append( ( ( event.getAction(  ) == SVNEventAction.COPY ) ? "Tag " : event.getAction(  ) ) +
+                        " " + ObjectUtils.toString( event.getFile(  ) ) + "\n" );
+                }
+            } );
 
             sbLog.append( "Preparing tag\n" );
             sbLog.append( "Updating pom version to " + strVersion + "...\n" );

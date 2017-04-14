@@ -95,7 +95,7 @@ public class ApplicationService implements IApplicationService
             String strSearchName = filter.getSearchName( );
             for ( Application app : listApp )
             {
-                String strSearchIn = new StringBuilder( ).append( app.getCode( ) ).append( " " ).append( app.getName( ) ).toString( );
+                String strSearchIn = new StringBuilder( ).append( app.getCode( ) ).append( " " ).append( app.getName( )).append( " " ).append( app.getSvnUrlSite( ) ).toString( );
  
                 //remove the application from the list if his name doesnt match.
                 if ( strSearchIn.toLowerCase( ).contains( strSearchName.toLowerCase( ) ) )

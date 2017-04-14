@@ -39,6 +39,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import org.tmatesoft.svn.core.ISVNDirEntryHandler;
@@ -68,6 +69,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -76,6 +80,11 @@ public final class SVNUtils
     private static final String MESSAGE_ERROR_SVN = "Impossible de se connecter au SVN. Veuillez verifier vos identifiants";
     private static final String CONSTANTE_SLASH = "/";
     private static final Logger logger = Logger.getLogger( SVNUtils.class );
+    private static final Comparator<SVNDirEntry> _compareSvnEntries=new Comparator<SVNDirEntry>() {
+        @Override
+        public int compare(SVNDirEntry o1, SVNDirEntry o2) {
+            return -1 * o1.getDate( ).compareTo( o2.getDate( ) ) ;
+        }};
 
     /**
      * Constructeur vide
@@ -103,6 +112,8 @@ public final class SVNUtils
          * For using over file:/
          */
         FSRepositoryFactory.setup(  );
+        
+        
     }
 
     /**
@@ -243,7 +254,11 @@ public final class SVNUtils
     {
         final ReferenceList listSites = new ReferenceList(  );
         final SVNURL url;
-
+        
+      
+        
+        
+        final List<SVNDirEntry> listSvnEntries=new ArrayList<SVNDirEntry>( );
         url = SVNURL.parseURIEncoded( strUrlSite );
 
         SVNRepository repository = SVNRepositoryFactory.create( url, null );
@@ -261,11 +276,19 @@ public final class SVNUtils
                     {
                         if ( entry.getKind(  ) == SVNNodeKind.DIR )
                         {
-                            listSites.addItem( entry.getName(  ), entry.getName(  ) );
+                            listSvnEntries.add( entry );
                         }
                     }
                 }
             } );
+        
+        
+        Collections.sort( listSvnEntries,_compareSvnEntries );
+        
+        for( SVNDirEntry svnEntry: listSvnEntries)
+        {
+            listSites.addItem( svnEntry.getName(  ), svnEntry.getName(  ) );
+        }
 
         return listSites;
     }
