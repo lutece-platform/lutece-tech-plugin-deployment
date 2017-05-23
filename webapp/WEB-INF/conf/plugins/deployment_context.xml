@@ -93,6 +93,42 @@
 			</map>
 		</property>
  	</bean>
+    <bean id="deployment.serverApplicationTomcat0003" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="0003"
+        p:i18nKeyName="deployment.server_application_instance.tomcat.0003.name"
+        p:type="TOMCAT"
+        p:ftpDirectoryTarget="INSTALLER"
+        p:beanName="deployment.serverApplicationTomcat0003">
+        <property name="hashMavenProfile">
+            <map>
+                <entry key="dmz.pr" value="prod" />
+                <entry key="dmz.r7" value="rec" />
+                <entry key="ville.pr" value="prod" />
+                <entry key="ville.r7" value="rec" />
+                <entry key="ville.ppr" value="preprod" />
+                <entry key="ville.fo" value="formation" />
+                <entry key="v1.fo" value="formation" />
+            </map>
+        </property>
+    </bean>
+<bean id="deployment.serverApplicationTomcat0004" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="0004"
+        p:i18nKeyName="deployment.server_application_instance.tomcat.0004.name"
+        p:type="TOMCAT"
+        p:ftpDirectoryTarget="INSTALLER"
+        p:beanName="deployment.serverApplicationTomcat0004">
+        <property name="hashMavenProfile">
+            <map>
+                <entry key="dmz.pr" value="prod" />
+                <entry key="dmz.r7" value="rec" />
+                <entry key="ville.pr" value="prod" />
+                <entry key="ville.r7" value="rec" />
+                <entry key="ville.ppr" value="preprod" />
+                <entry key="ville.fo" value="formation" />
+                <entry key="v1.fo" value="formation" />
+            </map>
+        </property>
+    </bean>
 
   	<bean id="deployment.serverApplicationTom01" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="01"
@@ -151,6 +187,44 @@
 		</property>
 
  	</bean>	
+ 	 <bean id="deployment.serverApplicationTom04" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="04"
+        p:i18nKeyName="deployment.server_application_instance.tom.04.name"
+        p:type="TOMCAT"
+        p:ftpDirectoryTarget="INSTALLER"
+        p:beanName="deployment.serverApplicationTom04">
+        
+        <property name="hashMavenProfile">
+            <map>
+                <entry key="v1.pr" value="prod" />
+                <entry key="v1.r7" value="rec" />           
+                <entry key="v1.dv" value="dev" />
+                <entry key="v1.pp" value="preprod" />
+                <entry key="ville.fo" value="formation" />
+                <entry key="v1.fo" value="formation" />
+            </map>
+        </property>
+
+    </bean> 
+         <bean id="deployment.serverApplicationTom05" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="05"
+        p:i18nKeyName="deployment.server_application_instance.tom.05.name"
+        p:type="TOMCAT"
+        p:ftpDirectoryTarget="INSTALLER"
+        p:beanName="deployment.serverApplicationTom05">
+        
+        <property name="hashMavenProfile">
+            <map>
+                <entry key="v1.pr" value="prod" />
+                <entry key="v1.r7" value="rec" />           
+                <entry key="v1.dv" value="dev" />
+                <entry key="v1.pp" value="preprod" />
+                <entry key="ville.fo" value="formation" />
+                <entry key="v1.fo" value="formation" />
+            </map>
+        </property>
+
+    </bean> 
 	
 	<bean id="deployment.serverApplicationTomcatbo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="bo"
@@ -354,11 +428,27 @@
 
  	<bean id="deployment.serverApplicationPsq02" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
  		p:code="02"
- 		p:i18nKeyName="deployment.server_application_instance.psq.0002.name"
+ 		p:i18nKeyName="deployment.server_application_instance.psq.02.name"
  		p:type="PSQ"
         p:ftpDirectoryDump="DUMPS"
         p:ftpDirectoryTarget="EXECUTABLES"
         p:beanName="deployment.serverApplicationPsq02"/>
+        
+    <bean id="deployment.serverApplicationPsq03" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="03"
+        p:i18nKeyName="deployment.server_application_instance.psq.03.name"
+        p:type="PSQ"
+        p:ftpDirectoryDump="DUMPS"
+        p:ftpDirectoryTarget="EXECUTABLES"
+        p:beanName="deployment.serverApplicationPsq03"/>
+    
+     <bean id="deployment.serverApplicationPsq04" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+        p:code="04"
+        p:i18nKeyName="deployment.server_application_instance.psq.04.name"
+        p:type="PSQ"
+        p:ftpDirectoryDump="DUMPS"
+        p:ftpDirectoryTarget="EXECUTABLES"
+        p:beanName="deployment.serverApplicationPsq04"/>  
  		 	
  	<!--Actions MYSQL -->	
 
