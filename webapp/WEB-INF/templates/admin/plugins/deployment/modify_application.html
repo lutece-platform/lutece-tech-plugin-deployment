@@ -56,7 +56,7 @@
 					<div class="form-group">
 						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="site" >#i18n{deployment.create_application.label_site}*</label>
 						<div class="col-xs-12 col-sm-4 col-md-4">
-							<@comboWithParams name="site" additionalParameters="onchange='refreshComponants();'class='form-control'" items=site_list default_value="${(application.siteName)?if_exists}" />
+							<@comboWithParams name="site" additionalParameters="class='form-control'" items=site_list default_value="${(application.siteName)?if_exists}" />
 						</div>
 					</div>
 					 <div class="form-group">
