@@ -499,7 +499,7 @@ public class DeploymentUtils
         }
         catch ( JSONException e )
         {
-            AppLogService.error( "JSON error : " + e.getMessage(  ) );
+            AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
         }
 
         return jo;
@@ -545,7 +545,7 @@ public class DeploymentUtils
         }
         catch ( JSONException e )
         {
-            AppLogService.error( "JSON error : " + e.getMessage(  ) );
+            AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
         }
 
         return jo;
@@ -566,7 +566,7 @@ public class DeploymentUtils
             }
             catch ( JSONException e )
             {
-                AppLogService.error( "JSON error : " + e.getMessage(  ) );
+                AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
             }
             JSONObject joAction;
             JSONArray joListAction = new JSONArray(  );

@@ -290,7 +290,7 @@ public class FTPUtils
             {
                 ftp.disconnect(  );
                 AppLogService.error( "FTP server refused connection." );
-                System.exit( 1 );
+              
             }
 
             return ftp;
@@ -309,8 +309,8 @@ public class FTPUtils
                 }
             }
 
-            AppLogService.error( "Could not connect to server." + e );
-            System.exit( 1 );
+            AppLogService.error( "Could not connect to server." + e ,e);
+            
         }
 
         return null;
