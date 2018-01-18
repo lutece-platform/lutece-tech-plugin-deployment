@@ -306,7 +306,15 @@
  		p:type="MYSQL"
  		p:ftpDirectoryDump="DUMPS"
  		p:ftpDirectoryTarget="EXECUTABLES"
- 		p:beanName="deployment.serverApplicationMys03"/>			
+ 		p:beanName="deployment.serverApplicationMys03"/>
+ 		
+ 	<bean id="deployment.serverApplicationMys04" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
+ 		p:code="04"
+ 		p:i18nKeyName="deployment.server_application_instance.mys.04.name"
+ 		p:type="MYSQL"
+ 		p:ftpDirectoryDump="DUMPS"
+ 		p:ftpDirectoryTarget="EXECUTABLES"
+ 		p:beanName="deployment.serverApplicationMys04"/>					
  		
 
  	<bean id="deployment.serverApplicationMysqlfo" class="fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance" scope="prototype"
