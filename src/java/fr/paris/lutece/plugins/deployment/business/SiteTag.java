@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import fr.paris.lutece.plugins.deployment.util.SVNUtils;
-
 import java.sql.Date;
 
 
@@ -97,12 +95,5 @@ public class SiteTag extends AbstractSite
     {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public String getSvnSiteUrl(  )
-    {
-        // TODO Auto-generated method stub
-        return SVNUtils.getSvnUrlTrunkSite( getSvnBaseSiteUrl(  ) );
     }
 }

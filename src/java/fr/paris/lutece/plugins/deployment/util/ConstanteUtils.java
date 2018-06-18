@@ -35,6 +35,12 @@ package fr.paris.lutece.plugins.deployment.util;
 
 public class ConstanteUtils
 {
+    //Beans
+    public static final String BEAN_SVN_SERVICE = "deployment.SvnService";
+    public static final String BEAN_GITHUB_SERVICE = "deployment.GithubService";
+    public static final String BEAN_GITLAB_SERVICE = "deployment.GitlabService";
+    
+    //Constantes
     public static final int CONSTANTE_ID_NULL = -1;
     public static final String CONSTANTE_ALL = "all";
     public static final int CONSTANTE_DEFAULT_LOG_SIZE = 500;
@@ -71,6 +77,12 @@ public class ConstanteUtils
     public static final String CONSTANTE_SERVER_MYS = "MYS";
     public static final String CONSTANTE_SERVER_HTTPD = "HTTPD";
     public static final String CONSTANTE_SERVER_PSQ = "PSQ";
+    public static final String CONSTANTE_REPO_TYPE_SVN = "svn";
+    public static final String CONSTANTE_REPO_TYPE_GITHUB = "github";
+    public static final String CONSTANTE_REPO_TYPE_GITLAB = "gitlab";
+    public static final String CONSTANTE_BRANCH_DEVELOP = "develop";
+    public static final String CONSTANTE_BRANCH_MASTER = "master";
+    public static final String CONSTANTE_VCS_USER = "vcs_user";
     
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
@@ -116,12 +128,13 @@ public class ConstanteUtils
     public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL = "deployment.form_init_deploy_application.label_code_server_application_instance_mysql";
     public static final String PROPERTY_LABEL_CODE_DATABASE = "deployment.form_init_deploy_application.label_code_database";
     public static final String PROPERTY_LABEL_TAG_TO_DEPLOY = "deployment.form_init_deploy_application.label_tag_to_deploy";
-    public static final String PROPERTY_LABEL_CODE_CATEGORY = "deployment.create_application.label_code_category";
     public static final String PROPERTY_LABEL_NAME = "deployment.create_application.label_name";
     public static final String PROPERTY_LABEL_WEBAPP_NAME = "deployment.create_application.label_webapp_name";
     public static final String PROPERTY_LABEL_SITE = "deployment.create_application.label_site";
+    public static final String PROPERTY_LABEL_URL_REPO = "deployment.create_application.label_url_repo";
     public static final String PROPERTY_LABEL_SCRIPT_UPLOAD = "deployment.form_init_deploy_application.label_script_upload";
     public static final String PROPERTY_MESSAGE_MANDATORY_FIELD = "deployment.message.mandatory_field";
+    public static final String PROPERTY_MESSAGE_INVALID_REPO_URL = "deployment.message.invalidRepoUrl";
     public static final String PROPERTY_MESSAGE_CONFIRM_REMOVE_APPLICATION = "deployment.message.confirm_remove_application";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN = "deployment.adminUser.idAttribute.svnLogin";
     public static final String PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD = "deployment.adminUser.idAttribute.svnPassword";
@@ -164,10 +177,14 @@ public class ConstanteUtils
     public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_USER_PASSWORD = "deployment.serverApplicationFtp.userPassword";
     public static final String PROPERTY_DEPLOYMENT_SERVER_APPLICATION_FTP_DPLOY_DIRECTORY_TARGET = "deployment.serverApplicationFtp.deployDirectoryTarget";
     public static final String PROPERTY_SVN_SITES_URL = "deployment.svnSitesUrl";
+    public static final String PROPERTY_GITHUB_BASE_URL = "deployment.githubBaseUrl";
+    public static final String PROPERTY_GITHUB_AUTHORIZED_REPO_NAME = "deployment.github.authorizedRepositoryName";
+    public static final String PROPERTY_GITLAB_BASE_URL = "deployment.gitlabSitesUrl";
     public static final String PROPERTY_CHECKOUT_BASE_PAH = "deployment.server.checkout.basePath";
     public static final String PROPERTY_MESSAGE_CHECKOUT_ERROR = "message_checkout_error";
     public static final String PROPERTY_MESSAGE_CHECKOUT_ERROR_SITE_EMPTY = "message_checkout_error_site_empty";
     public static final String PROPERTY_MESSAGE_CHECKOUT_ERROR_LOGIN_MDP_EMPTY = "message_checkout_error_login_mdp_empty";
+    public static final String PROPERTY_MESSAGE_REPO_UNAUTHORIZED_ACCESS = "message_unauthorized_repo_access";
     public static final String PROPERTY_TASKS_FORM_WORKFLOW_PAGE_TITLE = "deployment.tasks_form_workflow.page_title";
     public static final String PROPERTY_FORM_ACTION_SERVER_PAGE_TITLE = "deployment.form_action_server.page_title";
     
@@ -188,14 +205,9 @@ public class ConstanteUtils
     public static final String MARK_SITE_TAG_NAME = "site_tag_name";
     public static final String MARK_SITE_NEXT_VERSION = "site_next_version";
     public static final String MARK_APPLICATION_LIST = "application_list";
-    public static final String MARK_CATEGORY_LIST = "category_list";
     public static final String MARK_SCRIPT_LIST = "script_list";
-    public static final String MARK_CATEGORY_MAP = "category_map";
-    public static final String MARK_CATEGORY_LIST_SITE_MAP = "category_list_site_map";
-    public static final String MARK_CATEGORY_SELECTED = "category_selected";
     public static final String MARK_PAGINATOR = "paginator";
     public static final String MARK_APPLICATION = "application";
-    public static final String MARK_CODE_CATEGORY = "code_category";
     public static final String MARK_ENVIRONMENT_LIST = "environment_list";
     public static final String MARK_SERVER_INSTANCE_MAP_TOMCAT = "server_instance_map_tomcat";
     public static final String MARK_SERVER_INSTANCE_MAP_SQL = "server_instance_map_sql";
@@ -229,22 +241,21 @@ public class ConstanteUtils
     public static final String MARK_USER_WORKGROUP_SELECTED = "user_workgroup_selected";
     public static final String MARK_UPGRADE_FILE_REF_LIST = "upgrade_file_list";
     public static final String MARK_MANAGE_APPLICATION_ACTIONS = "map_application_actions";
-    
+    public static final String MARK_VCS_SERVICE = "vcs_service";
+    public static final String MARK_ACTION_URL = "action_url";
     
 
     //PARAM
     public static final String PARAM_SITE_TAG_VERSION = "site_tag_version";
     public static final String PARAM_SITE_TAG_NAME = "site_tag_name";
     public static final String PARAM_SITE_NEXT_VERSION = "site_next_version";
-    public static final String PARAM_CODE_CATEGORY = "code_category";
     public static final String PARAM_CODE_ENVIRONMENT = "code_environment";
     public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT = "code_server_application_instance_tomcat";
     public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL = "code_server_application_instance_sql";
     public static final String PARAM_CODE_SERVER_APPLICATION_INSTANCE = "code_server_application_instance";
     public static final String PARAM_SERVER_APPLICATION_TYPE = "server_application_type";
-    public static final String PARAM_TAG_SITE_BEFORE_DEPLOY = "tag_site_before_deploy";
     public static final String PARAM_TAG_TO_DEPLOY = "tag_to_deploy";
-    public static final String PARAM_TAG_AUTOMATICALLY = "tag_automatically";
+    public static final String PARAM_DEPLOY_DEV_SITE = "deploy_dev_site";
     public static final String PARAM_CODE = "code";
     public static final String PARAM_NAME = "name";
     public static final String PARAM_WEBAPP_NAME = "webapp_name";
@@ -265,7 +276,11 @@ public class ConstanteUtils
     public static final String PARAM_INIT_DATABASE = "init_database";
     public static final String PARAM_INIT_APP_CONTEXT = "init_app_context";
     public static final String PARAM_SEARCH_NAME = "search_name";
-    
+    public static final String PARAM_URL_REPO = "url_repo";
+    public static final String PARAM_LOGIN = "login";
+    public static final String PARAM_PASSWORD = "password";
+    public static final String PARAM_ACTION_URL = "action_url";
+
     
     public static final String PARAM_SCRIPT_NAME= "script_name";
     public static final String PARAM_CODE_APPLICATION = "code_application";
@@ -290,6 +305,7 @@ public class ConstanteUtils
     public static final String TEMPLATE_FORM_ACTION_DUMP = "admin/plugins/deployment/form_action_dump.html";
     public static final String TEMPLATE_INIT_DB = "admin/plugins/deployment/init/init_db_template.html";
     public static final String TEMPLATE_INIT_APP_CONTEXT= "admin/plugins/deployment/init/init_app_context.html";
+    public static final String TEMPLATE_ASK_CREDENTIALS = "admin/plugins/deployment/ask_credentials.html";
     
 
     //JSP
@@ -303,4 +319,8 @@ public class ConstanteUtils
 
     //I18nMessage
     public static final String I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET = "deployment.message.maven_user_is_not_set";
+
+    //Regex
+    public static final String REGEX_GIT_EXTRACT_ARTIFACT_FROM_URL = "deployment.regex.git.artifactId.extractFromUrl";
+
 }

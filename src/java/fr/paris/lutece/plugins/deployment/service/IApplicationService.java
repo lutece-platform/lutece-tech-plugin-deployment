@@ -63,6 +63,4 @@ public interface IApplicationService
     void updateApplication( Application application, Plugin plugin );
 
     void deleteApplication( int nIdApplication, Plugin plugin );
-
-    ReferenceList getListCategory(  );
 }

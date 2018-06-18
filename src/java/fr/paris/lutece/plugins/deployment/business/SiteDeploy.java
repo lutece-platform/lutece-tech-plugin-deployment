@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import fr.paris.lutece.plugins.deployment.util.SVNUtils;
+import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 
 import java.sql.Date;
 
@@ -110,10 +110,4 @@ public class SiteDeploy extends AbstractSite
         return null;
     }
 
-    @Override
-    public String getSvnSiteUrl(  )
-    {
-        // TODO Auto-generated method stub
-        return SVNUtils.getSvnUrlTagSite( getSvnBaseSiteUrl(  ), getTagName(  ) );
-    }
 }

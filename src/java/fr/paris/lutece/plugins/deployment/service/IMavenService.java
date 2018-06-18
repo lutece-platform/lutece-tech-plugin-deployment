@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.deployment.service;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
-import fr.paris.lutece.plugins.deployment.business.SvnUser;
+import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 
 public interface IMavenService
 {
@@ -54,7 +54,7 @@ public interface IMavenService
      *            la prochaine version de developpement (avec -SNAPSHOT)
      * @return le thread
      */
-    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user, CommandResult commandResult );
+    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult );
 
     String getSiteWarName( String strSiteName );
 

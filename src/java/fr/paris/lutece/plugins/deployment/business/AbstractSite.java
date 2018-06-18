@@ -33,11 +33,14 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
+import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
+
 public abstract class AbstractSite implements ISite
 {
     private String _strCodeApplication;
-    private String _strSvnBaseSiteUrl;
+    private String _strBaseSiteUrl;
     private CommandResult _commandResult;
+    protected IVCSService _vcsService;
 
     public String getCodeApplication(  )
     {
@@ -49,14 +52,14 @@ public abstract class AbstractSite implements ISite
         this._strCodeApplication = strCodeApplication;
     }
 
-    public String getSvnBaseSiteUrl(  )
+    public String getBaseSiteUrl(  )
     {
-        return _strSvnBaseSiteUrl;
+        return _strBaseSiteUrl;
     }
 
-    public void setSvnBaseSiteUrl( String strSvnUrl )
+    public void setBaseSiteUrl( String strUrl )
     {
-        _strSvnBaseSiteUrl = strSvnUrl;
+        _strBaseSiteUrl = strUrl;
     }
 
     public void setCommandResult( CommandResult _commandResult )
@@ -67,5 +70,5 @@ public abstract class AbstractSite implements ISite
     public CommandResult getCommandResult(  )
     {
         return _commandResult;
-    }
+    }  
 }

@@ -31,23 +31,35 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.deployment.business;
+package fr.paris.lutece.plugins.deployment.util.vcs;
 
-public interface ISite
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.wc.ISVNOptions;
+import org.tmatesoft.svn.core.wc.SVNCopyClient;
+
+
+public class ReleaseSVNCopyClient extends SVNCopyClient
 {
-    String getCodeApplication(  );
+    private boolean bCancelled;
 
-    void setCodeApplication( String strCodeApplication );
+    public ReleaseSVNCopyClient( ISVNAuthenticationManager authManager, ISVNOptions options )
+    {
+        super( authManager, options );
+    }
 
-    String getCheckoutPath(  );
+//    @Override
+//    public void checkCancelled(  ) throws SVNCancelException
+//    {
+//        if ( bCancelled )
+//        {
+//            throw new SVNCancelException( SVNErrorMessage.create( SVNErrorCode.CANCELLED, "Canceled by user" ) );
+//        }
+//
+//        super.checkCancelled(  );
+//    }
 
-    String getName(  );
-
-    String getBaseSiteUrl(  );
-
-    void setBaseSiteUrl( String strUrl );
-
-    CommandResult getCommandResult(  );
-
-    void setCommandResult( CommandResult commandResult );
+    public void doCancel(  )
+    {
+        bCancelled = true;
+    }
 }

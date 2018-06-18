@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,23 +31,36 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.deployment.business;
+package fr.paris.lutece.plugins.deployment.business.vcs;
 
-public interface ISite
+public class AbstractVCSUser implements IVCSUser
 {
-    String getCodeApplication(  );
+    private String _strLogin; 
+    private String _strPassword;
 
-    void setCodeApplication( String strCodeApplication );
+    @Override
+    public String getLogin() 
+    {
+        return _strLogin;
+    }
 
-    String getCheckoutPath(  );
+    @Override
+    public void setLogin(String strLogin) 
+    {
+        _strLogin = strLogin;
+    }
 
-    String getName(  );
+    @Override
+    public String getPassword() 
+    {
+        return _strPassword;
+    }
 
-    String getBaseSiteUrl(  );
-
-    void setBaseSiteUrl( String strUrl );
-
-    CommandResult getCommandResult(  );
-
-    void setCommandResult( CommandResult commandResult );
+    @Override
+    public void setPassword(String strPassword) 
+    {
+        _strPassword = strPassword;
+    }
+    
+    
 }

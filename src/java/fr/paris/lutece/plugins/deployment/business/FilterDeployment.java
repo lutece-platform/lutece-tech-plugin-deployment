@@ -38,23 +38,10 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 
 public class FilterDeployment {
-	private String _strCodeCategory;
 	private String _strWorkgroup;
         private String _strSearchName;
 
 	private int _nIdApplication = ConstanteUtils.CONSTANTE_ID_NULL;
-
-	public void setCodeCategory(String strCodeCategory) {
-		this._strCodeCategory = strCodeCategory;
-	}
-
-	public String getCodeCategory() {
-		return _strCodeCategory;
-	}
-
-	public boolean containsCodeCategoryFilter() {
-		return (_strCodeCategory != null) && !_strCodeCategory.isEmpty();
-	}
 
 	public void setIdApplication(int nIdApplication) {
 		this._nIdApplication = nIdApplication;

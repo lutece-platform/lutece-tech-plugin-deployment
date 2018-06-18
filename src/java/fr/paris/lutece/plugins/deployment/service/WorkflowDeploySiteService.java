@@ -33,10 +33,8 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
-import java.io.ByteArrayInputStream;
+import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -54,20 +52,16 @@ import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
-import fr.paris.lutece.plugins.deployment.util.SVNUtils;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 
 public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 {
     HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>(  );
-    @Inject
-    ISvnService _svnService;
     
     @Inject
     IEnvironmentService _environmentService;
@@ -99,22 +93,16 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 
     public String checkoutSite( WorkflowDeploySiteContext context, Locale locale )
     {
-        String strSvnCheckoutSiteUrl;
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
         Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-
-        if ( context.getTagToDeploy(  ) != null )
-        {
-            strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTagSite( application.getSvnUrlSite(  ), context.getTagToDeploy(  ) );
-        }
-        else
-        {
-            strSvnCheckoutSiteUrl = SVNUtils.getSvnUrlTrunkSite( application.getSvnUrlSite(  ) );
-        }
-
+        IVCSService vcsService = DeploymentUtils.getVCSService( application.getRepoType( ) );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Checkout  Site...\n" );
-        _svnService.doSvnCheckoutSite( application.getSiteName(  ), strSvnCheckoutSiteUrl, context.getMavenUser(  ),
-            context.getCommandResult(  ) );
+        
+        vcsService.checkAuthentication( context.getSvnBaseSiteUrl(), context.getVcsUser( ) );
+        
+        vcsService.doCheckoutSite( application.getArtifactId(), application.getUrlRepo( ), context.getVcsUser( ) ,
+        context.getCommandResult(  ), null, context.getTagToDeploy(  ) );
+        
         //throw RuntimeException for stopping Workflow 
     
         stopWorkflowIfTechnicalError("Error Chekout Site", context.getCommandResult());
@@ -137,9 +125,9 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         try
         {
             strVersion = ReleaseUtils.getReleaseVersion( DeploymentUtils.getPathCheckoutSite( 
-                        application.getSiteName(  ) ) );
+                        application.getUrlRepo( ) ) );
             strNextVersion = ReleaseUtils.getNextVersion( strVersion );
-            strTagName = ReleaseUtils.getReleaseName( application.getSiteName(  ), strVersion );
+            strTagName = ReleaseUtils.getReleaseName( application.getName(), strVersion );
         }
         catch ( FileNotFoundException e )
         {
@@ -157,24 +145,6 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         context.setNextVersion( strNextVersion );
     }
 
-    public String tagSite( WorkflowDeploySiteContext context, Locale locale )
-    {
-        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-        context.getCommandResult(  ).getLog(  ).append( "Starting Action Tag  Site...\n" );
-        _svnService.doSvnTagSite( application.getSiteName(  ), application.getSvnUrlSite(  ), context.getTagName(  ),
-            context.getNextVersion(  ), context.getTagVersion(  ), context.getMavenUser(  ),
-            context.getCommandResult(  ) );
-        //throw RuntimeException for stopping Workflow 
-        stopWorkflowIfTechnicalError("Error During Tag Site", context.getCommandResult());
-        
-        context.getCommandResult(  ).getLog(  ).append( "End Action Tag  Site...\n" );
-        // update context status
-        context.setTagToDeploy( context.getTagName(  ) );
-
-        return null;
-    }
-
     public String assemblySite( WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
@@ -184,8 +154,8 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
-        MavenService.getService( ).mvnSiteAssembly( application.getSiteName(  ), context.getTagName(  ),
-            serverApplicationInstance.getMavenProfile(application.getIdApplication( )  ), context.getMavenUser(  ), context.getCommandResult(  ) );
+        MavenService.getService( ).mvnSiteAssembly( application.getArtifactId( ), context.getTagName(  ),
+            serverApplicationInstance.getMavenProfile(application.getIdApplication( )  ), context.getVcsUser(), context.getCommandResult(  ) );
         //throw RuntimeException for stopping Workflow 
         stopWorkflowIfTechnicalError("Error During assembly Site", context.getCommandResult());
         context.getCommandResult(  ).getLog(  ).append( "End Action Assembly  Site...\n" );
@@ -202,11 +172,11 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
        
-        String strWarGeneratedName= MavenService.getService( ).getSiteWarName(application.getSiteName());
+        String strWarGeneratedName= MavenService.getService( ).getSiteWarName(application.getArtifactId( ) );
        
         
         _ftpService.uploadFile( application.getWebAppName(  ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION,
-            DeploymentUtils.getPathArchiveGenerated( DeploymentUtils.getPathCheckoutSite( application.getSiteName(  ) ),
+            DeploymentUtils.getPathArchiveGenerated( DeploymentUtils.getPathCheckoutSite( application.getArtifactId( ) ),
             		strWarGeneratedName , ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
             serverApplicationInstance.getFtpInfo(  ),
             DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),

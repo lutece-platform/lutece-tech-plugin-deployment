@@ -31,23 +31,55 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.deployment.business;
+package fr.paris.lutece.plugins.deployment.util;
 
-public interface ISite
+import java.io.IOException;
+import java.io.StringWriter;
+
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+
+/**
+ * JSON Mapper utils
+ */
+public final class MapperJsonUtil
 {
-    String getCodeApplication(  );
+    private static final ObjectMapper _mapper;
 
-    void setCodeApplication( String strCodeApplication );
-
-    String getCheckoutPath(  );
-
-    String getName(  );
-
-    String getBaseSiteUrl(  );
-
-    void setBaseSiteUrl( String strUrl );
-
-    CommandResult getCommandResult(  );
-
-    void setCommandResult( CommandResult commandResult );
+    static
+    {
+        _mapper = new ObjectMapper(  );
+        _mapper.configure( DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
+    }
+    
+    /** Private constructor */
+    private MapperJsonUtil()
+    {
+    }
+    
+    /**
+     * parse the JSON for a bean
+     * @param <T> The Bean class
+     * @param strJson The JSON
+     * @param t The bean class
+     * @return The bean
+     * @throws IOException if an error occurs
+     */
+    public static <T> T parse( String strJson , Class<T> t ) throws IOException
+    {
+        return _mapper.readValue( strJson, t );
+    }
+    
+    /**
+     * parse a bean into a json
+     * @param object
+     * @return The json
+     * @throws IOException if an error occurs
+     */
+    public static String getJson( Object object ) throws IOException
+    {
+        StringWriter stringWriter = new StringWriter( );
+        _mapper.writeValue( stringWriter, object );
+        return stringWriter.toString(  );
+    }
 }

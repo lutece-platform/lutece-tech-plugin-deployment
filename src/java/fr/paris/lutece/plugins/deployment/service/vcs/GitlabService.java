@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,23 +31,26 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.deployment.business;
+package fr.paris.lutece.plugins.deployment.service.vcs;
 
-public interface ISite
-{
-    String getCodeApplication(  );
+import fr.paris.lutece.plugins.deployment.business.vcs.GitUser;
+import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
+import fr.paris.lutece.plugins.deployment.util.vcs.GitUtils;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.util.UUID;
 
-    void setCodeApplication( String strCodeApplication );
-
-    String getCheckoutPath(  );
-
-    String getName(  );
-
-    String getBaseSiteUrl(  );
-
-    void setBaseSiteUrl( String strUrl );
-
-    CommandResult getCommandResult(  );
-
-    void setCommandResult( CommandResult commandResult );
+public class GitlabService extends AbstractGitService
+{    
+    @Override
+    public void checkAuthentication(String strRepoUrl, GitUser user) 
+    {
+       String strUID = UUID.randomUUID().toString();
+       String strLocalTempDir = AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY );
+       if (!GitUtils.checkAuthentication( strRepoUrl, strLocalTempDir, strUID, user))
+        {
+            throw new AppException( "Bad credentials to GitLab : Unauthorized");
+        }
+       
+    }
 }

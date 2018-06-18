@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.deployment.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -54,17 +53,20 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.business.ActionParameter;
+import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
-import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IAction;
-import fr.paris.lutece.plugins.deployment.business.SvnUser;
+import fr.paris.lutece.plugins.deployment.business.vcs.SvnUser;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
-import fr.paris.lutece.plugins.deployment.service.ISvnService;
+import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
+import fr.paris.lutece.plugins.deployment.business.vcs.GitUser;
+import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.user.attribute.AdminUserFieldService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -616,21 +618,6 @@ public class DeploymentUtils
         	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE,
                      ConstanteUtils.CONSTANTE_ID_NULL );
         }
-        else if ( workflowDeploySiteContext.isTagSiteBeforeDeploy(  )  )
-        {
-        	if(workflowDeploySiteContext.isTagAutomatically())
-        	{
-        		  nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE,
-                          ConstanteUtils.CONSTANTE_ID_NULL );
-        		
-        	}
-        	else
-        	{
-        	
-            nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE,
-                    ConstanteUtils.CONSTANTE_ID_NULL );
-        	}
-        }
         else
         {
             nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE,
@@ -638,22 +625,6 @@ public class DeploymentUtils
         }
 
         return nIdWorkflow;
-    }
-
-    public static HashMap<String, ReferenceList> getHashCategoryListSite( ReferenceList categoryRefList,
-        ISvnService svnService, SvnUser mavenUser )
-    {
-        HashMap<String, ReferenceList> hashCategoryListSite = new HashMap<String, ReferenceList>(  );
-        FilterDeployment filter = new FilterDeployment(  );
-
-        for ( ReferenceItem item : categoryRefList )
-        {
-            filter.setCodeCategory( item.getCode(  ) );
-
-            hashCategoryListSite.put( item.getCode(  ), svnService.getSites( filter, mavenUser ) );
-        }
-
-        return hashCategoryListSite;
     }
 
     public static void startCommandResult( WorkflowDeploySiteContext context )
@@ -867,7 +838,63 @@ public class DeploymentUtils
     		  
     	  }
     	  return reflist;
-    	  	  
     }
+    
+    /**
+     * Get the VCS service from the repo type
+     * @param strKey the repo type key
+     * @return the VCS service
+     */
+    public static IVCSService getVCSService( String strKey )
+    {
+        switch ( strKey )
+        {
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB : 
+                return SpringContextService.getBean( ConstanteUtils.BEAN_GITHUB_SERVICE );
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN : 
+                return SpringContextService.getBean( ConstanteUtils.BEAN_SVN_SERVICE );
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB : 
+                return SpringContextService.getBean( ConstanteUtils.BEAN_GITLAB_SERVICE );
+        }
+        return null;
+    }
+   
+    /**
+     * Get an empty VCS user based on the repo type of the provided application
+     * @param application the Application
+     * @return an empty VCS user based on the repo type of the provided application
+     */
+   public static AbstractVCSUser getVCSUser( Application application )
+   {
+       switch ( application.getRepoType( ) )
+        {
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB : 
+                return new GitUser();
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN : 
+                return new SvnUser();
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB : 
+                return new GitUser();
+        }
+        return null;
+   }
   
+   /**
+    * Get the VCS user from the request and the given application
+    * @param request the HttpServletRequest
+    * @param application the Application
+    * @return the VCS user
+    */
+   public static AbstractVCSUser getVCSUser( HttpServletRequest request, Application application )
+   {
+       String strLogin = request.getParameter( ConstanteUtils.PARAM_LOGIN );
+       String strPassword = request.getParameter( ConstanteUtils.PARAM_PASSWORD );
+       AbstractVCSUser user = getVCSUser( application );
+       if ( strLogin != null && strPassword != null )
+       {
+           
+           user.setLogin( strLogin );
+           user.setPassword( strPassword );
+       }
+       return user;
+   }
 }

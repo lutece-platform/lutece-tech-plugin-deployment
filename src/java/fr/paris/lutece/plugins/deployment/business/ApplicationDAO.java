@@ -44,13 +44,12 @@ import java.util.List;
 public class ApplicationDAO implements IApllicationDAO
 {
     private static final String SQL_FILTER_ID_APPLICATION = " id_application = ? ";
-    private static final String SQL_FILTER_CODE_CATEGORY = " code_category = ? ";
     private static final String SQL_FILTER_WORKGROUP = " workgroup = ? ";
     private static final String SQL_ORDER_CODE_ASC = " ORDER BY code ASC ";
     private static final String SQL_QUERY_NEW_PK = " SELECT max(id_application) FROM deployment_application ";
-    private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,code_category,site_name,url_site,webapp_name,workgroup FROM deployment_application ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO deployment_application (id_application,code,name,code_category,site_name,url_site,webapp_name,workgroup )VALUES(?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,code_category=?,site_name=?,url_site=?,webapp_name=?,workgroup=?  WHERE" +
+    private static final String SQL_QUERY_SELECT_APPLICATION = "SELECT id_application,code,name,url_site,webapp_name,workgroup,repo_type, artifact_id FROM deployment_application ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO deployment_application (id_application,code,name,url_site,webapp_name,workgroup,repo_type, artifact_id )VALUES(?,?,?,?,?,?,?,?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE deployment_application SET id_application=?,code=?,name=?,url_site=?,webapp_name=?,workgroup=?,repo_type=?, artifact_id = ?  WHERE" +
         SQL_FILTER_ID_APPLICATION;
     private static final String SQL_QUERY_DELETE = "DELETE FROM deployment_application WHERE" +
         SQL_FILTER_ID_APPLICATION;
@@ -98,11 +97,7 @@ public class ApplicationDAO implements IApllicationDAO
         {
             listStrFilter.add( SQL_FILTER_ID_APPLICATION );
         }
-
-        if ( filter.containsCodeCategoryFilter(  ) )
-        {
-            listStrFilter.add( SQL_FILTER_CODE_CATEGORY );
-        }
+        
         if ( filter.containsWorkgroupFilter() )
         {
             listStrFilter.add( SQL_FILTER_WORKGROUP );
@@ -119,11 +114,6 @@ public class ApplicationDAO implements IApllicationDAO
             nIndex++;
         }
 
-        if ( filter.containsCodeCategoryFilter(  ) )
-        {
-            daoUtil.setString( nIndex, filter.getCodeCategory(  ) );
-            nIndex++;
-        }
         if ( filter.containsWorkgroupFilter(  ) )
         {
             daoUtil.setString( nIndex, filter.getWorkgroup() );
@@ -138,11 +128,11 @@ public class ApplicationDAO implements IApllicationDAO
             application.setIdApplication( daoUtil.getInt( 1 ) );
             application.setCode( daoUtil.getString( 2 ) );
             application.setName( daoUtil.getString( 3 ) );
-            application.setCodeCategory( daoUtil.getString( 4 ) );
-            application.setSiteName( daoUtil.getString( 5 ) );
-            application.setSvnUrlSite( daoUtil.getString( 6 ) );
-            application.setWebAppName( daoUtil.getString( 7 ) );
-            application.setWorkgroup(daoUtil.getString( 8 ));
+            application.setUrlRepo( daoUtil.getString( 4 ) );
+            application.setWebAppName( daoUtil.getString( 5 ) );
+            application.setWorkgroup(daoUtil.getString( 6 ) );
+            application.setRepoType(daoUtil.getString( 7 ));
+            application.setArtifactId( daoUtil.getString( 8 ));
             listApllication.add( application );
         }
 
@@ -166,11 +156,11 @@ public class ApplicationDAO implements IApllicationDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
         daoUtil.setString( 2, application.getCode(  ) );
         daoUtil.setString( 3, application.getName(  ) );
-        daoUtil.setString( 4, application.getCodeCategory(  ) );
-        daoUtil.setString( 5, application.getSiteName(  ) );
-        daoUtil.setString( 6, application.getSvnUrlSite(  ) );
-        daoUtil.setString( 7, application.getWebAppName(  ) );
-        daoUtil.setString( 8, application.getWorkgroup() );
+        daoUtil.setString( 4, application.getUrlRepo( ));
+        daoUtil.setString( 5, application.getWebAppName(  ) );
+        daoUtil.setString( 6, application.getWorkgroup() );
+        daoUtil.setString( 7, application.getRepoType( ) );
+        daoUtil.setString( 8, application.getArtifactId());
         application.setIdApplication( newPrimaryKey( plugin ) );
         daoUtil.setInt( 1, application.getIdApplication(  ) );
 
@@ -186,11 +176,11 @@ public class ApplicationDAO implements IApllicationDAO
         daoUtil.setInt( 1, application.getIdApplication(  ) );
         daoUtil.setString( 2, application.getCode(  ) );
         daoUtil.setString( 3, application.getName(  ) );
-        daoUtil.setString( 4, application.getCodeCategory(  ) );
-        daoUtil.setString( 5, application.getSiteName(  ) );
-        daoUtil.setString( 6, application.getSvnUrlSite(  ) );
-        daoUtil.setString( 7, application.getWebAppName(  ) );
-        daoUtil.setString( 8, application.getWorkgroup() );
+        daoUtil.setString( 4, application.getUrlRepo( ) );
+        daoUtil.setString( 5, application.getWebAppName(  ) );
+        daoUtil.setString( 6, application.getWorkgroup() );
+        daoUtil.setString( 7, application.getRepoType( ) );
+        daoUtil.setString( 8, application.getArtifactId( ));
         
         daoUtil.setInt( 9, application.getIdApplication(  ) );
 

@@ -48,8 +48,6 @@ public interface IWorkflowDeploySiteService
 
     String checkoutSite( WorkflowDeploySiteContext context, Locale locale );
 
-    String tagSite( WorkflowDeploySiteContext context, Locale locale );
-
     String assemblySite( WorkflowDeploySiteContext context, Locale locale );
 
     String deploySite( WorkflowDeploySiteContext context, Locale locale );

@@ -31,23 +31,31 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.deployment.business;
+package fr.paris.lutece.plugins.deployment.business.vcs;
 
-public interface ISite
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class SvnUser extends AbstractVCSUser
 {
-    String getCodeApplication(  );
+    public static final String MARK_CURRENT_THREAD = "current_thread";
+    public static final String MARK_AUTHENTIFICATION_MANAGER = "authentification_manager";
+    public static final String MARK_OUR_CLIENT_MANAGER = "our_client_manager";
+    private Map<String, Object> _mUserContext;
 
-    void setCodeApplication( String strCodeApplication );
+    public SvnUser(  )
+    {
+        setUserContext( new HashMap<String, Object>(  ) );
+    }
 
-    String getCheckoutPath(  );
+    public void setUserContext( Map<String, Object> _mUserContex )
+    {
+        this._mUserContext = _mUserContex;
+    }
 
-    String getName(  );
-
-    String getBaseSiteUrl(  );
-
-    void setBaseSiteUrl( String strUrl );
-
-    CommandResult getCommandResult(  );
-
-    void setCommandResult( CommandResult commandResult );
+    public Map<String, Object> getUserContext(  )
+    {
+        return _mUserContext;
+    }
 }

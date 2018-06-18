@@ -55,11 +55,14 @@ import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.FilterDeployment;
 import fr.paris.lutece.plugins.deployment.business.IAction;
+import fr.paris.lutece.plugins.deployment.business.InvalidRepositoryUrlException;
 import fr.paris.lutece.plugins.deployment.business.ManageApplicationAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
-import fr.paris.lutece.plugins.deployment.business.SvnUser;
+import fr.paris.lutece.plugins.deployment.business.vcs.SvnUser;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
+import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 import fr.paris.lutece.plugins.deployment.service.ApplicationResourceIdService;
+import fr.paris.lutece.plugins.deployment.service.ApplicationService;
 import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
 import fr.paris.lutece.plugins.deployment.service.EnvironmentResourceIdService;
 import fr.paris.lutece.plugins.deployment.service.IActionService;
@@ -67,15 +70,14 @@ import fr.paris.lutece.plugins.deployment.service.IApplicationService;
 import fr.paris.lutece.plugins.deployment.service.IDatabaseService;
 import fr.paris.lutece.plugins.deployment.service.IEnvironmentService;
 import fr.paris.lutece.plugins.deployment.service.IFtpService;
-import fr.paris.lutece.plugins.deployment.service.IMavenService;
 import fr.paris.lutece.plugins.deployment.service.IServerApplicationService;
-import fr.paris.lutece.plugins.deployment.service.ISvnService;
 import fr.paris.lutece.plugins.deployment.service.IWorkflowDeploySiteService;
 import fr.paris.lutece.plugins.deployment.service.MavenService;
+import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 import fr.paris.lutece.plugins.deployment.uploadhandler.DeploymentUploadHandler;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
-import fr.paris.lutece.plugins.deployment.util.SVNUtils;
+import fr.paris.lutece.plugins.deployment.util.RepositoryUtils;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.rbac.RBAC;
@@ -89,6 +91,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -100,6 +103,7 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
+import javax.servlet.http.HttpSession;
 
 
 public class DeploymentJspBean extends PluginAdminPageJspBean
@@ -110,9 +114,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
     private IServerApplicationService _serverApplicationService = SpringContextService.getBean( 
             "deployment.ServerApplicationService" );
-    
-    private ISvnService _svnService = SpringContextService.getBean( "deployment.SvnService" );
-    
+
     private IDatabaseService _databaseService = SpringContextService.getBean( "deployment.DatabaseService" );
     private IWorkflowDeploySiteService _workflowDeploySiteService = SpringContextService.getBean( 
             "deployment.WorkflowDeploySiteService" );
@@ -151,7 +153,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     
     public String getManageApplication( HttpServletRequest request )
     {
-        String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
         String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
         String strSearchName = request.getParameter( ConstanteUtils.PARAM_SEARCH_NAME );
         
@@ -161,17 +162,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         		_strCurrentPageIndex );
 
         // ReferenceList
-        ReferenceList refListCategory = _applicationService.getListCategory(  );
         
         ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
-       
-        refListCategory=DeploymentUtils.addEmptyRefenceItem(refListCategory);
-
+        
         // build Filter stored in session
-        if ( strCodeCategory != null )
-        {
-            _filterDeployment.setCodeCategory( strCodeCategory );
-        }
         if ( strWorkgroup != null )
         {
             _filterDeployment.setWorkGroup( strWorkgroup );
@@ -206,10 +200,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                 Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
 
         model.put( ConstanteUtils.MARK_APPLICATION_LIST, paginator.getPageItems(  ) );
-        model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
-        model.put( ConstanteUtils.MARK_CATEGORY_MAP, refListCategory.toMap(  ) );
-        model.put( ConstanteUtils.MARK_CATEGORY_SELECTED,
-            ( _filterDeployment.getCodeCategory( ) != null ) ? _filterDeployment.getCodeCategory( ) : ConstanteUtils.CONSTANTE_ALL );
         model.put( ConstanteUtils.MARK_PAGINATOR, paginator );
         model.put( ConstanteUtils.MARK_NB_ITEMS_PER_PAGE, paginator.getItemsPerPage(  ) );
         model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
@@ -239,34 +229,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
        
     	
     	ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( getUser(), getLocale() );
-        
-    	SvnUser mavenUser = DeploymentUtils.getSvnUser( getUser(  ).getUserId(  ), getLocale(  ) );
-
-        // ReferenceList
-        ReferenceList refListCategory = _applicationService.getListCategory(  );
-        refListCategory= DeploymentUtils.addEmptyRefenceItem( refListCategory );
 
         HashMap model = new HashMap(  );
         
-        
-      
-
-        if ( mavenUser != null )
-        {
-            Map<String, ReferenceList> hashCategoryListSite = DeploymentUtils.getHashCategoryListSite( refListCategory,
-                    _svnService, mavenUser );
-            model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
-            model.put( ConstanteUtils.MARK_CATEGORY_LIST_SITE_MAP, hashCategoryListSite );
-            model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
-            
-        }
-        else
-        {
-            String strErrorMessage = I18nService.getLocalizedString( ConstanteUtils.I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET,
-                    getLocale(  ) );
-            model.put( ConstanteUtils.MARK_ERROR_MESSAGE, strErrorMessage );
-            model.put( ConstanteUtils.MARK_ID_USER, getUser(  ).getUserId(  ) );
-        }
+        model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
 
         // build Filter
         setPageTitleProperty( ConstanteUtils.PROPERTY_CREATE_APPLICATION_PAGE_TITLE );
@@ -287,10 +253,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	
     	
     	int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
-        SvnUser mavenUser = DeploymentUtils.getSvnUser( getUser(  ).getUserId(  ), getLocale(  ) );
-
-        // ReferenceList
-        ReferenceList refListCategory = _applicationService.getListCategory(  );
         
         Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
         
@@ -302,30 +264,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         // build Filter
         HashMap model = new HashMap(  );
 
-        
-        
-        if ( mavenUser != null )
-        {
-            Map<String, ReferenceList> hashCategoryListSite = DeploymentUtils.getHashCategoryListSite( refListCategory,
-                    _svnService, mavenUser );
-            model.put( ConstanteUtils.MARK_CATEGORY_LIST, refListCategory );
-            model.put( ConstanteUtils.MARK_CATEGORY_LIST_SITE_MAP, hashCategoryListSite );
-            model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
+        model.put( ConstanteUtils.MARK_USER_WORKGROUP_REF_LIST, refListWorkGroups );
             
-
-            if ( ( application != null ) && hashCategoryListSite.containsKey( application.getCodeCategory(  ) ) )
-            {
-                model.put( ConstanteUtils.MARK_SITE_LIST, hashCategoryListSite.get( application.getCodeCategory(  ) ) );
-            }
-        }
-        else
-        {
-            String strErrorMessage = I18nService.getLocalizedString( ConstanteUtils.I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET,
-                    getLocale(  ) );
-            model.put( ConstanteUtils.MARK_ERROR_MESSAGE, strErrorMessage );
-            model.put( ConstanteUtils.MARK_ID_USER, getUser(  ).getUserId(  ) );
-        }
-
         model.put( ConstanteUtils.MARK_APPLICATION, application );
 
         setPageTitleProperty( ConstanteUtils.PROPERTY_MODIFY_APPLICATION_PAGE_TITLE );
@@ -538,8 +478,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
     public String getFormDeployApplication( HttpServletRequest request )throws AccessDeniedException
     {
-        AdminUser adminUser = getUser(  );
-        SvnUser svnUser = DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) );
         String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
         String strInitDatabase = request.getParameter( ConstanteUtils.PARAM_INIT_DATABASE);
@@ -560,7 +498,25 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         }
         
         Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
-
+        
+        AbstractVCSUser vcsUser = DeploymentUtils.getVCSUser( request, application);
+        if ( bDeployWar )
+        {
+            
+            IVCSService vcsService = DeploymentUtils.getVCSService( application.getRepoType( ) );
+            try
+            {
+                vcsService.checkAuthentication( application.getUrlRepo(), vcsUser);
+                //Set the VCSUser in session for the application deployment process
+                //For not asking credentials again
+                HttpSession session = request.getSession( true );
+                session.setAttribute( ConstanteUtils.CONSTANTE_VCS_USER, vcsUser);
+            }
+            catch ( AppException e )
+            {
+                throw new AccessDeniedException( I18nService.getLocalizedString(ConstanteUtils.PROPERTY_MESSAGE_REPO_UNAUTHORIZED_ACCESS, getLocale()));
+            }
+        }
         
         if (  (bDeployWar &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION)) 
         	 ||(bDeploySql &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT))
@@ -568,10 +524,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         	 ||(bInitContext &&  !isAuthorized(application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT))
         	)
     	{
-        	
-    		throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
-
-        	
+            throw new AccessDeniedException( I18nService.getLocalizedString(MESSAGE_ACCESS_DENIED, getLocale()));
     	}
       
         setPageTitleProperty( ConstanteUtils.PROPERTY_MANAGE_APPLICATION_PAGE_TITLE );
@@ -580,9 +533,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
        
 
-        if ( svnUser != null )
+        if ( vcsUser != null )
         {
-          
+            
+            
+            
             List<Environment> listEnvironments = _environmentService.getListEnvironments( application.getCode(  ),
                     getLocale(  ) );
             
@@ -595,7 +550,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                            ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale(  ), true, true );
 
             	  model.put( ConstanteUtils.MARK_SERVER_INSTANCE_MAP_TOMCAT, hashServerApplicationInstanceTomcat );
-            	  ReferenceList refListTagSite = _svnService.getTagsSite( application.getSvnUrlSite(  ), svnUser );
+            	  ReferenceList refListTagSite = DeploymentUtils.getVCSService( application.getRepoType( ) ).getTagsSite( application.getUrlRepo(), vcsUser, application.getArtifactId( ) );
                   model.put( ConstanteUtils.MARK_SITE_LIST, refListTagSite );
             }
             else if(bDeploySql||bInitDatabase)
@@ -603,7 +558,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         	
             	
             		
-		            ReferenceList refListUpgradeFilesList=!bInitDatabase?_svnService.getUpgradesFiles(application.getSiteName(), application.getSvnUrlSite(  ), svnUser):null ;
+		            ReferenceList refListUpgradeFilesList=!bInitDatabase?DeploymentUtils.getVCSService( application.getRepoType( ) ).getUpgradesFiles(application.getArtifactId(), application.getUrlRepo( ), vcsUser ):null ;
 		            if(refListUpgradeFilesList!=null)
 		            {
 		            	refListUpgradeFilesList=DeploymentUtils.addEmptyRefenceItem(refListUpgradeFilesList);
@@ -1049,7 +1004,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
     public String doDeployApplication( HttpServletRequest request )throws AccessDeniedException
     {
-        AdminUser adminUser = getUser(  );
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
 
@@ -1071,7 +1025,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             {
             	
             	try {
-					workflowContext.setScriptFileItem(new FileInputStream(DeploymentUtils.getPathUpgradeFile(DeploymentUtils.getPathCheckoutSite( application.getSiteName() ), workflowContext.getScriptFileSelected())));
+					workflowContext.setScriptFileItem(new FileInputStream(DeploymentUtils.getPathUpgradeFile(DeploymentUtils.getPathCheckoutSite( application.getArtifactId( ) ), workflowContext.getScriptFileSelected())));
 				} catch (FileNotFoundException e) {
 
 						AppLogService.error(e);
@@ -1079,12 +1033,25 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             	workflowContext.setScriptFileItemName(workflowContext.getScriptFileSelected());
             }
 
-	
+            HttpSession session = request.getSession( true );
+            if ( session.getAttribute( ConstanteUtils.CONSTANTE_VCS_USER ) != null )
+            {
+                AbstractVCSUser user = new AbstractVCSUser( );
+                user = (AbstractVCSUser)session.getAttribute( ConstanteUtils.CONSTANTE_VCS_USER );
+                workflowContext.setVcsUser( user );
+                session.removeAttribute( ConstanteUtils.CONSTANTE_VCS_USER );
+            }
+            else
+            {
+                workflowContext.setVcsUser( null );
+            }
             
-            workflowContext.setSvnUser( DeploymentUtils.getSvnUser( adminUser.getUserId(  ), getLocale(  ) ) );
             workflowContext.setIdApplication( application.getIdApplication(  ) );
-            workflowContext.setSvnBaseSiteUrl( application.getSvnUrlSite(  ) );
-
+            workflowContext.setSvnBaseSiteUrl( application.getUrlRepo( ) );
+            
+            CommandResult commandResult = new CommandResult();
+            //IVCSService vcsService = DeploymentUtils.getVCSService( application.getRepoType( ) );
+            //vcsService.doCheckoutSite( application.getArtifactId(), application.getUrlRepo( ), DeploymentUtils.getVCSUser(application), commandResult, null, workflowContext.getTagName( ) );  
             _nIdCurrentWorkflowDeploySiteContext = _workflowDeploySiteService.addWorkflowDeploySiteContext( workflowContext );
 
             return getJspDeployApplicationProcess( request );
@@ -1263,7 +1230,6 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
          String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
          String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
          String strCodeServerApplicationInstance = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE );
-         String strServerAppicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
          String strMavenProfil= request.getParameter( ConstanteUtils.PARAM_MAVEN_PROFIL );
          
          
@@ -1302,9 +1268,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
         String strCodeServerApplicationInstanceTomcat = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT );
         String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
-        String strTagSiteBeforeDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_SITE_BEFORE_DEPLOY );
+        String strDeployDevSite = request.getParameter( ConstanteUtils.PARAM_DEPLOY_DEV_SITE );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
-        String strTagAutomatically= request.getParameter( ConstanteUtils.PARAM_TAG_AUTOMATICALLY);
         
         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
         String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
@@ -1338,7 +1303,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_DATABASE;
         }
-        else if ( !StringUtils.isEmpty( strDeployWar ) && StringUtils.isEmpty( strTagSiteBeforeDeploy ) && StringUtils.isEmpty( strTagToDeploy ) )
+        else if ( !StringUtils.isEmpty( strDeployWar ) && StringUtils.isEmpty( strDeployDevSite ) && StringUtils.isEmpty( strTagToDeploy ) )
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_TAG_TO_DEPLOY;
         }
@@ -1379,17 +1344,21 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
            
         }
 
-        workflowDeploySiteContext.setTagSiteBeforeDeploy( !StringUtils.isEmpty( strTagSiteBeforeDeploy ) );
-        workflowDeploySiteContext.setTagAutomatically( !StringUtils.isEmpty( strTagAutomatically ) );
+        workflowDeploySiteContext.setDeployDevSite( (strDeployDevSite != null) ? true : false );
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
         workflowDeploySiteContext.setInitAppContext( !StringUtils.isEmpty( strInitAppContext ));
         workflowDeploySiteContext.setInitBdd( !StringUtils.isEmpty( strInitDatabase));
         
         
-        if ( StringUtils.isEmpty( strTagSiteBeforeDeploy ) )
+        if ( StringUtils.isEmpty( strDeployDevSite ) )
         {
             workflowDeploySiteContext.setTagToDeploy( strTagToDeploy );
+            workflowDeploySiteContext.setDeployDevSite( false );
+        }
+        else
+        {
+            workflowDeploySiteContext.setDeployDevSite( true );
         }
         
         if ( !StringUtils.isEmpty( strDeploySql ) )
@@ -1437,10 +1406,9 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strCode = request.getParameter( ConstanteUtils.PARAM_CODE );
         String strName = request.getParameter( ConstanteUtils.PARAM_NAME );
         String strWebAppName = request.getParameter( ConstanteUtils.PARAM_WEBAPP_NAME );
-        String strCodeCategory = request.getParameter( ConstanteUtils.PARAM_CODE_CATEGORY );
-        String strSite = request.getParameter( ConstanteUtils.PARAM_SITE );
         String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
-
+        String strUrlRepo = request.getParameter( ConstanteUtils.PARAM_URL_REPO );
+        
         String strFieldError = ConstanteUtils.CONSTANTE_EMPTY_STRING;
 
         if ( StringUtils.isEmpty( strCode ) )
@@ -1455,15 +1423,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         {
             strFieldError = ConstanteUtils.PROPERTY_LABEL_WEBAPP_NAME;
         }
-        else if ( StringUtils.isEmpty( strCodeCategory ) )
+        else if ( StringUtils.isEmpty( strUrlRepo ) )
         {
-            strFieldError = ConstanteUtils.PROPERTY_LABEL_CODE_CATEGORY;
+            strFieldError = ConstanteUtils.PROPERTY_LABEL_URL_REPO;
         }
-        else if ( StringUtils.isEmpty( strSite ) )
-        {
-            strFieldError = ConstanteUtils.PROPERTY_LABEL_SITE;
-        }
-
+        
         if ( !StringUtils.isEmpty( strFieldError ) )
         {
             Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale(  ) ) };
@@ -1471,14 +1435,21 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, ConstanteUtils.PROPERTY_MESSAGE_MANDATORY_FIELD,
                 tabRequiredFields, AdminMessage.TYPE_STOP );
         }
-
+        
         application.setCode( strCode );
         application.setName( strName );
         application.setWebAppName( strWebAppName );
-        application.setCodeCategory( strCodeCategory );
-        application.setSiteName( strSite );
         application.setWorkgroup(strWorkgroup);
-        application.setSvnUrlSite( SVNUtils.getSvnUrlSite( application ) );
+        application.setUrlRepo( strUrlRepo );
+        
+        try
+        {
+            RepositoryUtils.checkRepository( application );
+        }
+        catch ( InvalidRepositoryUrlException e )
+        {
+            return AdminMessageService.getMessageUrl( request, ConstanteUtils.PROPERTY_MESSAGE_INVALID_REPO_URL,AdminMessage.TYPE_STOP );
+        }
 
         return null; // No error
     }
@@ -1575,6 +1546,47 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
     	
     }
     
+    /**
+     * Get the credentials form
+     * @param request the HttpServletRequest
+     * @return the credentials form
+     * @throws AccessDeniedException 
+     */
+    public String getFormAskCredentials( HttpServletRequest request ) throws AccessDeniedException
+    {
+        String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
+        int nIdApplication = Integer.parseInt( strIdApplication );
+        String strActionUrl = request.getParameter( ConstanteUtils.PARAM_ACTION_URL );
+        Application application = _applicationService.getApplication( nIdApplication, getPlugin(  ) );
+        if ( ApplicationService.isPrivateRepo( application ) )
+        {
+            Map<String, Object> model = new HashMap<>();
+            model.put( ConstanteUtils.MARK_VCS_SERVICE, DeploymentUtils.getVCSService( application.getRepoType( ) ) );
+            model.put( ConstanteUtils.MARK_APPLICATION, application );
+            model.put( ConstanteUtils.MARK_ACTION_URL, strActionUrl );
+
+            //Return ask credentials form
+            HtmlTemplate template = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_ASK_CREDENTIALS,
+            getLocale(  ), model );
+            return template.getHtml();
+        }
+        else
+        {
+            //No ask for credentials for scripts deployment 
+            return doDeployApplication( request );
+        }
+    }
+    
+    /**
+     * Check if the provided repository is valid 
+     * @param request the HttpServletRequest request
+     * @return a JSON with the validity and type of the repo
+     */
+    public String checkRepository( HttpServletRequest request )
+    {
+        String strRepoUrl = request.getParameter( ConstanteUtils.PARAM_URL_REPO );
+        return RepositoryUtils.checkRepository( strRepoUrl );
+    }
     
     
 }

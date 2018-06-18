@@ -24,7 +24,9 @@
 	<bean id="deployment.ServerApplicationService" class="fr.paris.lutece.plugins.deployment.service.ServerApplicationService" />
 	<bean id="deployment.FtpService" class="fr.paris.lutece.plugins.deployment.service.FtpService" />
 	<bean id="deployment.MavenService" class="fr.paris.lutece.plugins.deployment.service.MavenService" />
-	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.SvnService" />
+	<bean id="deployment.SvnService" class="fr.paris.lutece.plugins.deployment.service.vcs.SvnService" />
+	<bean id="deployment.GitlabService" class="fr.paris.lutece.plugins.deployment.service.vcs.GitlabService" />
+	<bean id="deployment.GithubService" class="fr.paris.lutece.plugins.deployment.service.vcs.GithubService" />
 	<bean id="deployment.WorkflowDeploySiteService" class="fr.paris.lutece.plugins.deployment.service.WorkflowDeploySiteService" />
 	<bean id="deployment.DatabaseService" class="fr.paris.lutece.plugins.deployment.service.DatabaseService" />
 	

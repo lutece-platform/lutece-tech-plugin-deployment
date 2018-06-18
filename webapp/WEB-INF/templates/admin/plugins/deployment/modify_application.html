@@ -47,17 +47,12 @@
 							<@comboWithParams name="workgroup" default_value="${application.workgroup!}" additionalParameters="class=\"form-control\"" items=user_workgroup_list />
 	          </div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="code_category" >#i18n{deployment.create_application.label_category}*</label>
+                                        <div class="form-group" id="group_repo_url">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="repo_url" >#i18n{deployment.create_application.label_repo_url}*</label>
 						<div class="col-xs-12 col-sm-4 col-md-4">
-							<@comboWithParams name="code_category" default_value="${(application.codeCategory)?if_exists}" additionalParameters="onchange=\"refreshComponants();\" class=\"form-control\""  items=category_list />
-	          </div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="site" >#i18n{deployment.create_application.label_site}*</label>
-						<div class="col-xs-12 col-sm-4 col-md-4">
-							<@comboWithParams name="site" additionalParameters="class='form-control'" items=site_list default_value="${(application.siteName)?if_exists}" />
-						</div>
+							<input type="text" id="url_repo" value="${application.urlRepo}" name="url_repo"  tabindex="3" class="form-control">
+                                                        <span id="url_repo_help" class="help-block">#i18n{deployment.create_application.label_repo_url.help}.</span>
+                                                </div>
 					</div>
 					 <div class="form-group">
 						<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
@@ -71,23 +66,10 @@
 					</div>
 				</form>
         <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
-				<script type="text/javascript">
-					// empty component list and unselect category
-					initComponants();
-					var itemsMap = new Object();
-					<#list category_list_site_map?keys as category_key>
-						var itemList = new Array();
-						<#assign listSite = category_list_site_map[category_key!]! />
-						<#list listSite as site>
-							var item = new Object();
-							item["code"] = "${site.code}";
-							item["name"] = "${site.name}";
-							itemList.push(item);
-						</#list>
-						itemsMap["${category_key}"] = itemList;
-					</#list>
-				</script>
   		</#if>
 	  </div>
   </section>
 </div>
+<script> 
+    checkRepository( );
+</script>

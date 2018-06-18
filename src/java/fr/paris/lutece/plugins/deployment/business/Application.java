@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
+import fr.paris.lutece.plugins.deployment.service.ApplicationService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
@@ -43,9 +44,9 @@ public class Application implements AdminWorkgroupResource,RBACResource
     private String _strCode;
     private String _strName;
     private String _strWebappName;
-    private String _strCodeCategory;
-    private String _strSiteName;
-    private String _strSvnUrlSite;
+    private String _strArtifactId;
+    private String _strUrlRepo;
+    private String _strRepoType;
     private String _strWorkgroup;
 
     public void setIdApplication( int _nIdApplication )
@@ -76,36 +77,6 @@ public class Application implements AdminWorkgroupResource,RBACResource
     public void setName( String strName )
     {
         _strName = strName;
-    }
-
-    public String getCodeCategory(  )
-    {
-        return _strCodeCategory;
-    }
-
-    public void setCodeCategory( String strCodeCategory )
-    {
-        _strCodeCategory = strCodeCategory;
-    }
-
-    public String getSiteName(  )
-    {
-        return _strSiteName;
-    }
-
-    public void setSiteName( String strSiteName )
-    {
-        _strSiteName = strSiteName;
-    }
-
-    public String getSvnUrlSite(  )
-    {
-        return _strSvnUrlSite;
-    }
-
-    public void setSvnUrlSite( String strUrlSite )
-    {
-        _strSvnUrlSite = strUrlSite;
     }
 
     public String getWebAppName(  )
@@ -140,4 +111,67 @@ public String getResourceId() {
 	
 	return Integer.toString(getIdApplication());
 }
+
+    /**
+     * Get the URL of the repo
+     * @return the URL of the repo
+     */
+    public String getUrlRepo() 
+    {
+        return _strUrlRepo;
+    }
+
+    /**
+     * Set the URL of the repo
+     * @param strUrlRepo the Url of the Repo
+     */
+    public void setUrlRepo(String strUrlRepo) 
+    {
+        _strUrlRepo = strUrlRepo;
+    }
+
+    /**
+     * Get the repo type of the application
+     * @return the repo type
+     */
+    public String getRepoType() {
+        return _strRepoType;
+    }
+
+    /**
+     * Set the repo type of the application
+     * @param strRepoType the repo type
+     */
+    public void setRepoType(String strRepoType) {
+        _strRepoType = strRepoType;
+    }
+
+    /**
+     * Get the artifact id of the application
+     * @return the artifact id of the application
+     */
+    public String getArtifactId() {
+        return _strArtifactId;
+    }
+
+    /**
+     * Set the artifact if of the application
+     * @param strArtifactId the artifact id of the application
+     */
+    public void setArtifactId(String strArtifactId) {
+        this._strArtifactId = strArtifactId;
+    }
+    
+    /**
+     * Check if the application has a private repo
+     * @return true if the application has a private repo, false otherwise
+     */
+    public boolean hasPrivateRepo( )
+    {
+        return ApplicationService.isPrivateRepo( this );
+    }
+
+    
+
+
 }

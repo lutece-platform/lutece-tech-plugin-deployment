@@ -14,6 +14,65 @@ function setResultInformations( resultInformations ){
 	}
 }
 
+firstRepoUrlHelp = $("#url_repo_help").text();
+function checkRepository( )
+{
+    $('#url_repo').on('input',function(e)
+    {
+        if ( $("#url_repo").val()==="" )
+        {
+            $('#url_repo_help').text(firstRepoUrlHelp);
+            $('#group_repo_url').removeClass( 'has-success' );
+            $('#group_repo_url').removeClass( 'has-error' );
+        }
+        else
+        {
+           $.post(
+           'jsp/admin/plugins/deployment/CheckRepository.jsp',
+           { url_repo : $('#url_repo').val()},
+           processCheckRepository,
+           'json'
+            ); 
+        }
+        
+    });
+}
+
+
+
+function processCheckRepository ( strJson )
+{
+    
+    if ( strJson.valid_url )
+    {
+        $('#group_repo_url').removeClass( 'has-error' );
+        $('#group_repo_url').addClass( 'has-success' );
+        var fontIcon = "";
+        var repoType = "";
+        switch ( strJson.repo_type )
+        {
+            case 'gitlab':
+                repoType = "GitLab";
+                break;
+            case 'svn':
+                repoType = "SubVersioN";
+                break;
+            case 'github':
+                repoType = "GitHub";
+                break;
+        }
+        $('#url_repo_help').text("Repository : "+repoType+".");
+    }
+    else
+    {
+        $('#group_repo_url').removeClass( 'has-success' );
+        $('#group_repo_url').addClass( 'has-error' );
+        $('#url_repo_help').text(firstRepoUrlHelp);
+    }
+    
+        
+}
+
 function setErrors( errors,errorType){
 	if(errors!=null && errors!= "")	{
 		$('#errors_msg').html( errors);
@@ -63,33 +122,7 @@ function statusCallback( json ){
 	}
 }
 
-function initComponants(){
-	// clear category selection
-	$("#code_category").selectedIndex = 0;
-	// see selectbox.js
-	removeAllOptions( document.getElementById("site") );
-}
-
-function refreshComponants(){
-	var select = document.getElementById("site");
-	// first, remove all
-	removeAllOptions( select );
-	var selectCategory = document.getElementById("code_category");
-	// add options
-	var selectedCategory = selectCategory.options[selectCategory.selectedIndex].value;
-	if ( selectedCategory != null && selectedCategory != "" ){
-		var itemList = itemsMap[selectedCategory];
-		// add empty value
-		addOption( select,"","",true );
-		for ( var i = 0; i < itemList.length; i++ )	{
-			var item = itemList[i];
-			addOption(select,item["name"],item["code"],false);
-		}
-	}
-}
-
 function initComponantsEnvironment(){
-	// clear category selection
 	$("#code_environment").selectedIndex = 0;
 	// see selectbox.js
 	removeAllOptions( document.getElementById("code_server_application_instance_tomcat") );

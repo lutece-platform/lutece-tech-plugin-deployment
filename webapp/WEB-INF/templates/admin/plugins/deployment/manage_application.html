@@ -12,13 +12,11 @@
   <form class="form-inline hidden-xs" action="" method="" name="" id="filter-apps" >
     <label for="filter_app" class="sr-only">Chercher sur le nom</label>
     <input type="text" class="form-control" placeholder="Filter sur le nom" name="search_name" id="filter_app" value="${search_name!}">
-    <label for="code_category" class="sr-only">#i18n{deployment.manage_application.label_search_by_category}</label>
-    <@comboWithParams name="code_category" default_value=category_selected additionalParameters="class=\"form-control\"" items=category_list />
     <label for="workgroup" class="sr-only">#i18n{deployment.manage_application.label_search_by_workgroup}</label>
     <div class="input-group">
       <@comboWithParams name="workgroup" default_value=user_workgroup_selected additionalParameters="class=\"form-control\"" items=user_workgroup_list />
       <span class="input-group-btn">
-        <button class="btn btn-default btn-flat" type="submit" title="#i18n{deployment.manage_application.button_search_by_category}"><i class="fa fa-search "></i> </button>
+        <button class="btn btn-default btn-flat" type="submit" title="#i18n{deployment.manage_application.button_search}"><i class="fa fa-search "></i> </button>
       </span>
     </div>
   </form>
@@ -36,23 +34,19 @@
               ${application.code} - ${application.name}
               <#if list_actions??>
                 <span class="btn-group" role="group" aria-label="...">
-                  <@getToolbar actions=list_actions appId=application.idApplication type='app' />
+                  <@getToolbar actions=list_actions application=application type='app' />
                 </span>
               </#if>
             </strong>
           </h4>
-          <!-- <p>${application.siteName}</p> -->
           <#if list_actions??>
-            <@getToolbar actions=list_actions appId=application.idApplication type='deploy' />
-            <@getToolbar actions=list_actions appId=application.idApplication type='env' />
+            <@getToolbar actions=list_actions application=application type='deploy' />
+            <@getToolbar actions=list_actions application=application type='env' />
           </#if>
         </div>
         <div class="hidden-xs col-sm-3">
           <h4>
-            <strong><a title="Filter sur la catégorie" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&workgroup=all&code_category=${category_map[application.codeCategory]!}"><i class="fa fa-tag fa-fw"></i></a> ${category_map[application.codeCategory!]!'<span class="text-warning"><i class="fa fa-warning"></i> Pas de cat&eacute;gorie</span>'}</strong>
-          </h4>
-          <h4>
-            <strong><a title="Filter sur le groupe" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&code_category=&workgroup=${application.workgroup!}"><i class="fa fa-group fa-fw"></i></a> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong>
+            <strong><a title="Filter sur le groupe" href="jsp/admin/plugins/deployment/ManageApplication.jsp?search_name=&workgroup=${application.workgroup!}"><i class="fa fa-group fa-fw"></i></a> ${application.workgroup!'<span class="text-warning"><i class="fa fa-warning"></i>Pas de groupe de travail</span>'}</strong>
           </h4>
         </div>
       </div>
@@ -77,20 +71,20 @@
 </#if>
 </div>
 
-<#macro getToolbar actions appId type >
+<#macro getToolbar actions application type >
 <#assign toolbar=''>
 <#switch type>
 	<#case "app">
    <#list actions as action >
     <#switch action.permission>
     <#case "MODIFY">
-      <a class="btn btn-link text-primary" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <a class="btn btn-link text-primary" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass}"></i></span>
       </a>
       <#break>
     <#case "DELETE">
-      <a class="btn btn-link text-danger" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <a class="btn btn-link text-danger" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass}"></i></span>
       </a>
@@ -102,13 +96,18 @@
   <#list actions as action >
    <#switch action.permission>
     <#case "DEPLOY_APPLICATION">
-      <a class="button shadow fill-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <#if application.hasPrivateRepo() >
+        <a class="button shadow fill-blue small" href="jsp/admin/plugins/deployment/AskCredentials.jsp?id_application=${application.idApplication}&action_url=${action.url}" title="#i18n{${action.i18nKeyTitle}}" >
+
+      <#else>
+        <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
+      </#if>
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
       </a>
       <#break>
     <#case "DEPLOY_SCRIPT">
-      <a class="button shadow fill-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+      <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
         <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
       </a>
@@ -120,19 +119,19 @@
    <#list actions as action >
     <#switch action.permission>
       <#case "VIEW">
-        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}" >
+        <a class="button transition border-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
         <#break>
       <#case "INIT_APP_CONTEXT">
-        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+        <a class="button transition border-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}">
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
         <#break>
       <#case "INIT_DATABASE">
-        <a class="button transition border-blue small" href="${action.url}&id_application=${appId}" title="#i18n{${action.i18nKeyTitle}}">
+        <a class="button transition border-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}">
           <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
           <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
         </a>
@@ -151,9 +150,6 @@ $( function(){
   });
 });
 
-$("#code_category").change(function(){
-  $("#filter-apps").submit();
-});
 $("#workgroup").change(function(){
   $("#filter-apps").submit();
 });

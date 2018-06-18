@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-import java.io.FileInputStream;
+import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -51,15 +51,14 @@ public class WorkflowDeploySiteContext implements Serializable
     private String _strSvnBaseSiteUrl;
     private HashMap<String, String> _hashServerApplicationInstance;
     private String _strCodeEnvironement;
-    private boolean _bTagSiteBeforeDeploy;
+    private boolean _bDeployDevSite;
     private String _strTagToDeploy;
     private String _strTagName;
     private String _strNextVersion;
     private String _strTagVersion;
     private CommandResult _commandResult;
-    private SvnUser _mavenUser;
+    private AbstractVCSUser _vcsUser;
     private boolean _bDeployWar;
-    private boolean _bTagAutomatically;
     private boolean _bDeploySql;
     private String _strDatabaseName;
     private InputStream _scriptFileItem;
@@ -161,16 +160,24 @@ public class WorkflowDeploySiteContext implements Serializable
         _hashServerApplicationInstance.put( strType, strCodeServerAppplicationInstance );
     }
 
-    public boolean isTagSiteBeforeDeploy(  )
+    /**
+     * Check if the dev version of the site should be deployed.
+     * @return true if the dev version of the site should be deployed
+     */
+    public boolean isDeployDevSite() 
     {
-        return _bTagSiteBeforeDeploy;
+        return _bDeployDevSite;
     }
 
-    public void setTagSiteBeforeDeploy( boolean bTagSiteBeforeDeploy )
+    /**
+     * Set the deploy dev site boolean
+     * @param bDeployDevSite the deploy dev site boolean
+     */
+    public void setDeployDevSite( boolean bDeployDevSite ) 
     {
-        _bTagSiteBeforeDeploy = bTagSiteBeforeDeploy;
+        _bDeployDevSite = bDeployDevSite;
     }
-
+    
     public String getTagToDeploy(  )
     {
         return _strTagToDeploy;
@@ -190,17 +197,7 @@ public class WorkflowDeploySiteContext implements Serializable
     {
         this._strTagName = strTagName;
     }
-
-    public void setSvnUser( SvnUser _mavenUser )
-    {
-        this._mavenUser = _mavenUser;
-    }
-
-    public SvnUser getMavenUser(  )
-    {
-        return _mavenUser;
-    }
-
+    
     public void setDeployWar( boolean _bDeployWar )
     {
         this._bDeployWar = _bDeployWar;
@@ -221,65 +218,70 @@ public class WorkflowDeploySiteContext implements Serializable
         _bDeploySql = bDeploySql;
     }
 
-	public String getDatabaseName() {
-		return _strDatabaseName;
-	}
+    public String getDatabaseName() {
+            return _strDatabaseName;
+    }
 
-	public void setDatabaseName(String _strDatabaseName) {
-		this._strDatabaseName = _strDatabaseName;
-	}
+    public void setDatabaseName(String _strDatabaseName) {
+            this._strDatabaseName = _strDatabaseName;
+    }
 
-	public String getScriptFileItemName() {
-		return _scriptFileItemName;
-	}
+    public String getScriptFileItemName() {
+            return _scriptFileItemName;
+    }
 
-	public void setScriptFileItemName(String _scriptFileItemName) {
-		this._scriptFileItemName = _scriptFileItemName;
-	}
-	
+    public void setScriptFileItemName(String _scriptFileItemName) {
+            this._scriptFileItemName = _scriptFileItemName;
+    }
 
-	public InputStream getScriptFileItem() {
-		return _scriptFileItem;
-	}
 
-	public void setScriptFileItem(InputStream _scriptFileItem) {
-		this._scriptFileItem = _scriptFileItem;
-	}
+    public InputStream getScriptFileItem() {
+            return _scriptFileItem;
+    }
 
-	public String getScriptFileSelected() {
-		return _scriptFileSelected;
-	}
+    public void setScriptFileItem(InputStream _scriptFileItem) {
+            this._scriptFileItem = _scriptFileItem;
+    }
 
-	public void setScriptFileSelected(String _scriptFileSelected) {
-		this._scriptFileSelected = _scriptFileSelected;
-	}
+    public String getScriptFileSelected() {
+            return _scriptFileSelected;
+    }
 
-	public boolean isTagAutomatically() {
-		return _bTagAutomatically;
-	}
+    public void setScriptFileSelected(String _scriptFileSelected) {
+            this._scriptFileSelected = _scriptFileSelected;
+    }
 
-	public void setTagAutomatically(boolean _bDeployWarFast) {
-		this._bTagAutomatically = _bDeployWarFast;
-	}
+    public boolean isInitBdd() {
+            return _bInitBdd;
+    }
 
-	public boolean isInitBdd() {
-		return _bInitBdd;
-	}
+    public void setInitBdd(boolean _bInitBdd) {
+            this._bInitBdd = _bInitBdd;
+    }
 
-	public void setInitBdd(boolean _bInitBdd) {
-		this._bInitBdd = _bInitBdd;
-	}
+    public boolean isInitAppContext() {
+            return _bInitAppContext;
+    }
 
-	public boolean isInitAppContext() {
-		return _bInitAppContext;
-	}
+    public void setInitAppContext(boolean _bInitAppContext) {
+            this._bInitAppContext = _bInitAppContext;
+    }
 
-	public void setInitAppContext(boolean _bInitAppContext) {
-		this._bInitAppContext = _bInitAppContext;
-	}
+    /**
+     * Get the VCS user who is logged into the current workflow context
+     * @return the VCS user
+     */
+    public AbstractVCSUser getVcsUser() 
+    {
+        return _vcsUser;
+    }
 
-	
-
-	
+    /**
+     * Set the VCS user who is logged into the current workflow context
+     * @param vcsUser the VCSUser
+     */
+    public void setVcsUser (AbstractVCSUser vcsUser ) {
+        this._vcsUser = vcsUser;
+    }
 	
 }

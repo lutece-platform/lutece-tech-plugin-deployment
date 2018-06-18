@@ -34,9 +34,8 @@
 package fr.paris.lutece.plugins.deployment.service;
 
 import fr.paris.lutece.plugins.deployment.business.CommandResult;
-import fr.paris.lutece.plugins.deployment.business.Environment;
 import fr.paris.lutece.plugins.deployment.business.MavenGoals;
-import fr.paris.lutece.plugins.deployment.business.SvnUser;
+import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.plugins.deployment.util.ReleaseUtils;
@@ -105,7 +104,7 @@ public class MavenService implements IMavenService
     /* (non-Javadoc)
      * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
      */
-    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, SvnUser user,
+    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user,
         CommandResult commandResult )
     {
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
@@ -187,7 +186,7 @@ public class MavenService implements IMavenService
      * @param strSVNBinPath svn bin path (ex:  /home/svn/apps/subversion/bin)
      */
     @SuppressWarnings( "unchecked" )
-    private String mvn( String strSiteName, String strSitePath, List<String> goals, CommandResult commandResult )
+    private String mvn( String strTagName, String strSitePath, List<String> goals, CommandResult commandResult )
     {
         InvocationRequest request = new DefaultInvocationRequest(  );
         request.setPomFile( new File( DeploymentUtils.getPathPomFile( strSitePath ) ) );

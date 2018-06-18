@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.deployment.util;
 
 import fr.paris.lutece.plugins.deployment.business.jaxb.maven.Model;
 import fr.paris.lutece.plugins.deployment.business.jaxb.maven.ObjectFactory;
-import fr.paris.lutece.plugins.deployment.svn.ReleaseSVNCommitClient;
+import fr.paris.lutece.plugins.deployment.util.vcs.ReleaseSVNCommitClient;
 
 import org.apache.commons.lang.StringUtils;
 

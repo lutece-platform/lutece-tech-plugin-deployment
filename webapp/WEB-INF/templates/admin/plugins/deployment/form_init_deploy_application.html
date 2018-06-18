@@ -27,8 +27,6 @@
         <script src="js/plugins/deployment/deployment.js" type="text/javascript"></script>
         <script type="text/javascript">
         <#if deploy_war||init_app_context>
-          // empty component list and unselect category
-          initComponantsEnvironment();
           var itemsMapServerTomcat = new Object();
           <#list server_instance_map_tomcat?keys as environment_key>
             var itemList = new Array();
@@ -103,24 +101,10 @@
               </div>
               <#if deploy_war>
                 <div class="form-group">
-                  <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_before_deploy" >#i18n{deployment.form_init_deploy_application.label_tag_before_deploy}</label>
-                  <div class="col-xs-12 col-sm-8 col-md-8">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" id="tag_site_before_deploy" name="tag_site_before_deploy">&nbsp;
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" id="tag_automatically_group">
-                  <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_automatically" >#i18n{deployment.form_init_deploy_application.label_tag_automatically}</label>
-                  <div class="col-xs-12 col-sm-8 col-md-8">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox"  name="tag_automatically">
-                      </label>
-                    </div>
-                  </div>
+                  <div class="col-xs-12 col-sm-8 col-md-8 col-sm-offset-2">
+                        	<input type="checkbox" id="deploy_dev_site" name="deploy_dev_site" checked="checked">&nbsp;
+							<label class="control-label" for="deploy_dev_site" >#i18n{deployment.form_init_deploy_application.label_deploy_dev_site}</label>
+				  </div> 
                 </div>
                 <div class="form-group" id="tag_to_deploy_group">
                   <label class="control-label col-xs-12 col-sm-2 col-md-2" for="tag_to_deploy">
@@ -178,14 +162,12 @@
 <script type="text/javascript" src="jsp/site/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=deploymentUploadHandler&maxFileSize=2048576000"></script>
 <script>
 $( function(e){
-  $("#tag_automatically_group").hide();
-  $("#tag_site_before_deploy").click( function(e){
+  $("#tag_to_deploy_group").hide();
+  $("#deploy_dev_site").click( function(e){
     if ($(this).is (':checked')){
       $("#tag_to_deploy_group").hide();
-      $("#tag_automatically_group").show();
     } else {
       $("#tag_to_deploy_group").show();
-      $("#tag_automatically_group").hide();
     }
   });
 });
