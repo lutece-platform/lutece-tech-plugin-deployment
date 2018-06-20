@@ -476,10 +476,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             try
             {
                 vcsService.checkAuthentication( application.getUrlRepo( ), vcsUser );
-                // Set the VCSUser in session for the application deployment process
-                // For not asking credentials again
                 HttpSession session = request.getSession( true );
-                session.setAttribute( ConstanteUtils.CONSTANTE_VCS_USER, vcsUser );
+                session.setAttribute( ConstanteUtils.ATTRIBUTE_VCS_USER, vcsUser );
             }
             catch( AppException e )
             {
@@ -832,12 +830,13 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( WorkflowService.getInstance( ).canProcessAction( workflowDeploySiteContext.getId( ), WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE, nIdAction,
                 ConstanteUtils.CONSTANTE_ID_NULL, request, false ) )
         {
+            Application application = null;
             try
             {
 
                 DeploymentUtils.startCommandResult( workflowDeploySiteContext );
 
-                Application application = _applicationService.getApplication( workflowDeploySiteContext.getIdApplication( ), plugin );
+                application = _applicationService.getApplication( workflowDeploySiteContext.getIdApplication( ), plugin );
                 Environment environment = _environmentService.getEnvironment( workflowDeploySiteContext.getCodeEnvironement( ), getLocale( ) );
 
                 if ( ( workflowDeploySiteContext.isDeployWar( ) && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION,
@@ -852,7 +851,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
                     throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_ACCESS_DENIED, getLocale( ) ) );
                 }
-
+                
+                
+                DeploymentUtils.deleteLocalRepository( workflowDeploySiteContext, application );
+                
                 WorkflowService.getInstance( ).doProcessAction( workflowDeploySiteContext.getId( ), WorkflowDeploySiteContext.WORKFLOW_RESOURCE_TYPE,
                         nIdAction, ConstanteUtils.CONSTANTE_ID_NULL, request, locale, false );
             }
@@ -870,9 +872,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             finally
             {
                 DeploymentUtils.stopCommandResult( workflowDeploySiteContext );
-
+                if ( application != null )
+                {
+                    DeploymentUtils.deleteLocalRepository( workflowDeploySiteContext, application );
+                }
             }
-
         }
     }
 
@@ -974,12 +978,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             }
 
             HttpSession session = request.getSession( true );
-            if ( session.getAttribute( ConstanteUtils.CONSTANTE_VCS_USER ) != null )
+            if ( session.getAttribute( ConstanteUtils.ATTRIBUTE_VCS_USER ) != null )
             {
                 AbstractVCSUser user = new AbstractVCSUser( );
-                user = (AbstractVCSUser) session.getAttribute( ConstanteUtils.CONSTANTE_VCS_USER );
+                user = (AbstractVCSUser) session.getAttribute( ConstanteUtils.ATTRIBUTE_VCS_USER );
                 workflowContext.setVcsUser( user );
-                session.removeAttribute( ConstanteUtils.CONSTANTE_VCS_USER );
             }
             else
             {
@@ -1473,10 +1476,17 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         Application application = _applicationService.getApplication( nIdApplication, getPlugin( ) );
         if ( ApplicationService.isPrivateRepo( application ) )
         {
+            HttpSession session = request.getSession( true );
+            AbstractVCSUser user = (AbstractVCSUser)session.getAttribute( ConstanteUtils.ATTRIBUTE_VCS_USER );
+            
             Map<String, Object> model = new HashMap<>( );
             model.put( ConstanteUtils.MARK_VCS_SERVICE, DeploymentUtils.getVCSService( application.getRepoType( ) ) );
             model.put( ConstanteUtils.MARK_APPLICATION, application );
             model.put( ConstanteUtils.MARK_ACTION_URL, strActionUrl );
+            if ( user != null )
+            {
+                model.put( ConstanteUtils.MARK_USER, user );
+            }
 
             // Return ask credentials form
             HtmlTemplate template = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_ASK_CREDENTIALS, getLocale( ), model );

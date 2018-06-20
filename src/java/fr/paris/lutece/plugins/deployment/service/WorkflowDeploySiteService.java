@@ -57,6 +57,13 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 
 public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 {
@@ -248,5 +255,5 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
             throw new RuntimeException( strProcess );
         }
     }
-
+    
 }

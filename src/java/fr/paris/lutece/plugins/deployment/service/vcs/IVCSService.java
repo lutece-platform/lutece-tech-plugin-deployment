@@ -107,7 +107,6 @@ public interface IVCSService<T extends AbstractVCSUser>
      * 
      * @param strRepoUrl
      * @param user
-     * @return true if the user is authorized, false otherwise
      */
     void checkAuthentication( String strRepoUrl, T user );
 }

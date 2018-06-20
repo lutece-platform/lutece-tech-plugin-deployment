@@ -46,7 +46,7 @@ public class GitlabService extends AbstractGitService
     public void checkAuthentication( String strRepoUrl, GitUser user )
     {
         String strUID = UUID.randomUUID( ).toString( );
-        String strLocalTempDir = AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY );
+        String strLocalTempDir = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_CHECKOUT_BASE_PAH );
         if ( !GitUtils.checkAuthentication( strRepoUrl, strLocalTempDir, strUID, user ) )
         {
             throw new AppException( "Bad credentials to GitLab : Unauthorized" );

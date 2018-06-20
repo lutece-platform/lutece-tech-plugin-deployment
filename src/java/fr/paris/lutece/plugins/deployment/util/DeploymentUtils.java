@@ -61,6 +61,7 @@ import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 import fr.paris.lutece.plugins.deployment.business.WorkflowDeploySiteContext;
 import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 import fr.paris.lutece.plugins.deployment.business.vcs.GitUser;
+import fr.paris.lutece.plugins.deployment.service.DeploymentPlugin;
 import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
@@ -68,12 +69,18 @@ import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.user.attribute.AdminUserFieldService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 
 public class DeploymentUtils
 {
@@ -862,5 +869,30 @@ public class DeploymentUtils
             user.setPassword( strPassword );
         }
         return user;
+    }
+    
+    /**
+     * Delete the local repository of the application sources
+     * @param context
+     * @param application
+     * @return 
+     */
+    public static String deleteLocalRepository( WorkflowDeploySiteContext context, Application application )
+    {
+        String strLocalPath = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_CHECKOUT_BASE_PAH ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + application.getArtifactId();
+        Path path = Paths.get( strLocalPath );
+        try
+        {
+            if ( Files.exists(path ) )
+            {
+                FileUtils.forceDelete( path.toFile( ) );
+            }
+        }
+        catch( IOException e )
+        {
+            context.getCommandResult( ).getLog( ).append( "Unable to delete the local directory " + strLocalPath  + " \n" );
+            throw new AppException( "Unable to delete the local directory " + strLocalPath , e);
+        }
+        return null;
     }
 }

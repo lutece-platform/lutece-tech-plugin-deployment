@@ -82,7 +82,6 @@ public class ConstanteUtils
     public static final String CONSTANTE_REPO_TYPE_GITLAB = "gitlab";
     public static final String CONSTANTE_BRANCH_DEVELOP = "develop";
     public static final String CONSTANTE_BRANCH_MASTER = "master";
-    public static final String CONSTANTE_VCS_USER = "vcs_user";
 
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
@@ -234,6 +233,7 @@ public class ConstanteUtils
     public static final String MARK_MANAGE_APPLICATION_ACTIONS = "map_application_actions";
     public static final String MARK_VCS_SERVICE = "vcs_service";
     public static final String MARK_ACTION_URL = "action_url";
+    public static final String MARK_USER = "user";
 
     // PARAM
     public static final String PARAM_SITE_TAG_VERSION = "site_tag_version";
@@ -308,4 +308,6 @@ public class ConstanteUtils
     // Regex
     public static final String REGEX_GIT_EXTRACT_ARTIFACT_FROM_URL = "deployment.regex.git.artifactId.extractFromUrl";
 
+    // Attributes
+    public static final String ATTRIBUTE_VCS_USER = "vcs_user"; 
 }
