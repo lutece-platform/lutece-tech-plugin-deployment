@@ -58,11 +58,10 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-
 public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 {
-    HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>(  );
-    
+    HashMap<Integer, WorkflowDeploySiteContext> _mapWorkflowDeploySiteContext = new HashMap<Integer, WorkflowDeploySiteContext>( );
+
     @Inject
     IEnvironmentService _environmentService;
     @Inject
@@ -76,8 +75,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
 
     public synchronized int addWorkflowDeploySiteContext( WorkflowDeploySiteContext context )
     {
-        int nIdKey = Integer.parseInt( DatastoreService.getDataValue( 
-                    ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, "0" ) ) + 1;
+        int nIdKey = Integer.parseInt( DatastoreService.getDataValue( ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, "0" ) ) + 1;
         // stored key in database
         DatastoreService.setDataValue( ConstanteUtils.CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY, Integer.toString( nIdKey ) );
         context.setId( nIdKey );
@@ -94,20 +92,20 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     public String checkoutSite( WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
         IVCSService vcsService = DeploymentUtils.getVCSService( application.getRepoType( ) );
-        context.getCommandResult(  ).getLog(  ).append( "Starting Action Checkout  Site...\n" );
-        
-        vcsService.checkAuthentication( context.getSvnBaseSiteUrl(), context.getVcsUser( ) );
-        
-        vcsService.doCheckoutSite( application.getArtifactId(), application.getUrlRepo( ), context.getVcsUser( ) ,
-        context.getCommandResult(  ), null, context.getTagToDeploy(  ) );
-        
-        //throw RuntimeException for stopping Workflow 
-    
-        stopWorkflowIfTechnicalError("Error Chekout Site", context.getCommandResult());
-        
-        context.getCommandResult(  ).getLog(  ).append( "End Action Checkout   Site...\n" );
+        context.getCommandResult( ).getLog( ).append( "Starting Action Checkout  Site...\n" );
+
+        vcsService.checkAuthentication( context.getSvnBaseSiteUrl( ), context.getVcsUser( ) );
+
+        vcsService.doCheckoutSite( application.getArtifactId( ), application.getUrlRepo( ), context.getVcsUser( ), context.getCommandResult( ), null,
+                context.getTagToDeploy( ) );
+
+        // throw RuntimeException for stopping Workflow
+
+        stopWorkflowIfTechnicalError( "Error Chekout Site", context.getCommandResult( ) );
+
+        context.getCommandResult( ).getLog( ).append( "End Action Checkout   Site...\n" );
 
         return null;
     }
@@ -115,7 +113,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     public void initTagInformations( WorkflowDeploySiteContext context )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
 
         String strVersion = null;
         String strNextVersion = null;
@@ -124,20 +122,19 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         // release version and next version
         try
         {
-            strVersion = ReleaseUtils.getReleaseVersion( DeploymentUtils.getPathCheckoutSite( 
-                        application.getUrlRepo( ) ) );
+            strVersion = ReleaseUtils.getReleaseVersion( DeploymentUtils.getPathCheckoutSite( application.getUrlRepo( ) ) );
             strNextVersion = ReleaseUtils.getNextVersion( strVersion );
-            strTagName = ReleaseUtils.getReleaseName( application.getName(), strVersion );
+            strTagName = ReleaseUtils.getReleaseName( application.getName( ), strVersion );
         }
-        catch ( FileNotFoundException e )
+        catch( FileNotFoundException e )
         {
             // TODO Auto-generated catch block
             AppLogService.error( e );
         }
-        catch ( JAXBException e )
+        catch( JAXBException e )
         {
             // TODO Auto-generated catch block
-            e.printStackTrace(  );
+            e.printStackTrace( );
         }
 
         context.setTagName( strTagName );
@@ -148,17 +145,17 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     public String assemblySite( WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
 
         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
-                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
-        context.getCommandResult(  ).getLog(  ).append( "Starting Action Assembly  Site...\n" );
-        MavenService.getService( ).mvnSiteAssembly( application.getArtifactId( ), context.getTagName(  ),
-            serverApplicationInstance.getMavenProfile(application.getIdApplication( )  ), context.getVcsUser(), context.getCommandResult(  ) );
-        //throw RuntimeException for stopping Workflow 
-        stopWorkflowIfTechnicalError("Error During assembly Site", context.getCommandResult());
-        context.getCommandResult(  ).getLog(  ).append( "End Action Assembly  Site...\n" );
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ), context.getCodeEnvironement( ),
+                ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
+        context.getCommandResult( ).getLog( ).append( "Starting Action Assembly  Site...\n" );
+        MavenService.getService( ).mvnSiteAssembly( application.getArtifactId( ), context.getTagName( ),
+                serverApplicationInstance.getMavenProfile( application.getIdApplication( ) ), context.getVcsUser( ), context.getCommandResult( ) );
+        // throw RuntimeException for stopping Workflow
+        stopWorkflowIfTechnicalError( "Error During assembly Site", context.getCommandResult( ) );
+        context.getCommandResult( ).getLog( ).append( "End Action Assembly  Site...\n" );
 
         return null;
     }
@@ -166,95 +163,90 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
     public String deploySite( WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ),
-                context.getCodeEnvironement(  ), ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
-        context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Site...\n" );
-       
-        String strWarGeneratedName= MavenService.getService( ).getSiteWarName(application.getArtifactId( ) );
-       
-        
-        _ftpService.uploadFile( application.getWebAppName(  ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION,
-            DeploymentUtils.getPathArchiveGenerated( DeploymentUtils.getPathCheckoutSite( application.getArtifactId( ) ),
-            		strWarGeneratedName , ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
-            serverApplicationInstance.getFtpInfo(  ),
-            DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
-            context.getCommandResult(  ) ,true);
-        //throw RuntimeException for stopping Workflow 
-        stopWorkflowIfTechnicalError("Error During Deploy Site", context.getCommandResult());
-        
-        context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Site...\n" );
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ), context.getCodeEnvironement( ),
+                ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
+        context.getCommandResult( ).getLog( ).append( "Starting Action Deploy  Site...\n" );
+
+        String strWarGeneratedName = MavenService.getService( ).getSiteWarName( application.getArtifactId( ) );
+
+        _ftpService.uploadFile( application.getWebAppName( ) + ConstanteUtils.ARCHIVE_WAR_EXTENSION, DeploymentUtils.getPathArchiveGenerated(
+                DeploymentUtils.getPathCheckoutSite( application.getArtifactId( ) ), strWarGeneratedName, ConstanteUtils.ARCHIVE_WAR_EXTENSION ),
+                serverApplicationInstance.getFtpInfo( ), DeploymentUtils.getDeployDirectoryTarget( application.getCode( ), serverApplicationInstance ), context
+                        .getCommandResult( ), true );
+        // throw RuntimeException for stopping Workflow
+        stopWorkflowIfTechnicalError( "Error During Deploy Site", context.getCommandResult( ) );
+
+        context.getCommandResult( ).getLog( ).append( "End Action Deploy  Site...\n" );
 
         return null;
     }
-    
-   
-    
+
     public String deployScript( WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
-       
-       String strServerType= !StringUtils.isEmpty(context.getCodeServerInstance(ConstanteUtils.CONSTANTE_SERVER_MYSQL))?ConstanteUtils.CONSTANTE_SERVER_MYSQL:ConstanteUtils.CONSTANTE_SERVER_PSQ;
-       ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-    		   context.getCodeServerInstance( strServerType ),
-                context.getCodeEnvironement(  ),  strServerType, locale, false, false );
-       
-        context.getCommandResult(  ).getLog(  ).append( "Starting Action Deploy  Script...\n" );
-        
-      	_ftpService.uploadFile( context.getScriptFileItemName(),context.getScriptFileItem(),serverApplicationInstance.getFtpInfo(  ),
-			    DeploymentUtils.getDeployDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
-			    context.getCommandResult(  ),false );
-        //throw RuntimeException for stopping Workflow 
-      	stopWorkflowIfTechnicalError("Error During Deploy Script", context.getCommandResult());
-        
-		
-        context.getCommandResult(  ).getLog(  ).append( "End Action Deploy  Script...\n" );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
+
+        String strServerType = !StringUtils.isEmpty( context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_MYSQL ) ) ? ConstanteUtils.CONSTANTE_SERVER_MYSQL
+                : ConstanteUtils.CONSTANTE_SERVER_PSQ;
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+                context.getCodeServerInstance( strServerType ), context.getCodeEnvironement( ), strServerType, locale, false, false );
+
+        context.getCommandResult( ).getLog( ).append( "Starting Action Deploy  Script...\n" );
+
+        _ftpService.uploadFile( context.getScriptFileItemName( ), context.getScriptFileItem( ), serverApplicationInstance.getFtpInfo( ),
+                DeploymentUtils.getDeployDirectoryTarget( application.getCode( ), serverApplicationInstance ), context.getCommandResult( ), false );
+        // throw RuntimeException for stopping Workflow
+        stopWorkflowIfTechnicalError( "Error During Deploy Script", context.getCommandResult( ) );
+
+        context.getCommandResult( ).getLog( ).append( "End Action Deploy  Script...\n" );
 
         return null;
     }
 
-    public String executeServerAction( String strActionKey, HttpServletRequest request,
-        WorkflowDeploySiteContext context, Locale locale )
+    public String executeServerAction( String strActionKey, HttpServletRequest request, WorkflowDeploySiteContext context, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-        Application application = _applicationService.getApplication( context.getIdApplication(  ), plugin );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
         IAction action = _actionService.getAction( strActionKey, locale );
-        //test if the server instance is in the deployment context
-        if(context.getCodeServerInstance(action.getServerType())!=null)
+        // test if the server instance is in the deployment context
+        if ( context.getCodeServerInstance( action.getServerType( ) ) != null )
         {
-        
-	        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-	                context.getCodeServerInstance( action.getServerType(  ) ), context.getCodeEnvironement(  ),
-	                action.getServerType(  ), locale, false, false );
-	        boolean bResult;
-	        if ( action != null  && _actionService.canExecuteAction(application, action, serverApplicationInstance, context.getCommandResult(), DeploymentUtils.getActionParameters( context )))
-	        {
-	            context.getCommandResult(  ).getLog(  ).append( "Starting Action " + action.getName(  ) + " \n" );
-	            bResult= _actionService.executeAction( application, action, serverApplicationInstance,
-	                context.getCommandResult(  ), DeploymentUtils.getActionParameters(context)) ;
-	            if(!bResult && action.isStopWorkflowIfExecutionError() )
-	            {	 context.getCommandResult(  ).setErrorType(CommandResult.ERROR_TYPE_STOP);
-	            	//throw RuntimeException for stopping Workflow 
-	            	   throw new RuntimeException("Error During Server Action Execution");
-	            	
-	            }
-	            context.getCommandResult(  ).getLog(  ).append( "End Action " + action.getName(  ) + " \n" );
-	            
-	        }
+
+            ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+                    context.getCodeServerInstance( action.getServerType( ) ), context.getCodeEnvironement( ), action.getServerType( ), locale, false, false );
+            boolean bResult;
+            if ( action != null
+                    && _actionService.canExecuteAction( application, action, serverApplicationInstance, context.getCommandResult( ),
+                            DeploymentUtils.getActionParameters( context ) ) )
+            {
+                context.getCommandResult( ).getLog( ).append( "Starting Action " + action.getName( ) + " \n" );
+                bResult = _actionService.executeAction( application, action, serverApplicationInstance, context.getCommandResult( ),
+                        DeploymentUtils.getActionParameters( context ) );
+                if ( !bResult && action.isStopWorkflowIfExecutionError( ) )
+                {
+                    context.getCommandResult( ).setErrorType( CommandResult.ERROR_TYPE_STOP );
+                    // throw RuntimeException for stopping Workflow
+                    throw new RuntimeException( "Error During Server Action Execution" );
+
+                }
+                context.getCommandResult( ).getLog( ).append( "End Action " + action.getName( ) + " \n" );
+
+            }
         }
 
         return null;
     }
-    
-    private void stopWorkflowIfTechnicalError(String strProcess,CommandResult commandResult)throws RuntimeException
+
+    private void stopWorkflowIfTechnicalError( String strProcess, CommandResult commandResult ) throws RuntimeException
     {
-    	
-    	 if( commandResult!=null && commandResult.getStatus()==CommandResult.STATUS_ERROR && commandResult.getErrorType()==CommandResult.ERROR_TYPE_STOP)
-         {
-    		 throw new RuntimeException(strProcess);
-         }
+
+        if ( commandResult != null && commandResult.getStatus( ) == CommandResult.STATUS_ERROR
+                && commandResult.getErrorType( ) == CommandResult.ERROR_TYPE_STOP )
+        {
+            throw new RuntimeException( strProcess );
+        }
     }
-    
+
 }

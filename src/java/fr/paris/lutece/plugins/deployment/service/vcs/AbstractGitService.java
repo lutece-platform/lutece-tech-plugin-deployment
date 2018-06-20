@@ -49,28 +49,28 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 
-
 public class AbstractGitService implements IVCSService<GitUser>
 {
-    
+
     @Override
-    public void init() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void init( )
+    {
+        throw new UnsupportedOperationException( "Not supported yet." ); // To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ReferenceList getTagsSite(String strUrlSite, GitUser user, String strSiteName ) 
+    public ReferenceList getTagsSite( String strUrlSite, GitUser user, String strSiteName )
     {
         String strClonePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
-        CommandResult commandResult = new CommandResult();
-        DeploymentUtils.startCommandResult(commandResult);
-        Git git = GitUtils.cloneOrReturnGit( strClonePath, strUrlSite, commandResult, user, null, null);
-        Collection<String> listTagName = GitUtils.getTagNameList(git);
-        
-        ReferenceList refList = new ReferenceList();
-        for ( String strTagName : listTagName)
+        CommandResult commandResult = new CommandResult( );
+        DeploymentUtils.startCommandResult( commandResult );
+        Git git = GitUtils.cloneOrReturnGit( strClonePath, strUrlSite, commandResult, user, null, null );
+        Collection<String> listTagName = GitUtils.getTagNameList( git );
+
+        ReferenceList refList = new ReferenceList( );
+        for ( String strTagName : listTagName )
         {
-            ReferenceItem item = new ReferenceItem();
+            ReferenceItem item = new ReferenceItem( );
             item.setName( strTagName );
             item.setCode( strTagName );
             refList.add( item );
@@ -80,57 +80,59 @@ public class AbstractGitService implements IVCSService<GitUser>
     }
 
     @Override
-    public String doCheckoutSite(String strSiteName, String strUrl, GitUser user, CommandResult commandResult, String strBranch, String strTagName ) {
+    public String doCheckoutSite( String strSiteName, String strUrl, GitUser user, CommandResult commandResult, String strBranch, String strTagName )
+    {
         String strClonePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
         GitUtils.cloneOrReturnGit( strClonePath, strUrl, commandResult, user, strBranch, strTagName );
-        
+
         return StringUtils.EMPTY;
     }
 
     @Override
-    public ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, GitUser user) {
-        CommandResult commandResult=new CommandResult();
-        DeploymentUtils.startCommandResult(commandResult);
-        ReferenceList upgradeResults=new ReferenceList();
+    public ReferenceList getUpgradesFiles( String strSiteName, String strUrlSite, GitUser user )
+    {
+        CommandResult commandResult = new CommandResult( );
+        DeploymentUtils.startCommandResult( commandResult );
+        ReferenceList upgradeResults = new ReferenceList( );
 
-        doCheckoutSite(strSiteName, strUrlSite, user, commandResult, ConstanteUtils.CONSTANTE_BRANCH_DEVELOP ,null );
+        doCheckoutSite( strSiteName, strUrlSite, user, commandResult, ConstanteUtils.CONSTANTE_BRANCH_DEVELOP, null );
 
-        List<String> listUpgradeFiles=FileUtil.list(DeploymentUtils.getPathUpgradeFiles(DeploymentUtils.getPathCheckoutSite( strSiteName )), "sql");
+        List<String> listUpgradeFiles = FileUtil.list( DeploymentUtils.getPathUpgradeFiles( DeploymentUtils.getPathCheckoutSite( strSiteName ) ), "sql" );
 
-        for(String upgradeFile:listUpgradeFiles)
+        for ( String upgradeFile : listUpgradeFiles )
         {
-            upgradeResults.addItem(upgradeFile,upgradeFile);
+            upgradeResults.addItem( upgradeFile, upgradeFile );
         }
 
-        DeploymentUtils.stopCommandResult(commandResult);
+        DeploymentUtils.stopCommandResult( commandResult );
 
         return upgradeResults;
-		
+
     }
 
     @Override
-    public String getArtifactId(String strPathRepo) 
+    public String getArtifactId( String strPathRepo )
     {
         String strRegexExtractArtifact = AppPropertiesService.getProperty( ConstanteUtils.REGEX_GIT_EXTRACT_ARTIFACT_FROM_URL );
         Pattern r = Pattern.compile( strRegexExtractArtifact );
         String strArtifactId = null;
 
         Matcher m = r.matcher( strPathRepo );
-        if (m.find( )) 
+        if ( m.find( ) )
         {
-           strArtifactId = m.group(2);
+            strArtifactId = m.group( 2 );
         }
         return strArtifactId;
     }
-    
+
     @Override
-    public boolean isPrivate() 
+    public boolean isPrivate( )
     {
         return true;
     }
 
     @Override
-    public void checkAuthentication(String strRepoUrl, GitUser user) 
+    public void checkAuthentication( String strRepoUrl, GitUser user )
     {
     }
 }

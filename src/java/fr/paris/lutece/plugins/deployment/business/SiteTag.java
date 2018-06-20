@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.deployment.business;
 
 import java.sql.Date;
 
-
 public class SiteTag extends AbstractSite
 {
     private String _strTagName;
@@ -48,7 +47,7 @@ public class SiteTag extends AbstractSite
         this._strTagName = _strTagName;
     }
 
-    public String getTagName(  )
+    public String getTagName( )
     {
         return _strTagName;
     }
@@ -58,7 +57,7 @@ public class SiteTag extends AbstractSite
         this._strNextVersion = _strNextVersion;
     }
 
-    public String getNextVersion(  )
+    public String getNextVersion( )
     {
         return _strNextVersion;
     }
@@ -68,7 +67,7 @@ public class SiteTag extends AbstractSite
         this._strTagVersion = _strTagVersion;
     }
 
-    public String getTagVersion(  )
+    public String getTagVersion( )
     {
         return _strTagVersion;
     }
@@ -78,20 +77,20 @@ public class SiteTag extends AbstractSite
         this._tagDate = _tagDate;
     }
 
-    public Date getTagDate(  )
+    public Date getTagDate( )
     {
         return _tagDate;
     }
 
     @Override
-    public String getCheckoutPath(  )
+    public String getCheckoutPath( )
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public String getName(  )
+    public String getName( )
     {
         // TODO Auto-generated method stub
         return null;

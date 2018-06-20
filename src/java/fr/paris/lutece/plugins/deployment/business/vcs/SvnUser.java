@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.deployment.business.vcs;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class SvnUser extends AbstractVCSUser
 {
     public static final String MARK_CURRENT_THREAD = "current_thread";
@@ -44,9 +43,9 @@ public class SvnUser extends AbstractVCSUser
     public static final String MARK_OUR_CLIENT_MANAGER = "our_client_manager";
     private Map<String, Object> _mUserContext;
 
-    public SvnUser(  )
+    public SvnUser( )
     {
-        setUserContext( new HashMap<String, Object>(  ) );
+        setUserContext( new HashMap<String, Object>( ) );
     }
 
     public void setUserContext( Map<String, Object> _mUserContex )
@@ -54,7 +53,7 @@ public class SvnUser extends AbstractVCSUser
         this._mUserContext = _mUserContex;
     }
 
-    public Map<String, Object> getUserContext(  )
+    public Map<String, Object> getUserContext( )
     {
         return _mUserContext;
     }

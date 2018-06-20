@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.List;
 
-
 public interface IApllicationDAO
 {
     Application findByPrimaryKey( int nIdApplication, Plugin plugin );

@@ -38,7 +38,6 @@ import javax.servlet.http.HttpSessionListener;
 
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-
 /**
  * Will remove fileItems uploaded
  */
@@ -59,10 +58,9 @@ public class DeploymentSessionListener implements HttpSessionListener
     @Override
     public void sessionDestroyed( HttpSessionEvent se )
     {
-        String strSessionId = se.getSession(  ).getId(  );
+        String strSessionId = se.getSession( ).getId( );
 
-        for ( DeploymentUploadHandler handler : SpringContextService.getBeansOfType( 
-        	DeploymentUploadHandler.class ) )
+        for ( DeploymentUploadHandler handler : SpringContextService.getBeansOfType( DeploymentUploadHandler.class ) )
         {
             handler.removeSessionFiles( strSessionId );
         }

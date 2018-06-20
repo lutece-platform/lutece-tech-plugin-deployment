@@ -48,7 +48,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  *
  * ProfilesAdminUserFieldListener
@@ -58,15 +57,17 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
 {
     /**
      * Create user fields
-     * @param user AdminUser
-     * @param request HttpServletRequest
-     * @param locale Locale
+     * 
+     * @param user
+     *            AdminUser
+     * @param request
+     *            HttpServletRequest
+     * @param locale
+     *            Locale
      */
     public void doCreateUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {
-        List<IAttribute> listAttributes = AttributeService.getInstance(  )
-                                                          .getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME,
-                locale );
+        List<IAttribute> listAttributes = AttributeService.getInstance( ).getPluginAttributesWithoutFields( DeploymentPlugin.PLUGIN_NAME, locale );
 
         for ( IAttribute attribute : listAttributes )
         {
@@ -74,7 +75,7 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
 
             for ( AdminUserField userField : userFields )
             {
-                if ( ( userField != null ) && StringUtils.isNotBlank( userField.getValue(  ) ) )
+                if ( ( userField != null ) && StringUtils.isNotBlank( userField.getValue( ) ) )
                 {
                     AdminUserFieldHome.create( userField );
                 }
@@ -84,10 +85,15 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
 
     /**
      * Modify user fields
-     * @param user AdminUser
-     * @param request HttpServletRequest
-     * @param locale Locale
-     * @param currentUser current user
+     * 
+     * @param user
+     *            AdminUser
+     * @param request
+     *            HttpServletRequest
+     * @param locale
+     *            Locale
+     * @param currentUser
+     *            current user
      */
     public void doModifyUserFields( AdminUser user, HttpServletRequest request, Locale locale, AdminUser currentUser )
     {
@@ -96,9 +102,13 @@ public class DeploymentAdminUserFieldListener implements AdminUserFieldListener
 
     /**
      * Remove user fields
-     * @param user Adminuser
-     * @param request HttpServletRequest
-     * @param locale locale
+     * 
+     * @param user
+     *            Adminuser
+     * @param request
+     *            HttpServletRequest
+     * @param locale
+     *            locale
      */
     public void doRemoveUserFields( AdminUser user, HttpServletRequest request, Locale locale )
     {

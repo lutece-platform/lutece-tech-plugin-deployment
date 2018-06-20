@@ -35,12 +35,12 @@ package fr.paris.lutece.plugins.deployment.util;
 
 public class ConstanteUtils
 {
-    //Beans
+    // Beans
     public static final String BEAN_SVN_SERVICE = "deployment.SvnService";
     public static final String BEAN_GITHUB_SERVICE = "deployment.GithubService";
     public static final String BEAN_GITLAB_SERVICE = "deployment.GitlabService";
-    
-    //Constantes
+
+    // Constantes
     public static final int CONSTANTE_ID_NULL = -1;
     public static final String CONSTANTE_ALL = "all";
     public static final int CONSTANTE_DEFAULT_LOG_SIZE = 500;
@@ -83,7 +83,7 @@ public class ConstanteUtils
     public static final String CONSTANTE_BRANCH_DEVELOP = "develop";
     public static final String CONSTANTE_BRANCH_MASTER = "master";
     public static final String CONSTANTE_VCS_USER = "vcs_user";
-    
+
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
     public static final String CONSTANTE_ACTION_EXECUTE = "@EXECUTE";
@@ -102,7 +102,7 @@ public class ConstanteUtils
     public static final String JSON_ACTION_STATUS = "status";
     public static final String JSON_ACTION_DISPLAY = "display";
     public static final String JSON_ACTION_DESCRIPTION = "description";
-    
+
     public static final String JSON_JSP_FOM_DISPLAY = "jsp_form_display";
     public static final String JSON_FORM_ERROR = "form_error";
     public static final String JSON_SERVER_STATUS = "server_status";
@@ -110,13 +110,9 @@ public class ConstanteUtils
     public static final String JSON_CODE_ENVIRONMENT = "code_environment";
     public static final String JSON_CODE_SERVER_APPLICATION_INSTANCE = "code_server_application_instance";
     public static final String JSON_SERVER_APPLICATION_TYPE = "server_application_type";
-    public static final String CONTEXT_DIRECTORY_NAME="CONTEXT";
-    
-   
-    
-    
+    public static final String CONTEXT_DIRECTORY_NAME = "CONTEXT";
 
-    //PROPERTY
+    // PROPERTY
     public static final String PROPERTY_NB_ITEM_PER_PAGE = "deployment.defaultNbItemPerPage";
     public static final String PROPERTY_MANAGE_APPLICATION_PAGE_TITLE = "deployment.manage_application.page_title";
     public static final String PROPERTY_CREATE_APPLICATION_PAGE_TITLE = "deployment.create_application.page_title";
@@ -141,20 +137,16 @@ public class ConstanteUtils
     public static final String PROPERTY_SVN_USED_DEPLOYMENT_ACCOUNT = "deployment.svn.usedDeploymentAccount";
     public static final String PROPERTY_SVN_LOGIN_APPLICATION_DEPLOYMENT = "deployment.svn.svnLoginDeployment";
     public static final String PROPERTY_SVN_PASSWORD_APPLICATION_DEPLOYMENT = "deployment.svn.svnPasswordDeployment";
-    
-    
-    
+
     public static final String PROPERTY_ID_WORKFLOW_TAG_AND_DEPLOY_SITE = "deployment.idWorkflowTagAndDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE = "deployment.idWorkflowTagAutomaticallyAndDeploySite";
-    
+
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SITE = "deployment.idWorkflowDeploySite";
     public static final String PROPERTY_ID_WORKFLOW_TAG_SITE = "deployment.idWorkflowTagSite";
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT = "deployment.idWorkflowDeployScript";
     public static final String PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT = "deployment.idWorkflowInitAppContext";
-    public static final String PROPERTY_ID_WORKFLOW_INIT_DATABASE= "deployment.idWorkflowInitDatabase";
-    
-    
-    
+    public static final String PROPERTY_ID_WORKFLOW_INIT_DATABASE = "deployment.idWorkflowInitDatabase";
+
     public static final String PROPERTY_DEPLOY_SITE_PAGE_TITLE = "deployment.deploy_site.page_title";
     public static final String PROPERTY_MAX_LOG_SIZE = "deployment.maxLogSize";
     public static final String PROPERTY_ENVIRONMENTS_LIST = "deployment.environments.list";
@@ -187,20 +179,19 @@ public class ConstanteUtils
     public static final String PROPERTY_MESSAGE_REPO_UNAUTHORIZED_ACCESS = "message_unauthorized_repo_access";
     public static final String PROPERTY_TASKS_FORM_WORKFLOW_PAGE_TITLE = "deployment.tasks_form_workflow.page_title";
     public static final String PROPERTY_FORM_ACTION_SERVER_PAGE_TITLE = "deployment.form_action_server.page_title";
-    
+
     public static final String PROPERTY_SERVER_TYPE_TOMCAT_LABEL = "deployment.server_type_tomcat_label";
     public static final String PROPERTY_SERVER_TYPE_HTTPD_LABEL = "deployment.server_type_httpd_label";
     public static final String PROPERTY_SERVER_TYPE_MYSQL_LABEL = "deployment.server_type_mysql_label";
-    public static final String PROPERTY_UPGRADE_DIRECTORY_PATH="deployment.server.upgradeDirectoryPath";
-;
-    //STATE
+    public static final String PROPERTY_UPGRADE_DIRECTORY_PATH = "deployment.server.upgradeDirectoryPath";;
+    // STATE
     public static final String CONSTANTE_COMMAND_RESULT_STATUS_EXCEPTION_VALUE = "exception";
 
-    //STATUS SERVER APLLICATION STATE 
+    // STATUS SERVER APLLICATION STATE
     public static final Integer STATUS_KO = 0;
     public static final Integer STATUS_OK = 1;
 
-    //MARK
+    // MARK
     public static final String MARK_SITE_TAG_VERSION = "site_tag_version";
     public static final String MARK_SITE_TAG_NAME = "site_tag_name";
     public static final String MARK_SITE_NEXT_VERSION = "site_next_version";
@@ -233,7 +224,7 @@ public class ConstanteUtils
     public static final String MARK_INIT_APP_CONTEXT = "init_app_context";
     public static final String MARK_CAN_CREATE_APPLICATION = "can_create_application";
     public static final String MARK_HANDLER = "handler";
-    public static final String MARK_SEARCH_NAME = "search_name";    
+    public static final String MARK_SEARCH_NAME = "search_name";
     public static final String MARK_SCRIPT_NAME = "script_name";
     public static final String MARK_DUMP_FILE_URL = "dump_file_url";
     public static final String MARK_DATABASE_LIST = "database_list";
@@ -243,9 +234,8 @@ public class ConstanteUtils
     public static final String MARK_MANAGE_APPLICATION_ACTIONS = "map_application_actions";
     public static final String MARK_VCS_SERVICE = "vcs_service";
     public static final String MARK_ACTION_URL = "action_url";
-    
 
-    //PARAM
+    // PARAM
     public static final String PARAM_SITE_TAG_VERSION = "site_tag_version";
     public static final String PARAM_SITE_TAG_NAME = "site_tag_name";
     public static final String PARAM_SITE_NEXT_VERSION = "site_next_version";
@@ -281,19 +271,15 @@ public class ConstanteUtils
     public static final String PARAM_PASSWORD = "password";
     public static final String PARAM_ACTION_URL = "action_url";
 
-    
-    public static final String PARAM_SCRIPT_NAME= "script_name";
+    public static final String PARAM_SCRIPT_NAME = "script_name";
     public static final String PARAM_CODE_APPLICATION = "code_application";
     public static final String PARAM_WORKGROUP = "workgroup";
-    
-    
-    
 
-    //ARCHIVE TYPE
+    // ARCHIVE TYPE
     public static final String ARCHIVE_WAR_EXTENSION = ".war";
     public static final String ARCHIVE_ZIP_EXTENSION = ".zip";
 
-    //TEMPLATE
+    // TEMPLATE
     public static final String TEMPLATE_MANAGE_APPLICATION = "admin/plugins/deployment/manage_application.html";
     public static final String TEMPLATE_CREATE_APPLICATION = "admin/plugins/deployment/create_application.html";
     public static final String TEMPLATE_MODIFY_APPLICATION = "admin/plugins/deployment/modify_application.html";
@@ -304,23 +290,22 @@ public class ConstanteUtils
     public static final String TEMPLATE_FORM_ACTION_SERVER = "admin/plugins/deployment/form_action_server.html";
     public static final String TEMPLATE_FORM_ACTION_DUMP = "admin/plugins/deployment/form_action_dump.html";
     public static final String TEMPLATE_INIT_DB = "admin/plugins/deployment/init/init_db_template.html";
-    public static final String TEMPLATE_INIT_APP_CONTEXT= "admin/plugins/deployment/init/init_app_context.html";
+    public static final String TEMPLATE_INIT_APP_CONTEXT = "admin/plugins/deployment/init/init_app_context.html";
     public static final String TEMPLATE_ASK_CREDENTIALS = "admin/plugins/deployment/ask_credentials.html";
-    
 
-    //JSP
+    // JSP
     public static final String JSP_MANAGE_APPLICATION = "jsp/admin/plugins/deployment/ManageApplication.jsp";
     public static final String JSP_VIEW_APPLICATION = "jsp/admin/plugins/deployment/ViewApplication.jsp";
     public static final String JSP_REMOVE_APPLICATION = "jsp/admin/plugins/deployment/DoRemoveApplication.jsp";
     public static final String JSP_TASK_FORM = "jsp/admin/plugins/deployment/TasksFormWorkflow.jsp";
     public static final String JSP_FORM_SERVER_ACTION = "jsp/admin/plugins/deployment/FormServerAction.jsp";
-      
+
     public static final String JSP_DEPLOY_APPLICATION_PROCESS = "jsp/admin/plugins/deployment/DeployApplicationProcess.jsp";
 
-    //I18nMessage
+    // I18nMessage
     public static final String I18n_MESSAGE_ERROR_MAVEN_USER_IS_NOT_SET = "deployment.message.maven_user_is_not_set";
 
-    //Regex
+    // Regex
     public static final String REGEX_GIT_EXTRACT_ARTIFACT_FROM_URL = "deployment.regex.git.artifactId.extractFromUrl";
 
 }

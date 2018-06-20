@@ -37,7 +37,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class CommandResult implements Cloneable, Serializable
 {
     /**
@@ -50,34 +49,35 @@ public class CommandResult implements Cloneable, Serializable
     /**
      *
      */
-    
-    
+
     public static int STATUS_ERROR = 0;
-    public static int STATUS_OK= 1;
+    public static int STATUS_OK = 1;
     public static int ERROR_TYPE_INFO = 0;
     public static int ERROR_TYPE_STOP = 1;
-    
-    
+
     private StringBuffer _strLog;
     private int _nStatus;
     private int _nErrorType;
     private boolean _bRunning;
     private String _strError;
- 
-    private Map<String,String> _mResultInformations=new HashMap<String, String>();
-    
+
+    private Map<String, String> _mResultInformations = new HashMap<String, String>( );
+
     /**
      * "Getter method" pour la variable {@link #_strLog}
+     * 
      * @return La variable {@link #_strLog}
      */
-    public StringBuffer getLog(  )
+    public StringBuffer getLog( )
     {
         return _strLog;
     }
 
     /**
      * "Setter method" pour la variable {@link #_strLog}
-     * @param strLog La nouvelle valeur de la variable {@link #_strLog}
+     * 
+     * @param strLog
+     *            La nouvelle valeur de la variable {@link #_strLog}
      */
     public void setLog( StringBuffer strLog )
     {
@@ -86,16 +86,19 @@ public class CommandResult implements Cloneable, Serializable
 
     /**
      * "Getter method" pour la variable {@link #_nStatus}
+     * 
      * @return La variable {@link #_nStatus}
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
 
     /**
      * "Setter method" pour la variable {@link #_nStatus}
-     * @param nStatus La nouvelle valeur de la variable {@link #_nStatus}
+     * 
+     * @param nStatus
+     *            La nouvelle valeur de la variable {@link #_nStatus}
      */
     public void setStatus( int nStatus )
     {
@@ -104,16 +107,19 @@ public class CommandResult implements Cloneable, Serializable
 
     /**
      * "Getter method" pour la variable {@link #_bRunning}
+     * 
      * @return La variable {@link #_bRunning}
      */
-    public boolean isRunning(  )
+    public boolean isRunning( )
     {
         return _bRunning;
     }
 
     /**
      * "Setter method" pour la variable {@link #_bRunning}
-     * @param bRunning La nouvelle valeur de la variable {@link #_bRunning}
+     * 
+     * @param bRunning
+     *            La nouvelle valeur de la variable {@link #_bRunning}
      */
     public void setRunning( boolean bRunning )
     {
@@ -122,12 +128,12 @@ public class CommandResult implements Cloneable, Serializable
 
     /**
      *
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Object clone(  ) throws CloneNotSupportedException
+    public Object clone( ) throws CloneNotSupportedException
     {
-        CommandResult clone = (CommandResult) super.clone(  );
+        CommandResult clone = (CommandResult) super.clone( );
         clone._bRunning = this._bRunning;
         clone._nStatus = this._nStatus;
         clone._strLog = this._strLog;
@@ -138,37 +144,43 @@ public class CommandResult implements Cloneable, Serializable
 
     /**
      * "Getter method" pour la variable {@link #_nIdError}
+     * 
      * @return La variable {@link #_nIdError}
      */
-    public String getError(  )
+    public String getError( )
     {
         return _strError;
     }
 
     /**
      * "Setter method" pour la variable {@link #_nIdError}
-     * @param nIdError La nouvelle valeur de la variable {@link #_nIdError}
+     * 
+     * @param nIdError
+     *            La nouvelle valeur de la variable {@link #_nIdError}
      */
     public void setError( String strIdError )
     {
         _strError = strIdError;
     }
 
-	public Map<String,String> getResultInformations() {
-		return _mResultInformations;
-	}
+    public Map<String, String> getResultInformations( )
+    {
+        return _mResultInformations;
+    }
 
-	public void setResultInformations(Map<String,String> _mResultInformations) {
-		this._mResultInformations = _mResultInformations;
-	}
+    public void setResultInformations( Map<String, String> _mResultInformations )
+    {
+        this._mResultInformations = _mResultInformations;
+    }
 
-	public int getErrorType() {
-		return _nErrorType;
-	}
+    public int getErrorType( )
+    {
+        return _nErrorType;
+    }
 
-	public void setErrorType(int _nErrorType) {
-		this._nErrorType = _nErrorType;
-	}
+    public void setErrorType( int _nErrorType )
+    {
+        this._nErrorType = _nErrorType;
+    }
 
-	
 }

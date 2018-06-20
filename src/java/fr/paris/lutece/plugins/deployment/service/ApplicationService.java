@@ -41,11 +41,9 @@ import fr.paris.lutece.plugins.deployment.util.DeploymentUtils;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.util.ArrayList;
 
-
 import java.util.List;
 
 import javax.inject.Inject;
-
 
 public class ApplicationService implements IApplicationService
 {
@@ -55,34 +53,37 @@ public class ApplicationService implements IApplicationService
     @Inject
     private IApllicationDAO _applicationDAO;
 
-    private ApplicationService(  )
+    private ApplicationService( )
     {
-        init(  );
+        init( );
     }
 
-    //    public static IApplicationService getInstance(  )
-    //    {
-    //        if ( _singleton == null )
-    //        {
-    //            _singleton = new ApplicationService(  );
-    //        }
+    // public static IApplicationService getInstance( )
+    // {
+    // if ( _singleton == null )
+    // {
+    // _singleton = new ApplicationService( );
+    // }
     //
-    //        return _singleton;
-    //    }
+    // return _singleton;
+    // }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#getListApplications(fr.paris.lutece.plugins.deployment.business.FilterDeployment, fr.paris.lutece.portal.service.plugin.Plugin)
-         */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#getListApplications(fr.paris.lutece.plugins.deployment.business.FilterDeployment,
+     * fr.paris.lutece.portal.service.plugin.Plugin)
+     */
     public List<Application> getListApplications( FilterDeployment filter, Plugin plugin )
     {
         return _applicationDAO.findByFilter( filter, plugin );
     }
-    
+
     /**
      * {@inheriteDoc}
      */
     @Override
-    public  List<Application> getListApplicationFilteredBySearchName( List<Application> listApp, FilterDeployment filter, Plugin plugin )
+    public List<Application> getListApplicationFilteredBySearchName( List<Application> listApp, FilterDeployment filter, Plugin plugin )
     {
         List<Application> listAppFiltered = new ArrayList<Application>( );
         if ( filter.constainsSearchNameFilter( ) )
@@ -90,9 +91,10 @@ public class ApplicationService implements IApplicationService
             String strSearchName = filter.getSearchName( );
             for ( Application app : listApp )
             {
-                String strSearchIn = new StringBuilder( ).append( app.getCode( ) ).append( " " ).append( app.getName( )).append( " " ).append( app.getUrlRepo() ).toString( );
- 
-                //remove the application from the list if his name doesnt match.
+                String strSearchIn = new StringBuilder( ).append( app.getCode( ) ).append( " " ).append( app.getName( ) ).append( " " )
+                        .append( app.getUrlRepo( ) ).toString( );
+
+                // remove the application from the list if his name doesnt match.
                 if ( strSearchIn.toLowerCase( ).contains( strSearchName.toLowerCase( ) ) )
                 {
                     listAppFiltered.add( app );
@@ -102,7 +104,7 @@ public class ApplicationService implements IApplicationService
         }
         else
         {
-            //no filter on search name.
+            // no filter on search name.
             return listApp;
         }
     }
@@ -112,32 +114,42 @@ public class ApplicationService implements IApplicationService
         return _applicationDAO.findByPrimaryKey( nIdApplication, plugin );
     }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#init()
-         */
-    public void init(  )
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#init()
+     */
+    public void init( )
     {
     }
-    
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#createApplication(fr.paris.lutece.plugins.deployment.business.Application, fr.paris.lutece.portal.service.plugin.Plugin)
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#createApplication(fr.paris.lutece.plugins.deployment.business.Application,
+     * fr.paris.lutece.portal.service.plugin.Plugin)
+     */
     public void createApplication( Application application, Plugin plugin )
     {
         _applicationDAO.insert( application, plugin );
     }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#updateApplication(fr.paris.lutece.plugins.deployment.business.Application, fr.paris.lutece.portal.service.plugin.Plugin)
-         */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#updateApplication(fr.paris.lutece.plugins.deployment.business.Application,
+     * fr.paris.lutece.portal.service.plugin.Plugin)
+     */
     public void updateApplication( Application application, Plugin plugin )
     {
         _applicationDAO.update( application, plugin );
     }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#deleteApplication(int, fr.paris.lutece.portal.service.plugin.Plugin)
-         */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IApplicationService#deleteApplication(int, fr.paris.lutece.portal.service.plugin.Plugin)
+     */
     public void deleteApplication( int nIdApplication, Plugin plugin )
     {
         _applicationDAO.delete( nIdApplication, plugin );

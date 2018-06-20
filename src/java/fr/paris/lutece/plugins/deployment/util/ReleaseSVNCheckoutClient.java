@@ -41,7 +41,6 @@ import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.ISVNRepositoryPool;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 
-
 public class ReleaseSVNCheckoutClient extends SVNUpdateClient
 {
     private boolean bCancelled;
@@ -56,8 +55,7 @@ public class ReleaseSVNCheckoutClient extends SVNUpdateClient
         super( pool, options );
     }
 
-
-    public void doCancel(  )
+    public void doCancel( )
     {
         bCancelled = true;
     }

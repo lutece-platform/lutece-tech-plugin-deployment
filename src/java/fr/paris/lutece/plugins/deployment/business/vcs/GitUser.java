@@ -35,5 +35,5 @@ package fr.paris.lutece.plugins.deployment.business.vcs;
 
 public class GitUser extends AbstractVCSUser
 {
-    
+
 }

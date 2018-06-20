@@ -38,11 +38,13 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class URLUtils 
+public class URLUtils
 {
     /**
      * Get the authority of the given url
-     * @param strUrl the url
+     * 
+     * @param strUrl
+     *            the url
      * @return the authority of the url
      */
     public static String getAuthority( String strUrl )
@@ -50,14 +52,16 @@ public class URLUtils
         URL url = getURL( strUrl );
         if ( url != null )
         {
-            return url.getAuthority();
+            return url.getAuthority( );
         }
         return null;
     }
-    
+
     /**
      * Get the path of the given url
-     * @param strUrl the path of the url
+     * 
+     * @param strUrl
+     *            the path of the url
      * @return the path of the url
      */
     public static String getPath( String strUrl )
@@ -69,10 +73,12 @@ public class URLUtils
         }
         return null;
     }
-    
+
     /**
      * Transform the provided url string into java.uri.URL
-     * @param strUrl the url
+     * 
+     * @param strUrl
+     *            the url
      * @return a java URL
      */
     private static URL getURL( String strUrl )
@@ -82,17 +88,18 @@ public class URLUtils
             URL url = new URL( strUrl );
             return url;
         }
-        catch ( MalformedURLException e )
+        catch( MalformedURLException e )
         {
-            AppLogService.error( "Unable to get URL from strUrl ", e);
+            AppLogService.error( "Unable to get URL from strUrl ", e );
         }
         return null;
     }
-    
+
     /**
      * Check if the provided url is well-formed
+     * 
      * @param strUrl
-     * @throws InvalidRepositoryUrlException 
+     * @throws InvalidRepositoryUrlException
      */
     public static void checkUrl( String strUrl ) throws InvalidRepositoryUrlException
     {
@@ -100,7 +107,7 @@ public class URLUtils
         {
             URL url = new URL( strUrl );
         }
-        catch ( MalformedURLException e )
+        catch( MalformedURLException e )
         {
             throw new InvalidRepositoryUrlException( );
         }

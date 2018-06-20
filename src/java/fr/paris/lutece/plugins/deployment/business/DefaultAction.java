@@ -42,14 +42,14 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import net.sf.json.JSONObject;
 
-
 public class DefaultAction extends Action
 {
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#run(java.lang.String, fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance)
      */
-    public String run(Application application, ServerApplicationInstance serverApplicationInstance,
-        CommandResult commandResult, ActionParameter... parameter )
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
         String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
@@ -58,18 +58,16 @@ public class DefaultAction extends Action
 
         try
         {
-            strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                    ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
-                        serverApplicationInstance, this.getCode(  ) ) );
+            strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                    + DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode( ), serverApplicationInstance, this.getCode( ) ) );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e );
-          if( commandResult!=null)
-          {
-        	  commandResult.setError("<h1>Erreur  lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage());
-         }
+            if ( commandResult != null )
+            {
+                commandResult.setError( "<h1>Erreur  lors de l'exécution de la commande" + this.getCode( ) + " de cloudmgrws</h1> <br> " + e.getMessage( ) );
+            }
         }
 
         if ( strJSONAction != null )
@@ -79,10 +77,10 @@ public class DefaultAction extends Action
             if ( jo != null )
             {
                 strResult = jo.getString( strWebserviceActionJsonPropery );
-                if(strResult!=null && !new Boolean( strResult ) && commandResult!=null)
+                if ( strResult != null && !new Boolean( strResult ) && commandResult != null )
                 {
-                
-                	commandResult.setError("<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> : "+strJSONAction);
+
+                    commandResult.setError( "<h1>Erreur lors de l'exécution de la commande" + this.getCode( ) + " de cloudmgrws</h1> <br> : " + strJSONAction );
 
                 }
             }
@@ -91,17 +89,18 @@ public class DefaultAction extends Action
         return strResult;
     }
 
-	@Override
-	public boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
-            CommandResult commandResult, ActionParameter... parameter){
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public boolean canRunAction( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter )
+    {
+        // TODO Auto-generated method stub
+        return true;
+    }
 
-	@Override
-	public String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,
-            Locale locale){
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getTemplateFormAction( Application application, ServerApplicationInstance serverApplicationInstance, Locale locale )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

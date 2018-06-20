@@ -35,46 +35,55 @@ package fr.paris.lutece.plugins.deployment.business;
 
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
-public class Environment implements RBACResource {
+public class Environment implements RBACResource
+{
 
-	public static final String RESOURCE_TYPE = "DEPLOYMENT_ENVIRONMENT";
-	private String _strCode;
-	private String _strName;
-	private String _strI18nKeyName;
+    public static final String RESOURCE_TYPE = "DEPLOYMENT_ENVIRONMENT";
+    private String _strCode;
+    private String _strName;
+    private String _strI18nKeyName;
 
-	public void setCode(String _strCode) {
-		this._strCode = _strCode;
-	}
+    public void setCode( String _strCode )
+    {
+        this._strCode = _strCode;
+    }
 
-	public String getCode() {
-		return _strCode;
-	}
+    public String getCode( )
+    {
+        return _strCode;
+    }
 
-	public void setName(String _strName) {
-		this._strName = _strName;
-	}
+    public void setName( String _strName )
+    {
+        this._strName = _strName;
+    }
 
-	public String getName() {
-		return _strName;
-	}
+    public String getName( )
+    {
+        return _strName;
+    }
 
-	public String getI18nKeyName() {
-		return _strI18nKeyName;
-	}
+    public String getI18nKeyName( )
+    {
+        return _strI18nKeyName;
+    }
 
-	public void setI18nKeyName(String strName) {
-		_strI18nKeyName = strName;
-	}
+    public void setI18nKeyName( String strName )
+    {
+        _strI18nKeyName = strName;
+    }
 
-	@Override
-	public String getResourceTypeCode() {
-		// TODO Auto-generated method stub
-		return RESOURCE_TYPE;
-	}
+    @Override
+    public String getResourceTypeCode( )
+    {
+        // TODO Auto-generated method stub
+        return RESOURCE_TYPE;
+    }
 
-	@Override
-	public String getResourceId() {
+    @Override
+    public String getResourceId( )
+    {
 
-		return getCode();
-	}
+        return getCode( );
+    }
 }

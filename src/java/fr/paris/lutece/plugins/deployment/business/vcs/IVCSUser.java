@@ -33,10 +33,13 @@
  */
 package fr.paris.lutece.plugins.deployment.business.vcs;
 
-public interface IVCSUser 
+public interface IVCSUser
 {
-    String getLogin();
+    String getLogin( );
+
     void setLogin( String strLogin );
-    String getPassword();
+
+    String getPassword( );
+
     void setPassword( String strPassword );
 }

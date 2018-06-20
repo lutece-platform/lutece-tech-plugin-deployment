@@ -35,32 +35,31 @@ package fr.paris.lutece.plugins.deployment.business.vcs;
 
 public class AbstractVCSUser implements IVCSUser
 {
-    private String _strLogin; 
+    private String _strLogin;
     private String _strPassword;
 
     @Override
-    public String getLogin() 
+    public String getLogin( )
     {
         return _strLogin;
     }
 
     @Override
-    public void setLogin(String strLogin) 
+    public void setLogin( String strLogin )
     {
         _strLogin = strLogin;
     }
 
     @Override
-    public String getPassword() 
+    public String getPassword( )
     {
         return _strPassword;
     }
 
     @Override
-    public void setPassword(String strPassword) 
+    public void setPassword( String strPassword )
     {
         _strPassword = strPassword;
     }
-    
-    
+
 }

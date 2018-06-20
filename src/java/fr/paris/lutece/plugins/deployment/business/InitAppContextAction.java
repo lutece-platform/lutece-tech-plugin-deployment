@@ -57,7 +57,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-
 /**
  *
  * WarInstallerAction
@@ -66,56 +65,53 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 public class InitAppContextAction extends DefaultAction
 {
 
-	IFtpService _ftpService=SpringContextService.getBean( "deployment.FtpService" );
+    IFtpService _ftpService = SpringContextService.getBean( "deployment.FtpService" );
+
     @Override
-    public String run( Application application, ServerApplicationInstance serverApplicationInstance,
-        CommandResult commandResult, ActionParameter... parameter )
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
-    	 
-    	
-    	String strResult = "true";
-    	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-         HashMap model = new HashMap(  );
-         model.put(ConstanteUtils.MARK_APPLICATION,application);
-	        
-	     HtmlTemplate templateInitAppContext = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_APP_CONTEXT,
-	              Locale.FRENCH ,model );
-	        
-	      InputStream  iTemplateInitAppContext=new ByteArrayInputStream(templateInitAppContext.getHtml().getBytes());
-	         
-	    _ftpService.uploadFile( application.getWebAppName()+".xml",iTemplateInitAppContext,serverApplicationInstance.getFtpInfo(  ),
-				    DeploymentUtils.getContextDirectoryTarget( application.getCode(  ), serverApplicationInstance ),
-				    commandResult,false );
-	         
-		 return strResult;
+
+        String strResult = "true";
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        HashMap model = new HashMap( );
+        model.put( ConstanteUtils.MARK_APPLICATION, application );
+
+        HtmlTemplate templateInitAppContext = AppTemplateService.getTemplate( ConstanteUtils.TEMPLATE_INIT_APP_CONTEXT, Locale.FRENCH, model );
+
+        InputStream iTemplateInitAppContext = new ByteArrayInputStream( templateInitAppContext.getHtml( ).getBytes( ) );
+
+        _ftpService.uploadFile( application.getWebAppName( ) + ".xml", iTemplateInitAppContext, serverApplicationInstance.getFtpInfo( ),
+                DeploymentUtils.getContextDirectoryTarget( application.getCode( ), serverApplicationInstance ), commandResult, false );
+
+        return strResult;
     }
-    
-    
-    
 
-	@Override
-	public boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
-            CommandResult commandResult, ActionParameter... parameter) {
-		
-		if(parameter!=null)
-		{
-			// TODO Auto-generated method stub
-			for (int i = 0; i < parameter.length; i++) {
-				
-	    		if(parameter[i].getName().equals(ConstanteUtils.PARAM_INIT_APP_CONTEXT))
-	    		{
-	    			
-	    			return new Boolean(parameter[i].getValue());
-	    		}
-			}
-		}
-    	
-    	return false;
-   }
+    @Override
+    public boolean canRunAction( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter )
+    {
 
-	@Override
-	public String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,Locale locale) {
-		
-		return null;
-	}
+        if ( parameter != null )
+        {
+            // TODO Auto-generated method stub
+            for ( int i = 0; i < parameter.length; i++ )
+            {
+
+                if ( parameter [i].getName( ).equals( ConstanteUtils.PARAM_INIT_APP_CONTEXT ) )
+                {
+
+                    return new Boolean( parameter [i].getValue( ) );
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public String getTemplateFormAction( Application application, ServerApplicationInstance serverApplicationInstance, Locale locale )
+    {
+
+        return null;
+    }
 }

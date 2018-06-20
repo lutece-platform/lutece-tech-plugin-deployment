@@ -8,30 +8,31 @@ public class GitSearchResult
 {
 
     private Integer _bTotalCount;
-    
+
     private List<GitSearchRepoItem> _listRepoItem;
-    
-    
-    @JsonProperty("items")
+
+    @JsonProperty( "items" )
     public List<GitSearchRepoItem> getListRepoItem( )
     {
         return _listRepoItem;
     }
-    @JsonProperty("items")
+
+    @JsonProperty( "items" )
     public void setListRepoItem( List<GitSearchRepoItem> listRepoItem )
     {
         this._listRepoItem = listRepoItem;
     }
-    @JsonProperty("total_count")
+
+    @JsonProperty( "total_count" )
     public Integer getTotalCount( )
     {
         return _bTotalCount;
     }
-    @JsonProperty("total_count")
+
+    @JsonProperty( "total_count" )
     public void setTotalCount( Integer bTotalCount )
     {
         this._bTotalCount = bTotalCount;
-    } 
-    
-    
+    }
+
 }

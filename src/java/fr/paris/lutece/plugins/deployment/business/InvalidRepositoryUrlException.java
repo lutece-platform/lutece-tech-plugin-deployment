@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.deployment.business;
 
-
-public class InvalidRepositoryUrlException extends Exception 
+public class InvalidRepositoryUrlException extends Exception
 {
 
 }

@@ -42,7 +42,7 @@ public abstract class AbstractSite implements ISite
     private CommandResult _commandResult;
     protected IVCSService _vcsService;
 
-    public String getCodeApplication(  )
+    public String getCodeApplication( )
     {
         return _strCodeApplication;
     }
@@ -52,7 +52,7 @@ public abstract class AbstractSite implements ISite
         this._strCodeApplication = strCodeApplication;
     }
 
-    public String getBaseSiteUrl(  )
+    public String getBaseSiteUrl( )
     {
         return _strBaseSiteUrl;
     }
@@ -67,8 +67,8 @@ public abstract class AbstractSite implements ISite
         this._commandResult = _commandResult;
     }
 
-    public CommandResult getCommandResult(  )
+    public CommandResult getCommandResult( )
     {
         return _commandResult;
-    }  
+    }
 }

@@ -36,11 +36,9 @@ package fr.paris.lutece.plugins.deployment.service.vcs;
 public class GithubService extends AbstractGitService
 {
     @Override
-    public boolean isPrivate() 
+    public boolean isPrivate( )
     {
         return false;
     }
-    
-    
-    
+
 }

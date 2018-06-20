@@ -61,5 +61,6 @@ public interface IMavenService
     String getMvnProfilSaved( String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance );
 
     void saveMvnProfilName( String strProfilValue, String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance );
-    void init(  );
+
+    void init( );
 }

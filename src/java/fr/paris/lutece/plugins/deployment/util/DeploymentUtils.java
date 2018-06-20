@@ -75,12 +75,10 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
-
 public class DeploymentUtils
 {
     /**
-     * Builds a query with filters placed in parameters. Consider using
-     * {@link #buildQueryWithFilter(StringBuilder, List, String)} instead.
+     * Builds a query with filters placed in parameters. Consider using {@link #buildQueryWithFilter(StringBuilder, List, String)} instead.
      *
      * @param strSelect
      *            the select of the query
@@ -119,7 +117,7 @@ public class DeploymentUtils
 
             sbSQL.append( strFilter );
 
-            if ( nCount != listFilter.size(  ) )
+            if ( nCount != listFilter.size( ) )
             {
                 sbSQL.append( ConstanteUtils.CONSTANTE_SQL_AND );
             }
@@ -130,7 +128,7 @@ public class DeploymentUtils
             sbSQL.append( strOrder );
         }
 
-        return sbSQL.toString(  );
+        return sbSQL.toString( );
     }
 
     /**
@@ -146,20 +144,19 @@ public class DeploymentUtils
      * @throws HttpAccessException
      *             the exception if there is a problem
      */
-    public static String callPlateformEnvironmentWs( String strUrl )
-        throws HttpAccessException
+    public static String callPlateformEnvironmentWs( String strUrl ) throws HttpAccessException
     {
         String strResponse = StringUtils.EMPTY;
 
         try
         {
-            HttpAccess httpAccess = new HttpAccess(  );
+            HttpAccess httpAccess = new HttpAccess( );
             strResponse = httpAccess.doGet( strUrl );
         }
-        catch ( HttpAccessException e )
+        catch( HttpAccessException e )
         {
             String strError = "ArchiveWebServices - Error connecting to '" + strUrl + "' : ";
-            AppLogService.error( strError + e.getMessage(  ), e );
+            AppLogService.error( strError + e.getMessage( ), e );
             throw new HttpAccessException( strError, e );
         }
 
@@ -168,14 +165,14 @@ public class DeploymentUtils
 
     public static List<String> getJSONDictionary( String dictionaryName, String strJSONFlux )
     {
-        List<String> jsonCollection = new ArrayList<String>(  );
+        List<String> jsonCollection = new ArrayList<String>( );
         JSONObject jo = (JSONObject) JSONSerializer.toJSON( strJSONFlux );
         JSONArray jsonArray = jo.getJSONArray( dictionaryName );
-        Iterator iterator = jsonArray.iterator(  );
+        Iterator iterator = jsonArray.iterator( );
 
-        while ( iterator.hasNext(  ) )
+        while ( iterator.hasNext( ) )
         {
-            jsonCollection.add( (String) iterator.next(  ) );
+            jsonCollection.add( (String) iterator.next( ) );
         }
 
         return jsonCollection;
@@ -183,16 +180,15 @@ public class DeploymentUtils
 
     public static List<String> getJSONDictionary( String objectName, String dictionaryName, String strJSONFlux )
     {
-        List<String> jsonCollection = new ArrayList<String>(  );
+        List<String> jsonCollection = new ArrayList<String>( );
         JSONObject jo = (JSONObject) JSONSerializer.toJSON( strJSONFlux );
-        
-   
-        JSONArray jsonArray = jo.getJSONObject( objectName ).getJSONArray( dictionaryName );
-        Iterator iterator = jsonArray.iterator(  );
 
-        while ( iterator.hasNext(  ) )
+        JSONArray jsonArray = jo.getJSONObject( objectName ).getJSONArray( dictionaryName );
+        Iterator iterator = jsonArray.iterator( );
+
+        while ( iterator.hasNext( ) )
         {
-            jsonCollection.add( (String) iterator.next(  ) );
+            jsonCollection.add( (String) iterator.next( ) );
         }
 
         return jsonCollection;
@@ -216,8 +212,7 @@ public class DeploymentUtils
     {
         return strPathSite + File.separator + ConstanteUtils.CONSTANTE_POM_XML;
     }
-    
-    
+
     /**
      * Retourne l'emplacement du pom
      *
@@ -227,21 +222,20 @@ public class DeploymentUtils
      */
     public static String getPathUpgradeFiles( String strPathSite )
     {
-    	
-    	String strPath=AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_UPGRADE_DIRECTORY_PATH );
-    	StringBuffer strBuffer=new StringBuffer(strPathSite); 
-    	
-    	for(String strP:strPath.split(ConstanteUtils.CONSTANTE_SEPARATOR_SLASH))
-    	{
-    		strBuffer.append(File.separator);
-    		strBuffer.append(strP);
-    		
-    		
-    	}
-    	
-       return strBuffer.toString();
+
+        String strPath = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_UPGRADE_DIRECTORY_PATH );
+        StringBuffer strBuffer = new StringBuffer( strPathSite );
+
+        for ( String strP : strPath.split( ConstanteUtils.CONSTANTE_SEPARATOR_SLASH ) )
+        {
+            strBuffer.append( File.separator );
+            strBuffer.append( strP );
+
+        }
+
+        return strBuffer.toString( );
     }
-    
+
     /**
      * Retourne l'emplacement du pom
      *
@@ -249,20 +243,14 @@ public class DeploymentUtils
      * @param strPluginName
      * @return
      */
-    public static String getPathUpgradeFile( String strPathSite,String strFileName )
+    public static String getPathUpgradeFile( String strPathSite, String strFileName )
     {
-    	
-    	StringBuffer strBuffer=new StringBuffer(getPathUpgradeFiles(strPathSite));
-    	strBuffer.append(File.separator);
-    	strBuffer.append(strFileName);
-    	return strBuffer.toString();
+
+        StringBuffer strBuffer = new StringBuffer( getPathUpgradeFiles( strPathSite ) );
+        strBuffer.append( File.separator );
+        strBuffer.append( strFileName );
+        return strBuffer.toString( );
     }
-    
-    
-    
-    
-    
-    
 
     /**
      * Retourne l'emplacement du pom
@@ -273,16 +261,14 @@ public class DeploymentUtils
      */
     public static String getPathArchiveGenerated( String strPathSite, String strWarName, String strExtension )
     {
-        
-       List<String> listFileInTarget=FileUtil.list( strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET , strExtension ,false);
-       if(!CollectionUtils.isEmpty( listFileInTarget ) && listFileInTarget.size( )==1)
-       {
-           return  strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + listFileInTarget.get( 0 );
-       }
-       
-        
-       return  strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName +
-        strExtension;
+
+        List<String> listFileInTarget = FileUtil.list( strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET, strExtension, false );
+        if ( !CollectionUtils.isEmpty( listFileInTarget ) && listFileInTarget.size( ) == 1 )
+        {
+            return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + listFileInTarget.get( 0 );
+        }
+
+        return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName + strExtension;
     }
 
     /**
@@ -312,71 +298,68 @@ public class DeploymentUtils
         return getPlateformUrlApplication( strCodeApplication ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strArea;
     }
 
-    public static String getPlateformUrlServerApplicationInstances( String strCodeApplication,
-        String strCodeEnvironment, String strServerApplicationType )
+    public static String getPlateformUrlServerApplicationInstances( String strCodeApplication, String strCodeEnvironment, String strServerApplicationType )
     {
-        String strPathEnvironment = ( strCodeEnvironment.replace( ConstanteUtils.CONSTANTE_SEPARATOR_POINT,
-                ConstanteUtils.CONSTANTE_SEPARATOR_SLASH ) ).toUpperCase(  );
+        String strPathEnvironment = ( strCodeEnvironment.replace( ConstanteUtils.CONSTANTE_SEPARATOR_POINT, ConstanteUtils.CONSTANTE_SEPARATOR_SLASH ) )
+                .toUpperCase( );
 
-        return getPlateformUrlApplication( strCodeApplication ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-        strPathEnvironment + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-        getPathServerByType( strServerApplicationType, strCodeEnvironment );
+        return getPlateformUrlApplication( strCodeApplication ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strPathEnvironment
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + getPathServerByType( strServerApplicationType, strCodeEnvironment );
     }
 
-    public static String getPlateformUrlServerApplicationActions( String strCodeApplication,
-        ServerApplicationInstance serverApplicationInstance )
+    public static String getPlateformUrlServerApplicationActions( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
     {
-        return getPlateformUrlServerApplicationInstances( strCodeApplication,
-            serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
-        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ).toUpperCase(  );
-    }
-    
-    public static String getPlateformUrlDatabases( String strCodeApplication,
-            ServerApplicationInstance serverApplicationInstance )
-        {
-            return getPlateformUrlServerApplicationInstances( strCodeApplication,
-                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ).toUpperCase(  ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_ACTION_EXECUTE ;
-        }
-    
-    
-
-    public static String getPlateformUrlServerApplicationAction( String strCodeApplication,
-        ServerApplicationInstance serverApplicationInstance, String strCodeAction )
-    {
-        return getPlateformUrlServerApplicationActions( strCodeApplication, serverApplicationInstance ) +
-        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strCodeAction;
+        return getPlateformUrlServerApplicationInstances( strCodeApplication, serverApplicationInstance.getCodeEnvironment( ),
+                serverApplicationInstance.getType( ) )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode( ).toUpperCase( );
     }
 
-    public static String getDeployDirectoryTarget( String strCodeApplication,
-        ServerApplicationInstance serverApplicationInstance )
+    public static String getPlateformUrlDatabases( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
     {
-        return getPlateformUrlServerApplicationInstances( strCodeApplication,
-            serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
-        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
-        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getFtpDirectoryTarget(  );
+        return getPlateformUrlServerApplicationInstances( strCodeApplication, serverApplicationInstance.getCodeEnvironment( ),
+                serverApplicationInstance.getType( ) )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getCode( ).toUpperCase( )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + ConstanteUtils.CONSTANTE_ACTION_EXECUTE;
     }
-    
-    public static String getContextDirectoryTarget( String strCodeApplication,
-            ServerApplicationInstance serverApplicationInstance )
-        {
-            return getPlateformUrlServerApplicationInstances( strCodeApplication,
-                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONTEXT_DIRECTORY_NAME;
-        }
-    
-    public static String getDumpFileDirectory( String strCodeApplication,
-            ServerApplicationInstance serverApplicationInstance )
-        {
-            return getPlateformUrlServerApplicationInstances( strCodeApplication,
-                serverApplicationInstance.getCodeEnvironment(  ), serverApplicationInstance.getType(  ) ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getCode(  ) +
-            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + serverApplicationInstance.getFtpDirectoryDump(  )+ConstanteUtils.CONSTANTE_SEPARATOR_SLASH  ;
-        }
-    
-    
+
+    public static String getPlateformUrlServerApplicationAction( String strCodeApplication, ServerApplicationInstance serverApplicationInstance,
+            String strCodeAction )
+    {
+        return getPlateformUrlServerApplicationActions( strCodeApplication, serverApplicationInstance ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + strCodeAction;
+    }
+
+    public static String getDeployDirectoryTarget( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
+    {
+        return getPlateformUrlServerApplicationInstances( strCodeApplication, serverApplicationInstance.getCodeEnvironment( ),
+                serverApplicationInstance.getType( ) )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getCode( )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getFtpDirectoryTarget( );
+    }
+
+    public static String getContextDirectoryTarget( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
+    {
+        return getPlateformUrlServerApplicationInstances( strCodeApplication, serverApplicationInstance.getCodeEnvironment( ),
+                serverApplicationInstance.getType( ) )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getCode( )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + ConstanteUtils.CONTEXT_DIRECTORY_NAME;
+    }
+
+    public static String getDumpFileDirectory( String strCodeApplication, ServerApplicationInstance serverApplicationInstance )
+    {
+        return getPlateformUrlServerApplicationInstances( strCodeApplication, serverApplicationInstance.getCodeEnvironment( ),
+                serverApplicationInstance.getType( ) )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getCode( )
+                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + serverApplicationInstance.getFtpDirectoryDump( ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH;
+    }
 
     /**
      * convert a string to int
@@ -396,7 +379,7 @@ public class DeploymentUtils
                 nIdParameter = Integer.parseInt( strParameter );
             }
         }
-        catch ( NumberFormatException ne )
+        catch( NumberFormatException ne )
         {
             AppLogService.error( ne );
         }
@@ -406,63 +389,58 @@ public class DeploymentUtils
 
     public static SvnUser getSvnUser( int nIdAdminUser, Locale locale )
     {
-        
-    	SvnUser mavenUser = null;
-    	boolean bUsedApplicationAccount= AppPropertiesService.getPropertyBoolean( ConstanteUtils.PROPERTY_SVN_USED_DEPLOYMENT_ACCOUNT ,false);
-        if(!bUsedApplicationAccount)
-        	
+
+        SvnUser mavenUser = null;
+        boolean bUsedApplicationAccount = AppPropertiesService.getPropertyBoolean( ConstanteUtils.PROPERTY_SVN_USED_DEPLOYMENT_ACCOUNT, false );
+        if ( !bUsedApplicationAccount )
+
         {
-    	
-	    	String strIdAttributeLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN );
-	        String strIdAttributePasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD );
-	        String strLoginValue = null;
-	        String strPasswordValue = null;
-	       
-	        Map<String, Object> mapAttributeUser = AdminUserFieldService.getAdminUserFields( nIdAdminUser, locale );
-	
-	        if ( mapAttributeUser.containsKey( strIdAttributeLogin ) &&
-	                mapAttributeUser.containsKey( strIdAttributePasssword ) )
-	        {
-	            strLoginValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributeLogin ) ).get( 0 )
-	                              .getValue(  );
-	            strPasswordValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributePasssword ) ).get( 0 )
-	                                 .getValue(  );
-	
-	            if ( !StringUtils.isEmpty( strLoginValue ) && !( StringUtils.isEmpty( strPasswordValue ) ) )
-	            {
-	                mavenUser = new SvnUser(  );
-	                mavenUser.setLogin( strLoginValue );
-	                mavenUser.setPassword( strPasswordValue );
-	            }
-	        }
+
+            String strIdAttributeLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_LOGIN );
+            String strIdAttributePasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ADMINUSER_ID_ATTRIBUTE_SVN_PASSWORD );
+            String strLoginValue = null;
+            String strPasswordValue = null;
+
+            Map<String, Object> mapAttributeUser = AdminUserFieldService.getAdminUserFields( nIdAdminUser, locale );
+
+            if ( mapAttributeUser.containsKey( strIdAttributeLogin ) && mapAttributeUser.containsKey( strIdAttributePasssword ) )
+            {
+                strLoginValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributeLogin ) ).get( 0 ).getValue( );
+                strPasswordValue = ( (ArrayList<AdminUserField>) mapAttributeUser.get( strIdAttributePasssword ) ).get( 0 ).getValue( );
+
+                if ( !StringUtils.isEmpty( strLoginValue ) && !( StringUtils.isEmpty( strPasswordValue ) ) )
+                {
+                    mavenUser = new SvnUser( );
+                    mavenUser.setLogin( strLoginValue );
+                    mavenUser.setPassword( strPasswordValue );
+                }
+            }
         }
         else
         {
-        	String strApplicationLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_LOGIN_APPLICATION_DEPLOYMENT);
-	        String strApplicationPasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_PASSWORD_APPLICATION_DEPLOYMENT );
-	    
-        	 mavenUser = new SvnUser(  );
-             mavenUser.setLogin( strApplicationLogin );
-             mavenUser.setPassword( strApplicationPasssword );
-       }
+            String strApplicationLogin = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_LOGIN_APPLICATION_DEPLOYMENT );
+            String strApplicationPasssword = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_PASSWORD_APPLICATION_DEPLOYMENT );
+
+            mavenUser = new SvnUser( );
+            mavenUser.setLogin( strApplicationLogin );
+            mavenUser.setPassword( strApplicationPasssword );
+        }
 
         return mavenUser;
     }
 
     public static JSONObject getJSONForCommandResult( CommandResult result )
     {
-        JSONObject jo = new JSONObject(  );
-        JSONObject joResult = new JSONObject(  );
+        JSONObject jo = new JSONObject( );
+        JSONObject joResult = new JSONObject( );
 
         try
         {
-            jo.put( ConstanteUtils.JSON_STATUS, result.getStatus(  ) );
-            
+            jo.put( ConstanteUtils.JSON_STATUS, result.getStatus( ) );
 
             // pour les logs tr�s longs, on ne prend que la fin
-            StringBuffer sbLog = result.getLog(  );
-            int nMaxLogSize = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_MAX_LOG_SIZE,
-                    ConstanteUtils.CONSTANTE_ID_NULL );
+            StringBuffer sbLog = result.getLog( );
+            int nMaxLogSize = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_MAX_LOG_SIZE, ConstanteUtils.CONSTANTE_ID_NULL );
             String strLog;
 
             if ( nMaxLogSize == -ConstanteUtils.CONSTANTE_ID_NULL )
@@ -473,13 +451,13 @@ public class DeploymentUtils
             // sbLog null entre le lancement du thread et la premiere requete
             if ( sbLog != null )
             {
-                if ( sbLog.length(  ) > nMaxLogSize )
+                if ( sbLog.length( ) > nMaxLogSize )
                 {
-                    strLog = sbLog.substring( sbLog.length(  ) - nMaxLogSize );
+                    strLog = sbLog.substring( sbLog.length( ) - nMaxLogSize );
                 }
                 else
                 {
-                    strLog = sbLog.toString(  );
+                    strLog = sbLog.toString( );
                 }
             }
             else
@@ -488,51 +466,49 @@ public class DeploymentUtils
             }
 
             jo.put( ConstanteUtils.JSON_LOG, strLog );
-            jo.put( ConstanteUtils.JSON_RUNNING, result.isRunning(  ) );
-            jo.put( ConstanteUtils.JSON_ERROR, result.getError(  ) );
-            jo.put( ConstanteUtils.JSON_ERROR_TYPE, result.getErrorType());
-            
-            for (  Entry<String,String> resultInformations: result.getResultInformations().entrySet()) {
-            	
-            	joResult.put(resultInformations.getKey(),resultInformations.getValue());
-			}
-            jo.put(ConstanteUtils.JSON_RESULT,joResult);
-            
+            jo.put( ConstanteUtils.JSON_RUNNING, result.isRunning( ) );
+            jo.put( ConstanteUtils.JSON_ERROR, result.getError( ) );
+            jo.put( ConstanteUtils.JSON_ERROR_TYPE, result.getErrorType( ) );
+
+            for ( Entry<String, String> resultInformations : result.getResultInformations( ).entrySet( ) )
+            {
+
+                joResult.put( resultInformations.getKey( ), resultInformations.getValue( ) );
+            }
+            jo.put( ConstanteUtils.JSON_RESULT, joResult );
+
         }
-        catch ( JSONException e )
+        catch( JSONException e )
         {
-            AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
+            AppLogService.error( "JSON error : " + e.getMessage( ), e );
         }
 
         return jo;
     }
 
-    public static JSONObject getJSONForWorkflowAction( String strJspForceRedirect, String strFormError,
-        CommandResult result, State state, Collection<Action> listAction )
+    public static JSONObject getJSONForWorkflowAction( String strJspForceRedirect, String strFormError, CommandResult result, State state,
+            Collection<Action> listAction )
     {
-        JSONObject jo = new JSONObject(  );
+        JSONObject jo = new JSONObject( );
 
         try
         {
-            jo.put( ConstanteUtils.JSON_JSP_FOM_DISPLAY,
-                ( strJspForceRedirect != null ) ? strJspForceRedirect : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_JSP_FOM_DISPLAY, ( strJspForceRedirect != null ) ? strJspForceRedirect : ConstanteUtils.CONSTANTE_EMPTY_STRING );
 
-            jo.put( ConstanteUtils.JSON_STATE,
-                ( state != null ) ? state.getName(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            jo.put( ConstanteUtils.JSON_FORM_ERROR,
-                ( strFormError != null ) ? strFormError : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_STATE, ( state != null ) ? state.getName( ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_FORM_ERROR, ( strFormError != null ) ? strFormError : ConstanteUtils.CONSTANTE_EMPTY_STRING );
 
             JSONObject joAction;
-            JSONArray joListAction = new JSONArray(  );
+            JSONArray joListAction = new JSONArray( );
 
             if ( listAction != null )
             {
                 for ( Action action : listAction )
                 {
-                    joAction = new JSONObject(  );
-                    joAction.put( ConstanteUtils.JSON_ACTION_ID, action.getId(  ) );
-                    joAction.put( ConstanteUtils.JSON_ACTION_NAME, action.getName(  ) );
-                    joAction.put( ConstanteUtils.JSON_ACTION_DESCRIPTION, action.getDescription(  ) );
+                    joAction = new JSONObject( );
+                    joAction.put( ConstanteUtils.JSON_ACTION_ID, action.getId( ) );
+                    joAction.put( ConstanteUtils.JSON_ACTION_NAME, action.getName( ) );
+                    joAction.put( ConstanteUtils.JSON_ACTION_DESCRIPTION, action.getDescription( ) );
 
                     joListAction.add( joAction );
                 }
@@ -540,265 +516,248 @@ public class DeploymentUtils
 
             jo.put( ConstanteUtils.JSON_ACTION_LIST, joListAction );
 
-            jo.put( ConstanteUtils.JSON_RUNNING,
-                ( result != null ) ? result.isRunning(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            jo.put( ConstanteUtils.JSON_ERROR,
-                ( result != null ) ? result.getError(  ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_RUNNING, ( result != null ) ? result.isRunning( ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+            jo.put( ConstanteUtils.JSON_ERROR, ( result != null ) ? result.getError( ) : ConstanteUtils.CONSTANTE_EMPTY_STRING );
         }
-        catch ( JSONException e )
+        catch( JSONException e )
         {
-            AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
+            AppLogService.error( "JSON error : " + e.getMessage( ), e );
         }
 
         return jo;
     }
-    
-    
-    public static JSONObject getJSONForServerAction( int nIdApplication,String strCodeEnvironment,String strServerCodeInstance,String strServerApplicationType,String strJspForceRedirect,
-            CommandResult result,List<IAction> listServersActions,Integer newServerStatus)
+
+    public static JSONObject getJSONForServerAction( int nIdApplication, String strCodeEnvironment, String strServerCodeInstance,
+            String strServerApplicationType, String strJspForceRedirect, CommandResult result, List<IAction> listServersActions, Integer newServerStatus )
+    {
+        JSONObject jo = getJSONForCommandResult( result );
+
+        try
         {
-            JSONObject jo = getJSONForCommandResult(result);
+            jo.put( ConstanteUtils.JSON_JSP_FOM_DISPLAY, ( strJspForceRedirect != null ) ? strJspForceRedirect : ConstanteUtils.CONSTANTE_EMPTY_STRING );
 
-            try
-            {
-                jo.put( ConstanteUtils.JSON_JSP_FOM_DISPLAY,
-                    ( strJspForceRedirect != null ) ? strJspForceRedirect : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+        }
+        catch( JSONException e )
+        {
+            AppLogService.error( "JSON error : " + e.getMessage( ), e );
+        }
+        JSONObject joAction;
+        JSONArray joListAction = new JSONArray( );
 
-                 
-            }
-            catch ( JSONException e )
+        if ( listServersActions != null )
+        {
+            for ( IAction action : listServersActions )
             {
-                AppLogService.error( "JSON error : " + e.getMessage(  ) ,e);
-            }
-            JSONObject joAction;
-            JSONArray joListAction = new JSONArray(  );
-
-            if ( listServersActions != null )
-            {
-                for ( IAction action : listServersActions )
+                if ( action.isDisplay( ) && ( action.getStatus( ) == null || action.getStatus( ).equals( newServerStatus ) ) )
                 {
-                	if( action.isDisplay() && (action.getStatus()==null||action.getStatus().equals(newServerStatus)))
-                	{
-                	
-	                    joAction = new JSONObject(  );
-	                    joAction.put( ConstanteUtils.JSON_ACTION_CODE, action.getCode() );
-	                    joAction.put( ConstanteUtils.JSON_ACTION_NAME, action.getName(  ) );
-	                    joAction.put( ConstanteUtils.JSON_ACTION_ICON_CSS_CLASS, action.getIconCssClass());
-	                    joListAction.add( joAction );
-                	}
+
+                    joAction = new JSONObject( );
+                    joAction.put( ConstanteUtils.JSON_ACTION_CODE, action.getCode( ) );
+                    joAction.put( ConstanteUtils.JSON_ACTION_NAME, action.getName( ) );
+                    joAction.put( ConstanteUtils.JSON_ACTION_ICON_CSS_CLASS, action.getIconCssClass( ) );
+                    joListAction.add( joAction );
                 }
             }
-            jo.put( ConstanteUtils.JSON_ACTION_LIST, joListAction );
-            jo.put( ConstanteUtils.JSON_SERVER_STATUS,
-                    ( newServerStatus != null ) ? newServerStatus : ConstanteUtils.CONSTANTE_EMPTY_STRING );
-            jo.put( ConstanteUtils.JSON_ID_APPLIACTION,nIdApplication);
-            jo.put( ConstanteUtils.JSON_CODE_ENVIRONMENT,strCodeEnvironment);
-            jo.put( ConstanteUtils.JSON_CODE_SERVER_APPLICATION_INSTANCE ,  strServerCodeInstance);
-            jo.put( ConstanteUtils.JSON_SERVER_APPLICATION_TYPE ,  strServerApplicationType);
-            return jo;
         }
-    
-   
-    public static int getIdWorkflowSiteDeploy(WorkflowDeploySiteContext workflowDeploySiteContext)
+        jo.put( ConstanteUtils.JSON_ACTION_LIST, joListAction );
+        jo.put( ConstanteUtils.JSON_SERVER_STATUS, ( newServerStatus != null ) ? newServerStatus : ConstanteUtils.CONSTANTE_EMPTY_STRING );
+        jo.put( ConstanteUtils.JSON_ID_APPLIACTION, nIdApplication );
+        jo.put( ConstanteUtils.JSON_CODE_ENVIRONMENT, strCodeEnvironment );
+        jo.put( ConstanteUtils.JSON_CODE_SERVER_APPLICATION_INSTANCE, strServerCodeInstance );
+        jo.put( ConstanteUtils.JSON_SERVER_APPLICATION_TYPE, strServerApplicationType );
+        return jo;
+    }
+
+    public static int getIdWorkflowSiteDeploy( WorkflowDeploySiteContext workflowDeploySiteContext )
     {
         int nIdWorkflow = ConstanteUtils.CONSTANTE_ID_NULL;
-        
-        if(workflowDeploySiteContext.isDeploySql())
+
+        if ( workflowDeploySiteContext.isDeploySql( ) )
         {
-        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT,
-                     ConstanteUtils.CONSTANTE_ID_NULL );
-        }
-        else if(workflowDeploySiteContext.isInitAppContext())
-        {
-        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT,
-                     ConstanteUtils.CONSTANTE_ID_NULL );
-        }
-        else if(workflowDeploySiteContext.isInitBdd())
-        {
-        	 nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE,
-                     ConstanteUtils.CONSTANTE_ID_NULL );
+            nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT, ConstanteUtils.CONSTANTE_ID_NULL );
         }
         else
-        {
-            nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE,
-                    ConstanteUtils.CONSTANTE_ID_NULL );
-        }
+            if ( workflowDeploySiteContext.isInitAppContext( ) )
+            {
+                nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT, ConstanteUtils.CONSTANTE_ID_NULL );
+            }
+            else
+                if ( workflowDeploySiteContext.isInitBdd( ) )
+                {
+                    nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE, ConstanteUtils.CONSTANTE_ID_NULL );
+                }
+                else
+                {
+                    nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE, ConstanteUtils.CONSTANTE_ID_NULL );
+                }
 
         return nIdWorkflow;
     }
 
     public static void startCommandResult( WorkflowDeploySiteContext context )
     {
-        CommandResult commandResult = new CommandResult(  );
-        startCommandResult(commandResult);
+        CommandResult commandResult = new CommandResult( );
+        startCommandResult( commandResult );
         context.setCommandResult( commandResult );
-        
+
     }
-    
-    public static void startCommandResult(CommandResult commandResult )
+
+    public static void startCommandResult( CommandResult commandResult )
     {
-    	
-         commandResult.setLog( new StringBuffer(  ) );
-         commandResult.setRunning( true );
-         commandResult.setStatus(CommandResult.STATUS_OK);
+
+        commandResult.setLog( new StringBuffer( ) );
+        commandResult.setRunning( true );
+        commandResult.setStatus( CommandResult.STATUS_OK );
     }
 
     public static void stopCommandResult( WorkflowDeploySiteContext context )
     {
-    	stopCommandResult(context.getCommandResult(  ));
+        stopCommandResult( context.getCommandResult( ) );
     }
-    
-    public static void stopCommandResult(CommandResult commandResult  )
-    {
-    	commandResult.setRunning( false );
-    }
-    
 
-    public static void addTechnicalError(CommandResult commandResult,String strError, Exception e  )
+    public static void stopCommandResult( CommandResult commandResult )
     {
-       
-        if(e!=null)
-        {
-            AppLogService.error(strError,e);
-        }else
-        {
-            AppLogService.error(strError);
-        }
-        
-        if(commandResult!=null)
-        {
-            commandResult.setError(strError);
-            commandResult.setStatus(CommandResult.STATUS_ERROR);
-            commandResult.setRunning(false);
-            commandResult.setErrorType(CommandResult.ERROR_TYPE_STOP);
-        }
-      }
-    
-    public static void addTechnicalError(CommandResult commandResult,String strError  )
+        commandResult.setRunning( false );
+    }
+
+    public static void addTechnicalError( CommandResult commandResult, String strError, Exception e )
     {
-            addTechnicalError( commandResult, strError ,null);
-     }
+
+        if ( e != null )
+        {
+            AppLogService.error( strError, e );
+        }
+        else
+        {
+            AppLogService.error( strError );
+        }
+
+        if ( commandResult != null )
+        {
+            commandResult.setError( strError );
+            commandResult.setStatus( CommandResult.STATUS_ERROR );
+            commandResult.setRunning( false );
+            commandResult.setErrorType( CommandResult.ERROR_TYPE_STOP );
+        }
+    }
+
+    public static void addTechnicalError( CommandResult commandResult, String strError )
+    {
+        addTechnicalError( commandResult, strError, null );
+    }
 
     public static ReferenceList addEmptyRefenceItem( ReferenceList referenceList )
     {
-    	ReferenceList referenceList2=new ReferenceList();
-    	
-    	ReferenceItem referenceItem = new ReferenceItem(  );
-        
-    	referenceItem.setCode( ConstanteUtils.CONSTANTE_EMPTY_STRING );
+        ReferenceList referenceList2 = new ReferenceList( );
+
+        ReferenceItem referenceItem = new ReferenceItem( );
+
+        referenceItem.setCode( ConstanteUtils.CONSTANTE_EMPTY_STRING );
         referenceItem.setName( ConstanteUtils.CONSTANTE_EMPTY_STRING );
-        
+
         referenceList2.add( 0, referenceItem );
-        referenceList2.addAll(referenceList);
-        
-        return referenceList2; 
+        referenceList2.addAll( referenceList );
+
+        return referenceList2;
     }
 
-    public static ActionParameter[] getActionParameters( HttpServletRequest request, List<String> listParameterNames )
+    public static ActionParameter [ ] getActionParameters( HttpServletRequest request, List<String> listParameterNames )
     {
         if ( listParameterNames != null )
         {
-            List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>(  );
+            List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>( );
             ActionParameter actionParameter;
 
             for ( String param : listParameterNames )
             {
-                actionParameter = new ActionParameter(  );
+                actionParameter = new ActionParameter( );
                 actionParameter.setName( param );
                 actionParameter.setValue( request.getParameter( param ) );
-                listActionParameters.add(actionParameter);
+                listActionParameters.add( actionParameter );
             }
 
-            return listActionParameters.toArray( new ActionParameter[listParameterNames.size(  )] );
+            return listActionParameters.toArray( new ActionParameter [ listParameterNames.size( )] );
         }
 
         return null;
     }
-    
-    
-    public static ActionParameter[] getActionParameters( WorkflowDeploySiteContext workkflowContext)
+
+    public static ActionParameter [ ] getActionParameters( WorkflowDeploySiteContext workkflowContext )
     {
-      
-            List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>(  );
-            ActionParameter actionParameter;
-            if(workkflowContext.isDeployWar()||workkflowContext.isInitAppContext())
+
+        List<ActionParameter> listActionParameters = new ArrayList<ActionParameter>( );
+        ActionParameter actionParameter;
+        if ( workkflowContext.isDeployWar( ) || workkflowContext.isInitAppContext( ) )
+        {
+            actionParameter = new ActionParameter( );
+            actionParameter.setName( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
+            actionParameter.setValue( workkflowContext.getTagToDeploy( ) );
+
+            listActionParameters.add( actionParameter );
+
+            ActionParameter initAppContext = new ActionParameter( );
+            initAppContext.setName( ConstanteUtils.PARAM_INIT_APP_CONTEXT );
+            initAppContext.setValue( Boolean.toString( workkflowContext.isInitAppContext( ) ) );
+
+            listActionParameters.add( initAppContext );
+
+        }
+
+        if ( workkflowContext.isDeploySql( ) || workkflowContext.isInitBdd( ) )
+        {
+            if ( !workkflowContext.isInitBdd( ) )
             {
-	            actionParameter = new ActionParameter(  );
-	            actionParameter.setName( ConstanteUtils.PARAM_TAG_TO_DEPLOY  );
-	            actionParameter.setValue( workkflowContext.getTagToDeploy());
+                actionParameter = new ActionParameter( );
+                actionParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE );
+                actionParameter.setValue( workkflowContext.getDatabaseName( ) );
+                listActionParameters.add( actionParameter );
+            }
 
-	            listActionParameters.add(actionParameter);
-
-	            
-	            ActionParameter initAppContext = new ActionParameter(  );
-	            initAppContext.setName( ConstanteUtils.PARAM_INIT_APP_CONTEXT  );
-	            initAppContext.setValue( Boolean.toString( workkflowContext.isInitAppContext()));
-	            
-	            
-	            listActionParameters.add(initAppContext);
-	            
-	       }
-            
-            if(workkflowContext.isDeploySql()||workkflowContext.isInitBdd())
+            if ( workkflowContext.getScriptFileItemName( ) != null )
             {
-            	if( !workkflowContext.isInitBdd())
- 	           	{
-            	 actionParameter = new ActionParameter(  );
-	             actionParameter.setName( ConstanteUtils.PARAM_CODE_DATABASE  );
-	             actionParameter.setValue( workkflowContext.getDatabaseName());
-	             listActionParameters.add(actionParameter);
- 	           	}
-	            
-	            if(workkflowContext.getScriptFileItemName() !=null)
-	            {
-		            actionParameter = new ActionParameter(  );
-		            actionParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME );
-		            actionParameter.setValue( workkflowContext.getScriptFileItemName());
-		            listActionParameters.add(actionParameter);
-		            
-	            }
-	           
-	           if( workkflowContext.isInitBdd())
-	           {
-		            actionParameter = new ActionParameter(  );
-		            actionParameter.setName( ConstanteUtils.PARAM_INIT_DATABASE );
-		            actionParameter.setValue( Boolean.toString( workkflowContext.isInitBdd()));
-		            listActionParameters.add(actionParameter);
-	           	}
-		            
-	          }
-	            
-	        
-	       
+                actionParameter = new ActionParameter( );
+                actionParameter.setName( ConstanteUtils.PARAM_SCRIPT_NAME );
+                actionParameter.setValue( workkflowContext.getScriptFileItemName( ) );
+                listActionParameters.add( actionParameter );
 
-            return listActionParameters.toArray( new ActionParameter[listActionParameters.size(  )] );
-        
+            }
 
-   
+            if ( workkflowContext.isInitBdd( ) )
+            {
+                actionParameter = new ActionParameter( );
+                actionParameter.setName( ConstanteUtils.PARAM_INIT_DATABASE );
+                actionParameter.setValue( Boolean.toString( workkflowContext.isInitBdd( ) ) );
+                listActionParameters.add( actionParameter );
+            }
+
+        }
+
+        return listActionParameters.toArray( new ActionParameter [ listActionParameters.size( )] );
+
     }
 
     public static ReferenceList getReferenceListServerType( Locale locale )
     {
-        ReferenceList referenceList = new ReferenceList(  );
+        ReferenceList referenceList = new ReferenceList( );
         referenceList.addItem( ConstanteUtils.CONSTANTE_EMPTY_STRING, ConstanteUtils.CONSTANTE_EMPTY_STRING );
         referenceList.addItem( ConstanteUtils.CONSTANTE_SERVER_TOMCAT,
-            I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_TOMCAT_LABEL, locale ) );
-        referenceList.addItem( ConstanteUtils.CONSTANTE_SERVER_MYSQL,
-            I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_MYSQL_LABEL, locale ) );
-        referenceList.addItem( ConstanteUtils.CONSTANTE_SERVER_HTTPD,
-            I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_HTTPD_LABEL, locale ) );
+                I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_TOMCAT_LABEL, locale ) );
+        referenceList
+                .addItem( ConstanteUtils.CONSTANTE_SERVER_MYSQL, I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_MYSQL_LABEL, locale ) );
+        referenceList
+                .addItem( ConstanteUtils.CONSTANTE_SERVER_HTTPD, I18nService.getLocalizedString( ConstanteUtils.PROPERTY_SERVER_TYPE_HTTPD_LABEL, locale ) );
 
         return referenceList;
     }
 
     public static ReferenceList getReferenceListAction( List<IAction> listAction )
     {
-        ReferenceList referenceList = new ReferenceList(  );
+        ReferenceList referenceList = new ReferenceList( );
         referenceList.addItem( ConstanteUtils.CONSTANTE_EMPTY_STRING, ConstanteUtils.CONSTANTE_EMPTY_STRING );
 
         for ( IAction action : listAction )
         {
-            referenceList.addItem( getActionKey( action.getCode(  ), action.getServerType(  ) ),action.getName());
+            referenceList.addItem( getActionKey( action.getCode( ), action.getServerType( ) ), action.getName( ) );
         }
 
         return referenceList;
@@ -819,82 +778,89 @@ public class DeploymentUtils
             {
                 strPathServer = ConstanteUtils.CONSTANTE_SERVER_TOM;
             }
-            else if ( ConstanteUtils.CONSTANTE_SERVER_MYSQL.equals( strApplicationType ) )
-            {
-                strPathServer = ConstanteUtils.CONSTANTE_SERVER_MYS;
-            }
+            else
+                if ( ConstanteUtils.CONSTANTE_SERVER_MYSQL.equals( strApplicationType ) )
+                {
+                    strPathServer = ConstanteUtils.CONSTANTE_SERVER_MYS;
+                }
         }
 
         return strPathServer;
     }
-    
-    
+
     public static ReferenceList getSimpleReferenceList( List<String> list )
     {
-    	  ReferenceList reflist = new ReferenceList(  );
-    	  for(String strCode:list)
-    	  {
-    		  reflist.addItem(strCode, strCode);
-    		  
-    	  }
-    	  return reflist;
+        ReferenceList reflist = new ReferenceList( );
+        for ( String strCode : list )
+        {
+            reflist.addItem( strCode, strCode );
+
+        }
+        return reflist;
     }
-    
+
     /**
      * Get the VCS service from the repo type
-     * @param strKey the repo type key
+     * 
+     * @param strKey
+     *            the repo type key
      * @return the VCS service
      */
     public static IVCSService getVCSService( String strKey )
     {
-        switch ( strKey )
+        switch( strKey )
         {
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB : 
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB:
                 return SpringContextService.getBean( ConstanteUtils.BEAN_GITHUB_SERVICE );
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN : 
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN:
                 return SpringContextService.getBean( ConstanteUtils.BEAN_SVN_SERVICE );
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB : 
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB:
                 return SpringContextService.getBean( ConstanteUtils.BEAN_GITLAB_SERVICE );
         }
         return null;
     }
-   
+
     /**
      * Get an empty VCS user based on the repo type of the provided application
-     * @param application the Application
+     * 
+     * @param application
+     *            the Application
      * @return an empty VCS user based on the repo type of the provided application
      */
-   public static AbstractVCSUser getVCSUser( Application application )
-   {
-       switch ( application.getRepoType( ) )
+    public static AbstractVCSUser getVCSUser( Application application )
+    {
+        switch( application.getRepoType( ) )
         {
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB : 
-                return new GitUser();
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN : 
-                return new SvnUser();
-            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB : 
-                return new GitUser();
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB:
+                return new GitUser( );
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_SVN:
+                return new SvnUser( );
+            case ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB:
+                return new GitUser( );
         }
         return null;
-   }
-  
-   /**
-    * Get the VCS user from the request and the given application
-    * @param request the HttpServletRequest
-    * @param application the Application
-    * @return the VCS user
-    */
-   public static AbstractVCSUser getVCSUser( HttpServletRequest request, Application application )
-   {
-       String strLogin = request.getParameter( ConstanteUtils.PARAM_LOGIN );
-       String strPassword = request.getParameter( ConstanteUtils.PARAM_PASSWORD );
-       AbstractVCSUser user = getVCSUser( application );
-       if ( strLogin != null && strPassword != null )
-       {
-           
-           user.setLogin( strLogin );
-           user.setPassword( strPassword );
-       }
-       return user;
-   }
+    }
+
+    /**
+     * Get the VCS user from the request and the given application
+     * 
+     * @param request
+     *            the HttpServletRequest
+     * @param application
+     *            the Application
+     * @return the VCS user
+     */
+    public static AbstractVCSUser getVCSUser( HttpServletRequest request, Application application )
+    {
+        String strLogin = request.getParameter( ConstanteUtils.PARAM_LOGIN );
+        String strPassword = request.getParameter( ConstanteUtils.PARAM_PASSWORD );
+        AbstractVCSUser user = getVCSUser( application );
+        if ( strLogin != null && strPassword != null )
+        {
+
+            user.setLogin( strLogin );
+            user.setPassword( strPassword );
+        }
+        return user;
+    }
 }

@@ -45,7 +45,6 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  *
  * WarInstallerAction
@@ -54,57 +53,54 @@ import java.util.List;
 public class WarInstallerAction extends DefaultAction
 {
     @Override
-    public String run( Application application, ServerApplicationInstance serverApplicationInstance,
-        CommandResult commandResult, ActionParameter... parameter )
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
         String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
         String strResult = null;
         String strWebserviceEnvJsonObjectName = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_OBJECT_NAME );
-        String strWebserviceEnvJsonDictionaryName = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_DICTIONARY_NAME );
+        String strWebserviceEnvJsonDictionaryName = AppPropertiesService
+                .getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_INSTALLABLE_WAR_ACTION_DICTIONARY_NAME );
 
         String strJSONWarInstalled = null;
         String strJSONAction = null;
 
         try
         {
-            strJSONWarInstalled = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                    ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
-                        serverApplicationInstance, this.getCode(  ) ) );
+            strJSONWarInstalled = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                    + DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode( ), serverApplicationInstance, this.getCode( ) ) );
 
-            List<String> listWarInstalls = DeploymentUtils.getJSONDictionary( strWebserviceEnvJsonObjectName,
-                    strWebserviceEnvJsonDictionaryName, strJSONWarInstalled );
+            List<String> listWarInstalls = DeploymentUtils.getJSONDictionary( strWebserviceEnvJsonObjectName, strWebserviceEnvJsonDictionaryName,
+                    strJSONWarInstalled );
 
-            if ( !CollectionUtils.isEmpty( listWarInstalls )   )
-            	
+            if ( !CollectionUtils.isEmpty( listWarInstalls ) )
+
             {
-            	
-            	for(String strWarName:listWarInstalls)
-            	{
-            		if(strWarName.contains(application.getWebAppName()))
-            		{
-	            		strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-	                        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-	                        DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
-	                            serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-	                            strWarName);
-	
-		                if ( strJSONAction != null )
-		                {
-		                    AppLogService.info( "Résultat de la commande @WAR_INSTALLER --> " + strJSONAction );
-		                    
-		                }
-		                break;
-            		}
-            	}
+
+                for ( String strWarName : listWarInstalls )
+                {
+                    if ( strWarName.contains( application.getWebAppName( ) ) )
+                    {
+                        strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                                + DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode( ), serverApplicationInstance, this.getCode( ) )
+                                + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strWarName );
+
+                        if ( strJSONAction != null )
+                        {
+                            AppLogService.info( "Résultat de la commande @WAR_INSTALLER --> " + strJSONAction );
+
+                        }
+                        break;
+                    }
+                }
             }
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-        	
-        	  DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+e.getMessage(),e);  
-        	  AppLogService.error( e );
+
+            DeploymentUtils.addTechnicalError( commandResult, "<h1>Erreur lors de l'exécution de la commande" + this.getCode( ) + " de cloudmgrws</h1> <br> "
+                    + e.getMessage( ), e );
+            AppLogService.error( e );
         }
 
         if ( strJSONAction != null )
@@ -114,13 +110,14 @@ public class WarInstallerAction extends DefaultAction
             if ( jo != null )
             {
                 strResult = jo.getString( strWebserviceActionJsonPropery );
-               if(strResult!=null && !new Boolean( strResult ))
-               {
-               
-            	   DeploymentUtils.addTechnicalError(commandResult, "<h1>Erreur lors de l'exécution de la commande"+this.getCode(  )+" de cloudmgrws</h1> <br> "+strJSONAction);
+                if ( strResult != null && !new Boolean( strResult ) )
+                {
 
-               }
-               
+                    DeploymentUtils.addTechnicalError( commandResult, "<h1>Erreur lors de l'exécution de la commande" + this.getCode( )
+                            + " de cloudmgrws</h1> <br> " + strJSONAction );
+
+                }
+
             }
         }
 

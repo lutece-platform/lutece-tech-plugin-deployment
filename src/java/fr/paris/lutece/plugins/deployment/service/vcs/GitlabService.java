@@ -41,16 +41,16 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.util.UUID;
 
 public class GitlabService extends AbstractGitService
-{    
+{
     @Override
-    public void checkAuthentication(String strRepoUrl, GitUser user) 
+    public void checkAuthentication( String strRepoUrl, GitUser user )
     {
-       String strUID = UUID.randomUUID().toString();
-       String strLocalTempDir = AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY );
-       if (!GitUtils.checkAuthentication( strRepoUrl, strLocalTempDir, strUID, user))
+        String strUID = UUID.randomUUID( ).toString( );
+        String strLocalTempDir = AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY );
+        if ( !GitUtils.checkAuthentication( strRepoUrl, strLocalTempDir, strUID, user ) )
         {
-            throw new AppException( "Bad credentials to GitLab : Unauthorized");
+            throw new AppException( "Bad credentials to GitLab : Unauthorized" );
         }
-       
+
     }
 }

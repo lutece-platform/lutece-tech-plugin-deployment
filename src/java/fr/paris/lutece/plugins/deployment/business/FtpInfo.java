@@ -45,7 +45,7 @@ public class FtpInfo
     private String _strProxyUserPassword;
     private long _lKeepAliveTimeout;
 
-    public String getHost(  )
+    public String getHost( )
     {
         return _strHost;
     }
@@ -55,7 +55,7 @@ public class FtpInfo
         _strHost = strHost;
     }
 
-    public int getPort(  )
+    public int getPort( )
     {
         return _nPort;
     }
@@ -65,7 +65,7 @@ public class FtpInfo
         _nPort = nPort;
     }
 
-    public String getUserLogin(  )
+    public String getUserLogin( )
     {
         return _strUserLogin;
     }
@@ -75,7 +75,7 @@ public class FtpInfo
         _strUserLogin = strUserLogin;
     }
 
-    public String getUserPassword(  )
+    public String getUserPassword( )
     {
         return _strUserPassword;
     }
@@ -85,7 +85,7 @@ public class FtpInfo
         _strUserPassword = strUserPassword;
     }
 
-    public String getProxyHost(  )
+    public String getProxyHost( )
     {
         return _strProxyHost;
     }
@@ -95,7 +95,7 @@ public class FtpInfo
         _strProxyHost = strHost;
     }
 
-    public int getProxyPort(  )
+    public int getProxyPort( )
     {
         return _nProxyPort;
     }
@@ -105,7 +105,7 @@ public class FtpInfo
         _nProxyPort = port;
     }
 
-    public String getProxyUserLogin(  )
+    public String getProxyUserLogin( )
     {
         return _strProxyUserLogin;
     }
@@ -115,7 +115,7 @@ public class FtpInfo
         _strProxyUserLogin = strUserLogin;
     }
 
-    public String getProxyUserPassword(  )
+    public String getProxyUserPassword( )
     {
         return _strProxyUserPassword;
     }
@@ -130,7 +130,7 @@ public class FtpInfo
         this._lKeepAliveTimeout = _lKeepAliveTimeout;
     }
 
-    public long getKeepAliveTimeout(  )
+    public long getKeepAliveTimeout( )
     {
         return _lKeepAliveTimeout;
     }

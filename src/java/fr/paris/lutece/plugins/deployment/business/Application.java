@@ -37,9 +37,9 @@ import fr.paris.lutece.plugins.deployment.service.ApplicationService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
-public class Application implements AdminWorkgroupResource,RBACResource
+public class Application implements AdminWorkgroupResource, RBACResource
 {
-	public static final String RESOURCE_TYPE = "DEPLOYMENT_APPLICATION";
+    public static final String RESOURCE_TYPE = "DEPLOYMENT_APPLICATION";
     private int _nIdApplication;
     private String _strCode;
     private String _strName;
@@ -54,12 +54,12 @@ public class Application implements AdminWorkgroupResource,RBACResource
         this._nIdApplication = _nIdApplication;
     }
 
-    public int getIdApplication(  )
+    public int getIdApplication( )
     {
         return _nIdApplication;
     }
 
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
@@ -69,7 +69,7 @@ public class Application implements AdminWorkgroupResource,RBACResource
         _strCode = strCode;
     }
 
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -79,7 +79,7 @@ public class Application implements AdminWorkgroupResource,RBACResource
         _strName = strName;
     }
 
-    public String getWebAppName(  )
+    public String getWebAppName( )
     {
         return _strWebappName;
     }
@@ -88,90 +88,102 @@ public class Application implements AdminWorkgroupResource,RBACResource
     {
         _strWebappName = strName;
     }
-    
-    
-   public String getWorkgroup(  )
-   {
-       return _strWorkgroup;
-   }
 
-   public void setWorkgroup( String workGroup )
-   {
-       _strWorkgroup = workGroup;
-   }
+    public String getWorkgroup( )
+    {
+        return _strWorkgroup;
+    }
 
-@Override
-public String getResourceTypeCode() {
-	// TODO Auto-generated method stub
-	return RESOURCE_TYPE;
-}
+    public void setWorkgroup( String workGroup )
+    {
+        _strWorkgroup = workGroup;
+    }
 
-@Override
-public String getResourceId() {
-	
-	return Integer.toString(getIdApplication());
-}
+    @Override
+    public String getResourceTypeCode( )
+    {
+        // TODO Auto-generated method stub
+        return RESOURCE_TYPE;
+    }
+
+    @Override
+    public String getResourceId( )
+    {
+
+        return Integer.toString( getIdApplication( ) );
+    }
 
     /**
      * Get the URL of the repo
+     * 
      * @return the URL of the repo
      */
-    public String getUrlRepo() 
+    public String getUrlRepo( )
     {
         return _strUrlRepo;
     }
 
     /**
      * Set the URL of the repo
-     * @param strUrlRepo the Url of the Repo
+     * 
+     * @param strUrlRepo
+     *            the Url of the Repo
      */
-    public void setUrlRepo(String strUrlRepo) 
+    public void setUrlRepo( String strUrlRepo )
     {
         _strUrlRepo = strUrlRepo;
     }
 
     /**
      * Get the repo type of the application
+     * 
      * @return the repo type
      */
-    public String getRepoType() {
+    public String getRepoType( )
+    {
         return _strRepoType;
     }
 
     /**
      * Set the repo type of the application
-     * @param strRepoType the repo type
+     * 
+     * @param strRepoType
+     *            the repo type
      */
-    public void setRepoType(String strRepoType) {
+    public void setRepoType( String strRepoType )
+    {
         _strRepoType = strRepoType;
     }
 
     /**
      * Get the artifact id of the application
+     * 
      * @return the artifact id of the application
      */
-    public String getArtifactId() {
+    public String getArtifactId( )
+    {
         return _strArtifactId;
     }
 
     /**
      * Set the artifact if of the application
-     * @param strArtifactId the artifact id of the application
+     * 
+     * @param strArtifactId
+     *            the artifact id of the application
      */
-    public void setArtifactId(String strArtifactId) {
+    public void setArtifactId( String strArtifactId )
+    {
         this._strArtifactId = strArtifactId;
     }
-    
+
     /**
      * Check if the application has a private repo
+     * 
      * @return true if the application has a private repo, false otherwise
      */
     public boolean hasPrivateRepo( )
     {
         return ApplicationService.isPrivateRepo( this );
     }
-
-    
-
 
 }

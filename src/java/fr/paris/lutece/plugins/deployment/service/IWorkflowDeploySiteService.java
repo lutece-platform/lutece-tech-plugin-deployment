@@ -39,7 +39,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 public interface IWorkflowDeploySiteService
 {
     int addWorkflowDeploySiteContext( WorkflowDeploySiteContext context );
@@ -51,11 +50,10 @@ public interface IWorkflowDeploySiteService
     String assemblySite( WorkflowDeploySiteContext context, Locale locale );
 
     String deploySite( WorkflowDeploySiteContext context, Locale locale );
-    
+
     String deployScript( WorkflowDeploySiteContext context, Locale locale );
 
     void initTagInformations( WorkflowDeploySiteContext context );
 
-    String executeServerAction( String strActionKey, HttpServletRequest request, WorkflowDeploySiteContext context,
-        Locale locale );
+    String executeServerAction( String strActionKey, HttpServletRequest request, WorkflowDeploySiteContext context, Locale locale );
 }

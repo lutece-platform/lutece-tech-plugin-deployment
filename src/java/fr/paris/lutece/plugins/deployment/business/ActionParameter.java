@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.deployment.business;
 
 import java.io.Serializable;
 
-
 public class ActionParameter implements Serializable
 {
     /**
@@ -50,7 +49,7 @@ public class ActionParameter implements Serializable
         this._strName = _strName;
     }
 
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -60,7 +59,7 @@ public class ActionParameter implements Serializable
         this._strValue = _strValue;
     }
 
-    public String getValue(  )
+    public String getValue( )
     {
         return _strValue;
     }

@@ -37,67 +37,74 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.util.ConstanteUtils;
 
-public class FilterDeployment {
-	private String _strWorkgroup;
-        private String _strSearchName;
+public class FilterDeployment
+{
+    private String _strWorkgroup;
+    private String _strSearchName;
 
-	private int _nIdApplication = ConstanteUtils.CONSTANTE_ID_NULL;
+    private int _nIdApplication = ConstanteUtils.CONSTANTE_ID_NULL;
 
-	public void setIdApplication(int nIdApplication) {
-		this._nIdApplication = nIdApplication;
-	}
+    public void setIdApplication( int nIdApplication )
+    {
+        this._nIdApplication = nIdApplication;
+    }
 
-	public int getIdApplication() {
-		return _nIdApplication;
-	}
+    public int getIdApplication( )
+    {
+        return _nIdApplication;
+    }
 
-	public boolean containsIdApplicationFilter() {
-		return _nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL;
-	}
+    public boolean containsIdApplicationFilter( )
+    {
+        return _nIdApplication != ConstanteUtils.CONSTANTE_ID_NULL;
+    }
 
-	public String getWorkgroup() {
-		return _strWorkgroup;
-	}
+    public String getWorkgroup( )
+    {
+        return _strWorkgroup;
+    }
 
-	public void setWorkGroup(String workgroup) {
-		_strWorkgroup = workgroup;
-	}
-        
-        /**
-         * Get the search name
-         * @return the search Name 
-         */
-        public String getSearchName( )
-        {
-            return _strSearchName;
-        }
-        
-        /**
-        * Set the search name
-        * @param strSearchName the search name 
-        */
-        public void setSearchName( String strSearchName )
-        {
-            _strSearchName = strSearchName;
-        }
-        
-        
+    public void setWorkGroup( String workgroup )
+    {
+        _strWorkgroup = workgroup;
+    }
 
-	  /**
-    *
-    * @return true if the filter contain workgroup criteria
-    */
-   public boolean containsWorkgroupFilter(  )
-   {
-       return (!StringUtils.isEmpty( _strWorkgroup) && !ConstanteUtils.CONSTANTE_ALL.equals( _strWorkgroup));
-   }
-   
-     /**
-    *
-    * @return true if the filter contain search name criteria
-    */
-   public boolean constainsSearchNameFilter(  )
-   {
-       return ( !StringUtils.isEmpty( _strSearchName) );
-   }
+    /**
+     * Get the search name
+     * 
+     * @return the search Name
+     */
+    public String getSearchName( )
+    {
+        return _strSearchName;
+    }
+
+    /**
+     * Set the search name
+     * 
+     * @param strSearchName
+     *            the search name
+     */
+    public void setSearchName( String strSearchName )
+    {
+        _strSearchName = strSearchName;
+    }
+
+    /**
+     *
+     * @return true if the filter contain workgroup criteria
+     */
+    public boolean containsWorkgroupFilter( )
+    {
+        return ( !StringUtils.isEmpty( _strWorkgroup ) && !ConstanteUtils.CONSTANTE_ALL.equals( _strWorkgroup ) );
+    }
+
+    /**
+     *
+     * @return true if the filter contain search name criteria
+     */
+    public boolean constainsSearchNameFilter( )
+    {
+        return ( !StringUtils.isEmpty( _strSearchName ) );
+    }
 }

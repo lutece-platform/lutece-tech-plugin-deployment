@@ -48,99 +48,95 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-
 public class EnvironmentService implements IEnvironmentService
 {
     // private static IEnvironmentService _singleton;
     private static HashMap<String, Environment> _hashEnvironements;
 
-    private EnvironmentService(  )
+    private EnvironmentService( )
     {
     }
 
-    private void initHashEnvironments(  )
+    private void initHashEnvironments( )
     {
         List<Environment> listEnvironment = SpringContextService.getBeansOfType( Environment.class );
-        _hashEnvironements = new HashMap<String, Environment>(  );
+        _hashEnvironements = new HashMap<String, Environment>( );
 
         if ( listEnvironment != null )
         {
             for ( Environment environment : listEnvironment )
             {
-                _hashEnvironements.put( environment.getCode(  ), environment );
+                _hashEnvironements.put( environment.getCode( ), environment );
             }
         }
     }
 
     /*
      * (non-Javadoc)
-     *
-     * @see
-     * fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getEnvironment
-     * (java.lang.String)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IEnvironmentService#getEnvironment (java.lang.String)
      */
     public Environment getEnvironment( String strCode, Locale locale )
     {
         if ( _hashEnvironements == null )
         {
-            initHashEnvironments(  );
+            initHashEnvironments( );
         }
 
         Environment environment = _hashEnvironements.get( strCode );
-        if(environment!=null)
+        if ( environment != null )
         {
-        	environment.setName( I18nService.getLocalizedString( environment.getI18nKeyName(  ), locale ) );
+            environment.setName( I18nService.getLocalizedString( environment.getI18nKeyName( ), locale ) );
         }
         return environment;
     }
-    
+
     public ReferenceList getEnvironmentRefList( Locale locale )
     {
-        
-    	ReferenceList refListEnv=new ReferenceList();
-    	if ( _hashEnvironements == null )
+
+        ReferenceList refListEnv = new ReferenceList( );
+        if ( _hashEnvironements == null )
         {
-            initHashEnvironments(  );
+            initHashEnvironments( );
         }
 
-        for(Environment environment:_hashEnvironements.values())
+        for ( Environment environment : _hashEnvironements.values( ) )
         {
-        	refListEnv.addItem(environment.getCode(),  I18nService.getLocalizedString( environment.getI18nKeyName(  ), locale ));
-         }
+            refListEnv.addItem( environment.getCode( ), I18nService.getLocalizedString( environment.getI18nKeyName( ), locale ) );
+        }
         return refListEnv;
     }
 
     /*
      * (non-Javadoc)
-     *
-     * @seefr.paris.lutece.plugins.deployment.service.IEnvironmentService#
-     * getListEnvironments(java.lang.String)
+     * 
+     * @seefr.paris.lutece.plugins.deployment.service.IEnvironmentService# getListEnvironments(java.lang.String)
      */
     public List<Environment> getListEnvironments( String strCodeApplication, Locale locale )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
-        List<Environment> listEnvironments = new ArrayList<Environment>(  );
+        List<Environment> listEnvironments = new ArrayList<Environment>( );
         String strJSONApllicationAreas = null;
         String strJSONEnvironment = null;
         List<String> listAreas;
         List<String> listStrEnvironment = null;
         String strCodeEnvironment;
 
-        String strUrlApllication = strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-            DeploymentUtils.getPlateformUrlApplication( strCodeApplication );
+        String strUrlApllication = strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                + DeploymentUtils.getPlateformUrlApplication( strCodeApplication );
 
         try
         {
             strJSONApllicationAreas = DeploymentUtils.callPlateformEnvironmentWs( strUrlApllication );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e );
         }
 
         listAreas = getAreas( strJSONApllicationAreas );
 
-        if ( ( listAreas != null ) && ( listAreas.size(  ) > 0 ) )
+        if ( ( listAreas != null ) && ( listAreas.size( ) > 0 ) )
         {
             for ( String strArea : listAreas )
             {
@@ -148,11 +144,10 @@ public class EnvironmentService implements IEnvironmentService
 
                 try
                 {
-                    strJSONEnvironment = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                            ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                            DeploymentUtils.getPlateformUrlEnvironments( strCodeApplication, strArea ) );
+                    strJSONEnvironment = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                            + DeploymentUtils.getPlateformUrlEnvironments( strCodeApplication, strArea ) );
                 }
-                catch ( Exception e )
+                catch( Exception e )
                 {
                     AppLogService.error( e );
                 }
@@ -163,13 +158,12 @@ public class EnvironmentService implements IEnvironmentService
 
                     for ( String strEnv : listStrEnvironment )
                     {
-                        strCodeEnvironment = strArea.toLowerCase(  ) + ConstanteUtils.CONSTANTE_SEPARATOR_POINT +
-                            strEnv.toLowerCase(  );
+                        strCodeEnvironment = strArea.toLowerCase( ) + ConstanteUtils.CONSTANTE_SEPARATOR_POINT + strEnv.toLowerCase( );
 
                         Environment environment = getEnvironment( strCodeEnvironment, locale );
-                        if(environment!=null)
+                        if ( environment != null )
                         {
-                        	listEnvironments.add( environment );
+                            listEnvironments.add( environment );
                         }
                     }
                 }
@@ -188,8 +182,7 @@ public class EnvironmentService implements IEnvironmentService
 
         if ( strJsonFlux != null )
         {
-            listEnvs = DeploymentUtils.getJSONDictionary( strWebserviceEnvJsonObjectName,
-                    strWebserviceEnvJsonDictionaryName, strJsonFlux );
+            listEnvs = DeploymentUtils.getJSONDictionary( strWebserviceEnvJsonObjectName, strWebserviceEnvJsonDictionaryName, strJsonFlux );
         }
 
         return listEnvs;
@@ -204,8 +197,7 @@ public class EnvironmentService implements IEnvironmentService
 
         if ( strJsonFlux != null )
         {
-            listAreas = DeploymentUtils.getJSONDictionary( strWebserviceAreasJsonObjectName,
-                    strWebserviceAreasJsonDictionaryName, strJsonFlux );
+            listAreas = DeploymentUtils.getJSONDictionary( strWebserviceAreasJsonObjectName, strWebserviceAreasJsonDictionaryName, strJsonFlux );
         }
 
         return listAreas;

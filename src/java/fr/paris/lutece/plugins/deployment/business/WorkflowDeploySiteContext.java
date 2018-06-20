@@ -38,7 +38,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 
-
 public class WorkflowDeploySiteContext implements Serializable
 {
     /**
@@ -66,11 +65,8 @@ public class WorkflowDeploySiteContext implements Serializable
     private String _scriptFileSelected;
     private boolean _bInitBdd;
     private boolean _bInitAppContext;
-    
-      
-    
-    
-    public int getId(  )
+
+    public int getId( )
     {
         return _nId;
     }
@@ -80,7 +76,7 @@ public class WorkflowDeploySiteContext implements Serializable
         _nId = nId;
     }
 
-    public int getIdApplication(  )
+    public int getIdApplication( )
     {
         return _nIdApplication;
     }
@@ -90,7 +86,7 @@ public class WorkflowDeploySiteContext implements Serializable
         this._nIdApplication = nIdApplication;
     }
 
-    public String getSvnBaseSiteUrl(  )
+    public String getSvnBaseSiteUrl( )
     {
         return _strSvnBaseSiteUrl;
     }
@@ -105,7 +101,7 @@ public class WorkflowDeploySiteContext implements Serializable
         this._commandResult = _commandResult;
     }
 
-    public CommandResult getCommandResult(  )
+    public CommandResult getCommandResult( )
     {
         return _commandResult;
     }
@@ -115,7 +111,7 @@ public class WorkflowDeploySiteContext implements Serializable
         this._strNextVersion = _strNextVersion;
     }
 
-    public String getNextVersion(  )
+    public String getNextVersion( )
     {
         return _strNextVersion;
     }
@@ -125,12 +121,12 @@ public class WorkflowDeploySiteContext implements Serializable
         this._strTagVersion = _strTagVersion;
     }
 
-    public String getTagVersion(  )
+    public String getTagVersion( )
     {
         return _strTagVersion;
     }
 
-    public String getCodeEnvironement(  )
+    public String getCodeEnvironement( )
     {
         return _strCodeEnvironement;
     }
@@ -154,7 +150,7 @@ public class WorkflowDeploySiteContext implements Serializable
     {
         if ( _hashServerApplicationInstance == null )
         {
-            _hashServerApplicationInstance = new HashMap<String, String>(  );
+            _hashServerApplicationInstance = new HashMap<String, String>( );
         }
 
         _hashServerApplicationInstance.put( strType, strCodeServerAppplicationInstance );
@@ -162,23 +158,26 @@ public class WorkflowDeploySiteContext implements Serializable
 
     /**
      * Check if the dev version of the site should be deployed.
+     * 
      * @return true if the dev version of the site should be deployed
      */
-    public boolean isDeployDevSite() 
+    public boolean isDeployDevSite( )
     {
         return _bDeployDevSite;
     }
 
     /**
      * Set the deploy dev site boolean
-     * @param bDeployDevSite the deploy dev site boolean
+     * 
+     * @param bDeployDevSite
+     *            the deploy dev site boolean
      */
-    public void setDeployDevSite( boolean bDeployDevSite ) 
+    public void setDeployDevSite( boolean bDeployDevSite )
     {
         _bDeployDevSite = bDeployDevSite;
     }
-    
-    public String getTagToDeploy(  )
+
+    public String getTagToDeploy( )
     {
         return _strTagToDeploy;
     }
@@ -188,7 +187,7 @@ public class WorkflowDeploySiteContext implements Serializable
         _strTagToDeploy = strTagToDeploy;
     }
 
-    public String getTagName(  )
+    public String getTagName( )
     {
         return _strTagName;
     }
@@ -197,18 +196,18 @@ public class WorkflowDeploySiteContext implements Serializable
     {
         this._strTagName = strTagName;
     }
-    
+
     public void setDeployWar( boolean _bDeployWar )
     {
         this._bDeployWar = _bDeployWar;
     }
 
-    public boolean isDeployWar(  )
+    public boolean isDeployWar( )
     {
         return _bDeployWar;
     }
 
-    public boolean isDeploySql(  )
+    public boolean isDeploySql( )
     {
         return _bDeploySql;
     }
@@ -218,70 +217,85 @@ public class WorkflowDeploySiteContext implements Serializable
         _bDeploySql = bDeploySql;
     }
 
-    public String getDatabaseName() {
-            return _strDatabaseName;
+    public String getDatabaseName( )
+    {
+        return _strDatabaseName;
     }
 
-    public void setDatabaseName(String _strDatabaseName) {
-            this._strDatabaseName = _strDatabaseName;
+    public void setDatabaseName( String _strDatabaseName )
+    {
+        this._strDatabaseName = _strDatabaseName;
     }
 
-    public String getScriptFileItemName() {
-            return _scriptFileItemName;
+    public String getScriptFileItemName( )
+    {
+        return _scriptFileItemName;
     }
 
-    public void setScriptFileItemName(String _scriptFileItemName) {
-            this._scriptFileItemName = _scriptFileItemName;
+    public void setScriptFileItemName( String _scriptFileItemName )
+    {
+        this._scriptFileItemName = _scriptFileItemName;
     }
 
-
-    public InputStream getScriptFileItem() {
-            return _scriptFileItem;
+    public InputStream getScriptFileItem( )
+    {
+        return _scriptFileItem;
     }
 
-    public void setScriptFileItem(InputStream _scriptFileItem) {
-            this._scriptFileItem = _scriptFileItem;
+    public void setScriptFileItem( InputStream _scriptFileItem )
+    {
+        this._scriptFileItem = _scriptFileItem;
     }
 
-    public String getScriptFileSelected() {
-            return _scriptFileSelected;
+    public String getScriptFileSelected( )
+    {
+        return _scriptFileSelected;
     }
 
-    public void setScriptFileSelected(String _scriptFileSelected) {
-            this._scriptFileSelected = _scriptFileSelected;
+    public void setScriptFileSelected( String _scriptFileSelected )
+    {
+        this._scriptFileSelected = _scriptFileSelected;
     }
 
-    public boolean isInitBdd() {
-            return _bInitBdd;
+    public boolean isInitBdd( )
+    {
+        return _bInitBdd;
     }
 
-    public void setInitBdd(boolean _bInitBdd) {
-            this._bInitBdd = _bInitBdd;
+    public void setInitBdd( boolean _bInitBdd )
+    {
+        this._bInitBdd = _bInitBdd;
     }
 
-    public boolean isInitAppContext() {
-            return _bInitAppContext;
+    public boolean isInitAppContext( )
+    {
+        return _bInitAppContext;
     }
 
-    public void setInitAppContext(boolean _bInitAppContext) {
-            this._bInitAppContext = _bInitAppContext;
+    public void setInitAppContext( boolean _bInitAppContext )
+    {
+        this._bInitAppContext = _bInitAppContext;
     }
 
     /**
      * Get the VCS user who is logged into the current workflow context
+     * 
      * @return the VCS user
      */
-    public AbstractVCSUser getVcsUser() 
+    public AbstractVCSUser getVcsUser( )
     {
         return _vcsUser;
     }
 
     /**
      * Set the VCS user who is logged into the current workflow context
-     * @param vcsUser the VCSUser
+     * 
+     * @param vcsUser
+     *            the VCSUser
      */
-    public void setVcsUser (AbstractVCSUser vcsUser ) {
+    public void setVcsUser( AbstractVCSUser vcsUser )
+    {
         this._vcsUser = vcsUser;
     }
-	
+
 }

@@ -37,7 +37,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class FileUtil
 {
     public static final boolean STATUS_OK = true;
@@ -45,22 +44,22 @@ public class FileUtil
 
     public static boolean delete( File file, StringBuffer logBuffer )
     {
-        if ( file.isDirectory(  ) )
+        if ( file.isDirectory( ) )
         {
             boolean bStatus = STATUS_OK;
 
-            for ( String fileName : file.list(  ) )
+            for ( String fileName : file.list( ) )
             {
-                //Names denoting the directory itself and the directory's parent directory are not included in the result
-                bStatus &= delete( new File( file.getAbsolutePath(  ) + File.separator + fileName ), logBuffer );
+                // Names denoting the directory itself and the directory's parent directory are not included in the result
+                bStatus &= delete( new File( file.getAbsolutePath( ) + File.separator + fileName ), logBuffer );
             }
         }
 
-        logBuffer.append( "DELETING " + file.getAbsolutePath(  ) + "\n" );
+        logBuffer.append( "DELETING " + file.getAbsolutePath( ) + "\n" );
 
-        if ( !file.delete(  ) )
+        if ( !file.delete( ) )
         {
-            logBuffer.append( "UNABLE TO DELETE : " + file.getAbsolutePath(  ) );
+            logBuffer.append( "UNABLE TO DELETE : " + file.getAbsolutePath( ) );
 
             return STATUS_ERROR;
         }
@@ -72,7 +71,7 @@ public class FileUtil
     {
         return list( strDirPath, strFileExtension, true );
     }
-    
+
     public static List<String> list( String strDirPath, String strFileExtension, boolean bRecursive )
     {
         return list( strDirPath, strFileExtension, bRecursive, false );
@@ -80,29 +79,30 @@ public class FileUtil
 
     private static List<String> list( String strDirPath, String strFileExtension, boolean bRecursive, boolean bPathIncludeParent )
     {
-        List<String> strFileList = new ArrayList<String>(  );
+        List<String> strFileList = new ArrayList<String>( );
         File file = new File( strDirPath );
 
-        if ( file.isDirectory(  ) )
+        if ( file.isDirectory( ) )
         {
             for ( File fileChild : file.listFiles( ) )
             {
-                if ( !fileChild.isDirectory(  ) || bRecursive )
+                if ( !fileChild.isDirectory( ) || bRecursive )
                 {
-                    for (String strPath: list( fileChild.getAbsolutePath( ), strFileExtension , bRecursive, true)) {
-                        String resultPath = (bPathIncludeParent ? file.getName(  ) + File.separator : "") + strPath;
+                    for ( String strPath : list( fileChild.getAbsolutePath( ), strFileExtension, bRecursive, true ) )
+                    {
+                        String resultPath = ( bPathIncludeParent ? file.getName( ) + File.separator : "" ) + strPath;
                         strFileList.add( resultPath );
                     }
                 }
             }
         }
-        else if ( file.isFile(  ) && ( ( strFileExtension == null ) || file.getName(  ).endsWith( strFileExtension ) ) )
-        {
-            strFileList.add( file.getName(  ) );
-        }
+        else
+            if ( file.isFile( ) && ( ( strFileExtension == null ) || file.getName( ).endsWith( strFileExtension ) ) )
+            {
+                strFileList.add( file.getName( ) );
+            }
 
         return strFileList;
     }
-    
-   
+
 }

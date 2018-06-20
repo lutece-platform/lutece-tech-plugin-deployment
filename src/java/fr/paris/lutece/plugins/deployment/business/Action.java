@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.deployment.business;
 
 import java.util.List;
 
-
 public abstract class Action implements IAction
 {
     private String _strCode;
@@ -49,7 +48,9 @@ public abstract class Action implements IAction
     private String _strServerType;
     private boolean _bStopWorkflowIfExecutionError;
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setCode(java.lang.String)
      */
     public void setCode( String _strCode )
@@ -57,15 +58,19 @@ public abstract class Action implements IAction
         this._strCode = _strCode;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#getCode()
      */
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setName(java.lang.String)
      */
     public void setName( String _strName )
@@ -73,15 +78,19 @@ public abstract class Action implements IAction
         this._strName = _strName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#getName()
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setI18nKeyName(java.lang.String)
      */
     public void setI18nKeyName( String _strI18nKeyName )
@@ -89,15 +98,19 @@ public abstract class Action implements IAction
         this._strI18nKeyName = _strI18nKeyName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#getI18nKeyName()
      */
-    public String getI18nKeyName(  )
+    public String getI18nKeyName( )
     {
         return _strI18nKeyName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setStatus(java.lang.Integer)
      */
     public void setStatus( Integer _strStatus )
@@ -105,15 +118,19 @@ public abstract class Action implements IAction
         this._strStatus = _strStatus;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#getStatus()
      */
-    public Integer getStatus(  )
+    public Integer getStatus( )
     {
         return _strStatus;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#setUsedForStatus(boolean)
      */
     public void setUsedForStatus( boolean _bUsedForStatus )
@@ -121,10 +138,12 @@ public abstract class Action implements IAction
         this._bUsedForStatus = _bUsedForStatus;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see fr.paris.lutece.plugins.deployment.business.IAction#isUsedForStatus()
      */
-    public boolean isUsedForStatus(  )
+    public boolean isUsedForStatus( )
     {
         return _bUsedForStatus;
     }
@@ -134,12 +153,12 @@ public abstract class Action implements IAction
         this._strIconCssClass = _strIconCssClass;
     }
 
-    public String getIconCssClass(  )
+    public String getIconCssClass( )
     {
         return _strIconCssClass;
     }
 
-    public boolean isDisplay(  )
+    public boolean isDisplay( )
     {
         // TODO Auto-generated method stub
         return _bDisplay;
@@ -155,7 +174,7 @@ public abstract class Action implements IAction
         this._listParameters = _listParameters;
     }
 
-    public List<String> getParameters(  )
+    public List<String> getParameters( )
     {
         return _listParameters;
     }
@@ -165,17 +184,18 @@ public abstract class Action implements IAction
         this._strServerType = _strServerType;
     }
 
-    public String getServerType(  )
+    public String getServerType( )
     {
         return _strServerType;
     }
 
-	public boolean isStopWorkflowIfExecutionError() {
-		return _bStopWorkflowIfExecutionError;
-	}
+    public boolean isStopWorkflowIfExecutionError( )
+    {
+        return _bStopWorkflowIfExecutionError;
+    }
 
-	public void setStopWorkflowIfExecutionError(
-			boolean _bStopWorkflowIfExecutionError) {
-		this._bStopWorkflowIfExecutionError = _bStopWorkflowIfExecutionError;
-	}
+    public void setStopWorkflowIfExecutionError( boolean _bStopWorkflowIfExecutionError )
+    {
+        this._bStopWorkflowIfExecutionError = _bStopWorkflowIfExecutionError;
+    }
 }

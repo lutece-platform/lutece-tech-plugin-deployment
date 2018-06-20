@@ -40,7 +40,7 @@ public class FormDeploySiteDTO
     private boolean _bTagSiteBeforeDeploy;
     private String _strTagToDeploy;
 
-    public String getCodeEnvironement(  )
+    public String getCodeEnvironement( )
     {
         return _strCodeEnvironement;
     }
@@ -50,7 +50,7 @@ public class FormDeploySiteDTO
         _strCodeEnvironement = strCodeEnvironement;
     }
 
-    public String getCodeServerAppplicationInstance(  )
+    public String getCodeServerAppplicationInstance( )
     {
         return _strCodeServerAppplicationInstance;
     }
@@ -60,7 +60,7 @@ public class FormDeploySiteDTO
         _strCodeServerAppplicationInstance = strCodeServerAppplicationInstance;
     }
 
-    public boolean isTagSiteBeforeDeploy(  )
+    public boolean isTagSiteBeforeDeploy( )
     {
         return _bTagSiteBeforeDeploy;
     }
@@ -70,7 +70,7 @@ public class FormDeploySiteDTO
         _bTagSiteBeforeDeploy = bTagSiteBeforeDeploy;
     }
 
-    public String getTagToDeploy(  )
+    public String getTagToDeploy( )
     {
         return _strTagToDeploy;
     }

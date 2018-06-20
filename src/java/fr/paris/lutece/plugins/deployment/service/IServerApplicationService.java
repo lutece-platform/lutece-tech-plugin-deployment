@@ -40,19 +40,16 @@ import java.util.Locale;
 import fr.paris.lutece.plugins.deployment.business.Application;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 
-
 public interface IServerApplicationService
 {
-    List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( Application application,
-        String strCodeEnvironment, String strServerApplicationType, Locale locale, boolean withActions,
-        boolean withStatus );
+    List<ServerApplicationInstance> getListServerApplicationInstanceByEnvironment( Application application, String strCodeEnvironment,
+            String strServerApplicationType, Locale locale, boolean withActions, boolean withStatus );
 
     void setFtpInfo( ServerApplicationInstance serverApplicationInstance, String strCodeApplication );
 
-    ServerApplicationInstance getServerApplicationInstance( Application application, String strServerInstanceCode,
-        String strCodeEnvironment, String strServerApplicationType, Locale locale, boolean withActionss,
-        boolean withStatus );
+    ServerApplicationInstance getServerApplicationInstance( Application application, String strServerInstanceCode, String strCodeEnvironment,
+            String strServerApplicationType, Locale locale, boolean withActionss, boolean withStatus );
 
-    HashMap<String, List<ServerApplicationInstance>> getHashServerApplicationInstance( Application application,
-        String strServerApplicationType, Locale locale, boolean withActions, boolean withStatus );
+    HashMap<String, List<ServerApplicationInstance>> getHashServerApplicationInstance( Application application, String strServerApplicationType, Locale locale,
+            boolean withActions, boolean withStatus );
 }

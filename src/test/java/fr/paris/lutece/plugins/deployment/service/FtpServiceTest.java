@@ -46,7 +46,6 @@ import java.net.URL;
 
 import java.util.Properties;
 
-
 /**
  *
  * FtpServiceTest
@@ -58,7 +57,7 @@ public class FtpServiceTest extends LuteceTestCase
      * Test of testUploadFile
      */
     @Test
-    public void testUploadFile(  )
+    public void testUploadFile( )
     {
         String strFtpHost = getTestProperties( "deployment.serverApplicationFtp.host" );
         String strFtpPort = getTestProperties( "deployment.serverApplicationFtp.port" );
@@ -68,26 +67,27 @@ public class FtpServiceTest extends LuteceTestCase
         String strFtpFileLocalPath = getTestProperties( "deployment.ftp.fileLocalPath" );
         String strFtpRemoteDirectoryTarget = getTestProperties( "deployment.ftp.remoteDirectoryTarget" );
 
-        IFtpService _ftpService = new FtpService(  );
+        IFtpService _ftpService = new FtpService( );
 
-        FtpInfo ftpInfo = new FtpInfo(  );
+        FtpInfo ftpInfo = new FtpInfo( );
         ftpInfo.setHost( strFtpHost );
         ftpInfo.setPort( Integer.parseInt( strFtpPort ) );
         ftpInfo.setUserLogin( strFtpUserLogin );
         ftpInfo.setUserPassword( strFtpUserPassword );
         ftpInfo.setKeepAliveTimeout( 5000 );
 
-        CommandResult commandResult = new CommandResult(  );
-        commandResult.setLog( new StringBuffer(  ) );
-        _ftpService.uploadFile( strFtpFileLocalName, strFtpFileLocalPath, ftpInfo, strFtpRemoteDirectoryTarget,
-            commandResult,true );
+        CommandResult commandResult = new CommandResult( );
+        commandResult.setLog( new StringBuffer( ) );
+        _ftpService.uploadFile( strFtpFileLocalName, strFtpFileLocalPath, ftpInfo, strFtpRemoteDirectoryTarget, commandResult, true );
 
         assertNotNull( commandResult );
     }
 
     /**
      * get Property in test properties file
-     * @param strProperty the property key
+     * 
+     * @param strProperty
+     *            the property key
      * @return the property in test properties file
      */
     public static String getTestProperties( String strProperty )
@@ -96,15 +96,15 @@ public class FtpServiceTest extends LuteceTestCase
 
         try
         {
-            URL url = Thread.currentThread(  ).getContextClassLoader(  ).getResource( "deployment-test.properties" );
-            FileInputStream file = new FileInputStream( url.getPath(  ) );
-            Properties properties = new Properties(  );
+            URL url = Thread.currentThread( ).getContextClassLoader( ).getResource( "deployment-test.properties" );
+            FileInputStream file = new FileInputStream( url.getPath( ) );
+            Properties properties = new Properties( );
             properties.load( file );
             strPropertyValue = properties.getProperty( strProperty );
         }
-        catch ( IOException ex )
+        catch( IOException ex )
         {
-            throw new RuntimeException( "Unable to load test file : " + ex.getMessage(  ) );
+            throw new RuntimeException( "Unable to load test file : " + ex.getMessage( ) );
         }
 
         return strPropertyValue;

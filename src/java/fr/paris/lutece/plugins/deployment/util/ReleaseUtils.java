@@ -76,7 +76,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-
 public final class ReleaseUtils
 {
     public static final String CONSTANTE_EMPTY_STRING = "";
@@ -88,14 +87,15 @@ public final class ReleaseUtils
 
     /**
      * Safe split (no empty value)
+     * 
      * @param strToSplit
      * @param strSeparator
      * @return
      */
     public static List<String> split( String strToSplit, String strSeparator )
     {
-        List<String> listSplit = new ArrayList<String>(  );
-        String[] splitted = strToSplit.split( strSeparator );
+        List<String> listSplit = new ArrayList<String>( );
+        String [ ] splitted = strToSplit.split( strSeparator );
 
         if ( splitted != null )
         {
@@ -122,26 +122,24 @@ public final class ReleaseUtils
         return strPluginName + "-" + strVersion;
     }
 
-    public static <T> T unmarshal( Class<T> docClass, InputStream inputStream )
-        throws JAXBException
+    public static <T> T unmarshal( Class<T> docClass, InputStream inputStream ) throws JAXBException
     {
-        String packageName = docClass.getPackage(  ).getName(  );
+        String packageName = docClass.getPackage( ).getName( );
         JAXBContext jc = JAXBContext.newInstance( packageName );
-        Unmarshaller u = jc.createUnmarshaller(  );
+        Unmarshaller u = jc.createUnmarshaller( );
         JAXBElement<T> doc = (JAXBElement<T>) u.unmarshal( inputStream );
 
-        return doc.getValue(  );
+        return doc.getValue( );
     }
 
-    public static void save( Model model, OutputStream outputStream )
-        throws JAXBException
+    public static void save( Model model, OutputStream outputStream ) throws JAXBException
     {
-        String packageName = model.getClass(  ).getPackage(  ).getName(  );
-        ObjectFactory factory = new ObjectFactory(  );
+        String packageName = model.getClass( ).getPackage( ).getName( );
+        ObjectFactory factory = new ObjectFactory( );
         JAXBElement<Model> element = factory.createProject( model );
 
         JAXBContext jc = JAXBContext.newInstance( packageName );
-        Marshaller m = jc.createMarshaller(  );
+        Marshaller m = jc.createMarshaller( );
         m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
         m.setProperty( Marshaller.JAXB_SCHEMA_LOCATION, "http://maven.apache.org/maven-v4_0_0.xsd" );
         m.marshal( element, outputStream );
@@ -160,16 +158,16 @@ public final class ReleaseUtils
 
         try
         {
-            int nMinorVersion = Integer.parseInt( strVersion.substring( nLastIndex + 1, strVersion.length(  ) ) );
+            int nMinorVersion = Integer.parseInt( strVersion.substring( nLastIndex + 1, strVersion.length( ) ) );
             nMinorVersion++;
 
             strNextVersion += strVersion.substring( 0, nLastIndex + 1 );
             strNextVersion += nMinorVersion;
             strNextVersion += CONSTANTE_SNAPSHOT;
         }
-        catch ( NumberFormatException nfe )
+        catch( NumberFormatException nfe )
         {
-            nfe.printStackTrace(  );
+            nfe.printStackTrace( );
         }
 
         return strNextVersion;
@@ -177,19 +175,18 @@ public final class ReleaseUtils
 
     /**
      * Retourne la version [stable] courante (sans -SNAPSHOT si present dans le pom)
+     * 
      * @return
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    public static String getReleaseVersion( String strPathLocalSiteName )
-        throws JAXBException, FileNotFoundException
+    public static String getReleaseVersion( String strPathLocalSiteName ) throws JAXBException, FileNotFoundException
     {
         InputStream is = new FileInputStream( DeploymentUtils.getPathPomFile( strPathLocalSiteName ) );
 
         Model model = unmarshal( Model.class, is );
 
-        String strVersion = model.getVersion(  );
-      
+        String strVersion = model.getVersion( );
 
         if ( strVersion.contains( "-SNAPSHOT" ) )
         {
@@ -198,49 +195,43 @@ public final class ReleaseUtils
 
         return strVersion;
     }
-    
-    
+
     /**
-     * Retourne la version  dans le pom)
+     * Retourne la version dans le pom)
+     * 
      * @return
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    public static String getSiteVersion( String strPathLocalSiteName )
-        throws JAXBException, FileNotFoundException
+    public static String getSiteVersion( String strPathLocalSiteName ) throws JAXBException, FileNotFoundException
     {
         InputStream is = new FileInputStream( DeploymentUtils.getPathPomFile( strPathLocalSiteName ) );
 
         Model model = unmarshal( Model.class, is );
 
-        String strVersion = model.getVersion(  );
+        String strVersion = model.getVersion( );
         return strVersion;
     }
-    
-    
+
     /**
-     * Retourne la version  dans le pom)
+     * Retourne la version dans le pom)
+     * 
      * @return
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    public static String getSiteArtifactId( String strPathLocalSiteName )
-        throws JAXBException, FileNotFoundException
+    public static String getSiteArtifactId( String strPathLocalSiteName ) throws JAXBException, FileNotFoundException
     {
         InputStream is = new FileInputStream( DeploymentUtils.getPathPomFile( strPathLocalSiteName ) );
 
         Model model = unmarshal( Model.class, is );
 
-        String strVersion = model.getArtifactId();
+        String strVersion = model.getArtifactId( );
         return strVersion;
     }
-    
-    
 
-    public static String updateReleaseVersion( String strPathLocalSiteName, String strNewVersion, String commitMessage,
-        SVNCommitClient svnCommitClient )
-        throws ParserConfigurationException, SAXException, IOException, TransformerException, SVNException,
-            JAXBException
+    public static String updateReleaseVersion( String strPathLocalSiteName, String strNewVersion, String commitMessage, SVNCommitClient svnCommitClient )
+            throws ParserConfigurationException, SAXException, IOException, TransformerException, SVNException, JAXBException
     {
         String strPomFile = DeploymentUtils.getPathPomFile( strPathLocalSiteName );
         InputStream inputStream = null;
@@ -252,7 +243,7 @@ public final class ReleaseUtils
 
             Model model = unmarshal( Model.class, inputStream );
 
-            if ( !model.getVersion(  ).equals( strNewVersion ) )
+            if ( !model.getVersion( ).equals( strNewVersion ) )
             {
                 model.setVersion( strNewVersion );
 
@@ -260,15 +251,17 @@ public final class ReleaseUtils
 
                 save( model, outputStream );
 
-                // COMMIT           
+                // COMMIT
                 /*
-                 *  paths - an array of local items which should be traversed to collect information on every changed item (one SVNCommitItem per each modified local item)
-                         *        keepLocks - if true and there are local items that were locked then these items will be left locked after traversing all of them, otherwise the items will be unlocked
-                         *        force - forces collecting commit items for a non-recursive commit
-                         *        recursive - relevant only for directory items: if true then the entire directory tree will be traversed including all child directories, otherwise only items located in the directory itself will be processed
+                 * paths - an array of local items which should be traversed to collect information on every changed item (one SVNCommitItem per each modified
+                 * local item) keepLocks - if true and there are local items that were locked then these items will be left locked after traversing all of them,
+                 * otherwise the items will be unlocked force - forces collecting commit items for a non-recursive commit recursive - relevant only for
+                 * directory items: if true then the entire directory tree will be traversed including all child directories, otherwise only items located in
+                 * the directory itself will be processed
                  */
-                SVNCommitPacket commitPacket = svnCommitClient.doCollectCommitItems( new File[] { new File( strPomFile ) },
-                        false, false, false );
+                SVNCommitPacket commitPacket = svnCommitClient.doCollectCommitItems( new File [ ] {
+                    new File( strPomFile )
+                }, false, false, false );
 
                 if ( !SVNCommitPacket.EMPTY.equals( commitPacket ) )
                 {
@@ -286,12 +279,12 @@ public final class ReleaseUtils
             {
                 try
                 {
-                    outputStream.close(  );
+                    outputStream.close( );
                 }
-                catch ( IOException ex )
+                catch( IOException ex )
                 {
                     // nothing...
-                    ex.printStackTrace(  );
+                    ex.printStackTrace( );
                 }
             }
         }

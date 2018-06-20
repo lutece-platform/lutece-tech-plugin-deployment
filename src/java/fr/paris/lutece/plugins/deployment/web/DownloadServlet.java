@@ -54,74 +54,75 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-
 /**
  * Servlet serving document file resources
  */
 public class DownloadServlet extends HttpServlet
 {
-	/**
+    /**
 	 *
 	 */
-	private static final long serialVersionUID = 8625639667629973645L;
-     private  IFtpService _ftpService = SpringContextService.getBean( 
-            "deployment.FtpService" );
-    private IServerApplicationService _serverApplicationService = SpringContextService.getBean( 
-            "deployment.ServerApplicationService" );
+    private static final long serialVersionUID = 8625639667629973645L;
+    private IFtpService _ftpService = SpringContextService.getBean( "deployment.FtpService" );
+    private IServerApplicationService _serverApplicationService = SpringContextService.getBean( "deployment.ServerApplicationService" );
     private IApplicationService _applicationService = SpringContextService.getBean( "deployment.ApplicationService" );
-    
+
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException the servlet Exception
-     * @throws IOException the io exception
+     * 
+     * @param request
+     *            servlet request
+     * @param response
+     *            servlet response
+     * @throws ServletException
+     *             the servlet Exception
+     * @throws IOException
+     *             the io exception
      */
     @Override
-    protected void doGet( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        
 
-    	 Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
-    	 String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
-    	 String strCodeServerApplicationInstanceSql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
-         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
-         String strIdApplication= request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
-         String strServerApplicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
-         
-         Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter(strIdApplication), plugin );
-         
-         ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
-        		 strCodeServerApplicationInstanceSql,
-                 strCodeEnvironment, strServerApplicationType, request.getLocale(), false, false );
-       
-    	
-         
-    	 response.setHeader( "Content-Disposition", "attachment ;filename=\"dump_"+strCodeDatabase+ ".sql\";" );
-         response.setHeader( "Pragma", "public" );
-         response.setHeader( "Expires", "0" );
-         response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
-         response.setHeader("Content-Type", "application/octet-stream");
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
+        String strCodeServerApplicationInstanceSql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
+        String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
+        String strIdApplication = request.getParameter( ConstanteUtils.PARAM_CODE_APPLICATION );
+        String strServerApplicationType = request.getParameter( ConstanteUtils.PARAM_SERVER_APPLICATION_TYPE );
 
-     
-         CommandResult commandResult=new CommandResult();
-         
-         try {
-			_ftpService.getFile(response.getOutputStream(), serverApplicationInstance.getFtpInfo(  ), DeploymentUtils.getDumpFileDirectory(application.getCode(), serverApplicationInstance)+"FROM_Z00-"+strCodeDatabase+"-ALL_TABLES.sql", commandResult);
-		} catch (IOException e) {
-			AppLogService.error(e);
-		}
-    	
+        Application application = _applicationService.getApplication( DeploymentUtils.getIntegerParameter( strIdApplication ), plugin );
+
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+                strCodeServerApplicationInstanceSql, strCodeEnvironment, strServerApplicationType, request.getLocale( ), false, false );
+
+        response.setHeader( "Content-Disposition", "attachment ;filename=\"dump_" + strCodeDatabase + ".sql\";" );
+        response.setHeader( "Pragma", "public" );
+        response.setHeader( "Expires", "0" );
+        response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+        response.setHeader( "Content-Type", "application/octet-stream" );
+
+        CommandResult commandResult = new CommandResult( );
+
+        try
+        {
+            _ftpService.getFile( response.getOutputStream( ), serverApplicationInstance.getFtpInfo( ),
+                    DeploymentUtils.getDumpFileDirectory( application.getCode( ), serverApplicationInstance ) + "FROM_Z00-" + strCodeDatabase
+                            + "-ALL_TABLES.sql", commandResult );
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( e );
+        }
 
     }
 
     /**
      * Returns a short description of the servlet.
+     * 
      * @return message
      */
     @Override
-    public String getServletInfo(  )
+    public String getServletInfo( )
     {
         return "Servlet serving files content from core_file and core_physical_file tables";
     }

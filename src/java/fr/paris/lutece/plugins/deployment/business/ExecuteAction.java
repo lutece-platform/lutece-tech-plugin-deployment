@@ -47,7 +47,6 @@ import org.apache.commons.lang.StringUtils;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  *
  * ExecuteAction
@@ -56,96 +55,86 @@ import java.util.List;
 public class ExecuteAction extends DefaultAction
 {
     @Override
-    public String run(Application application, ServerApplicationInstance serverApplicationInstance,
-        CommandResult commandResult, ActionParameter... parameter )
+    public String run( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
     {
-    	 
-    	
-    	String strResult = null;
-    	
-    	String strDataBase=null;
-    	String strScriptName=null;
-    	for (int i = 0; i < parameter.length; i++) {
-			
-    		if(parameter[i].getName().equals(ConstanteUtils.PARAM_CODE_DATABASE))
-    		{
-    			
-    			strDataBase=parameter[i].getValue();
-    		}
-    		if(parameter[i].getName().equals(ConstanteUtils.PARAM_SCRIPT_NAME))
-    		{
-    			
-    			strScriptName=parameter[i].getValue();
-    		}
-		}
-    	
-    	
-    	if(!StringUtils.isEmpty(strDataBase) && !StringUtils.isEmpty(strScriptName) )
-    	{
-	    	 String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
-	         String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
-	         String strJSONAction = null;
-	        
-	
-	         try
-	         {
-	             strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-	                     ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-	                     DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode(),
-	                         serverApplicationInstance, this.getCode(  ) ) + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strDataBase + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strScriptName);
-	         }
-	         catch ( Exception e )
-	         {
-	             AppLogService.error( e );
-	         }
-	         
-	
-	         if ( strJSONAction != null )
-	         {
-	             JSONObject jo = DeploymentUtils.getJSONOBject( strJSONAction );
-	             JSONObject joStep;
-	             
-	             if ( jo != null )
-	             {
-	                 strResult = jo.getString( strWebserviceActionJsonPropery );
-	                 
-	                 
-	                 
-	                 JSONArray steps=jo.getJSONObject("execution").getJSONArray("steps");
-	                 Iterator<JSONObject> iterator = steps.iterator(  );
 
-	                 while ( iterator.hasNext(  ) )
-	                 {
-	                	 joStep= iterator.next(  ) ;
-	                	 if(joStep.getString("step_name").equals("[ STEP 3 ] : execute"))
-	                	 {
-	                		 
-	                		 commandResult.getLog().append("**************stdout******************* \n" );
-	                		 Iterator<String> iteratStdOut = joStep.getJSONArray("stdout").iterator(  );
-	                		 while ( iteratStdOut.hasNext(  ) )
-	    	                 {
-	                			 commandResult.getLog().append(iteratStdOut.next()+ " \n" );
-	    	                 }
-	                		 commandResult.getLog().append("*************************************** \n" );
-	                		 commandResult.getLog().append("**************Errors******************* \n" );
-	                		 Iterator<String> iteratStdError = joStep.getJSONArray("stderr").iterator(  );
-	                		 
-	                		 while ( iteratStdError.hasNext(  ) )
-	    	                 {
-	                			 commandResult.getLog().append(iteratStdError.next()+ " \n" );
-	    	                 }
-	                		 commandResult.getLog().append("*************************************** \n" );
-	                	 }
-	                	 
-	                 }
-	             
-	                 
-	                 
-	             }
-	         }
-    	}
-         
+        String strResult = null;
 
-         return strResult;
+        String strDataBase = null;
+        String strScriptName = null;
+        for ( int i = 0; i < parameter.length; i++ )
+        {
+
+            if ( parameter [i].getName( ).equals( ConstanteUtils.PARAM_CODE_DATABASE ) )
+            {
+
+                strDataBase = parameter [i].getValue( );
+            }
+            if ( parameter [i].getName( ).equals( ConstanteUtils.PARAM_SCRIPT_NAME ) )
+            {
+
+                strScriptName = parameter [i].getValue( );
+            }
+        }
+
+        if ( !StringUtils.isEmpty( strDataBase ) && !StringUtils.isEmpty( strScriptName ) )
+        {
+            String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
+            String strWebserviceActionJsonPropery = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_ACTION_RESULT_JSON_PROPERTY_RESULT );
+            String strJSONAction = null;
+
+            try
+            {
+                strJSONAction = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                        + DeploymentUtils.getPlateformUrlServerApplicationAction( application.getCode( ), serverApplicationInstance, this.getCode( ) )
+                        + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strDataBase + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strScriptName );
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( e );
+            }
+
+            if ( strJSONAction != null )
+            {
+                JSONObject jo = DeploymentUtils.getJSONOBject( strJSONAction );
+                JSONObject joStep;
+
+                if ( jo != null )
+                {
+                    strResult = jo.getString( strWebserviceActionJsonPropery );
+
+                    JSONArray steps = jo.getJSONObject( "execution" ).getJSONArray( "steps" );
+                    Iterator<JSONObject> iterator = steps.iterator( );
+
+                    while ( iterator.hasNext( ) )
+                    {
+                        joStep = iterator.next( );
+                        if ( joStep.getString( "step_name" ).equals( "[ STEP 3 ] : execute" ) )
+                        {
+
+                            commandResult.getLog( ).append( "**************stdout******************* \n" );
+                            Iterator<String> iteratStdOut = joStep.getJSONArray( "stdout" ).iterator( );
+                            while ( iteratStdOut.hasNext( ) )
+                            {
+                                commandResult.getLog( ).append( iteratStdOut.next( ) + " \n" );
+                            }
+                            commandResult.getLog( ).append( "*************************************** \n" );
+                            commandResult.getLog( ).append( "**************Errors******************* \n" );
+                            Iterator<String> iteratStdError = joStep.getJSONArray( "stderr" ).iterator( );
+
+                            while ( iteratStdError.hasNext( ) )
+                            {
+                                commandResult.getLog( ).append( iteratStdError.next( ) + " \n" );
+                            }
+                            commandResult.getLog( ).append( "*************************************** \n" );
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        return strResult;
     }
 }

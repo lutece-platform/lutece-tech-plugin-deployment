@@ -55,64 +55,66 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 
-
 public class SvnService implements IVCSService<SvnUser>
 {
     // private static IVCSService _singleton;
-  
-    //    public static IVCSService getInstance(  )
-    //    {
-    //        if ( _singleton == null )
-    //        {
-    //            _singleton = new SvnService(  );
-    //        }
+
+    // public static IVCSService getInstance( )
+    // {
+    // if ( _singleton == null )
+    // {
+    // _singleton = new SvnService( );
+    // }
     //
-    //        return _singleton;
-    //    }
-    private SvnService(  )
+    // return _singleton;
+    // }
+    private SvnService( )
     {
-        init(  );
+        init( );
     }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IVCSService#init()
-         */
-    public void init(  )
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IVCSService#init()
+     */
+    public void init( )
     {
         /*
-             * For using over http:// and https:/
-             */
-        DAVRepositoryFactory.setup(  );
+         * For using over http:// and https:/
+         */
+        DAVRepositoryFactory.setup( );
         /*
          * For using over svn:// and svn+xxx:/
          */
-        SVNRepositoryFactoryImpl.setup(  );
+        SVNRepositoryFactoryImpl.setup( );
 
         /*
          * For using over file://
          */
-        FSRepositoryFactory.setup(  );
+        FSRepositoryFactory.setup( );
     }
-    
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.deployment.service.IVCSService#getTagsSite(java.lang.String, fr.paris.lutece.plugins.deployment.business.User)
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IVCSService#getTagsSite(java.lang.String, fr.paris.lutece.plugins.deployment.business.User)
+     */
     public ReferenceList getTagsSite( String strUrlSite, SvnUser user, String strSiteName )
     {
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
-                user.getPassword(  ) );
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin( ), user.getPassword( ) );
         ISVNOptions options = SVNWCUtil.createDefaultOptions( true );
         SVNClientManager clientManager = SVNClientManager.newInstance( options, authManager );
         ReferenceList listReferenceItems = null;
 
         try
         {
-            listReferenceItems = SVNUtils.getSvnDirChildren( strUrlSite + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    ConstanteUtils.CONSTANTE_TAGS, clientManager );
+            listReferenceItems = SVNUtils.getSvnDirChildren( strUrlSite + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TAGS,
+                    clientManager );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-        	AppLogService.error( e );
+            AppLogService.error( e );
         }
 
         return listReferenceItems;
@@ -120,17 +122,15 @@ public class SvnService implements IVCSService<SvnUser>
 
     public String doCheckoutSite( String strSiteName, String strRepoUrl, SvnUser user, CommandResult commandResult, String strBranch, String strTagToDeploy )
     {
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
-                user.getPassword(  ) );
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin( ), user.getPassword( ) );
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
 
         if ( StringUtils.isNotBlank( strSiteName ) && ( user != null ) )
         {
-            ReleaseSVNCheckoutClient updateClient = new ReleaseSVNCheckoutClient( authManager,
-                    SVNWCUtil.createDefaultOptions( false ) );
+            ReleaseSVNCheckoutClient updateClient = new ReleaseSVNCheckoutClient( authManager, SVNWCUtil.createDefaultOptions( false ) );
 
             String strError = null;
-            
+
             String strSvnCheckoutSiteUrl = null;
             if ( strTagToDeploy != null )
             {
@@ -141,75 +141,72 @@ public class SvnService implements IVCSService<SvnUser>
                 strSvnCheckoutSiteUrl = getUrlDevSite( strRepoUrl );
             }
 
-
             try
             {
-                strError = SVNUtils.doSvnCheckoutSite( strSiteName, strSvnCheckoutSiteUrl, strSiteLocalBasePath, updateClient,
-                        commandResult );
+                strError = SVNUtils.doSvnCheckoutSite( strSiteName, strSvnCheckoutSiteUrl, strSiteLocalBasePath, updateClient, commandResult );
             }
-            catch ( Exception e )
+            catch( Exception e )
             {
-            	DeploymentUtils.addTechnicalError(commandResult,"errreur lors du checkout du site "+ e.getMessage(),e);
+                DeploymentUtils.addTechnicalError( commandResult, "errreur lors du checkout du site " + e.getMessage( ), e );
             }
         }
         else
         {
-            //        	 ErrorCommandThread thread;
-            //         	if ( StringUtils.isBlank( strSiteName) )
-            //         	{
-            //             	thread = new ErrorCommandThread( AppPropertiesService
-            //                        .getProperty( ConstanteUtils.PROPERTY_MESSAGE_CHECKOUT_ERROR_SITE_EMPTY ), ConstanteUtils.CONSTANTE_CHECKOUT_ERROR );
-            //         	}
-            //         	else
-            //         	{
-            //             	thread = new ErrorCommandThread( AppPropertiesService
-            //                        .getProperty(ConstanteUtils.PROPERTY_MESSAGE_CHECKOUT_ERROR_LOGIN_MDP_EMPTY ), ConstanteUtils.CONSTANTE_CHECKOUT_ERROR );
-            //         	}
-            //         	
-            //         	ThreadUtils.launchThread( thread, user );
-            //        	 
+            // ErrorCommandThread thread;
+            // if ( StringUtils.isBlank( strSiteName) )
+            // {
+            // thread = new ErrorCommandThread( AppPropertiesService
+            // .getProperty( ConstanteUtils.PROPERTY_MESSAGE_CHECKOUT_ERROR_SITE_EMPTY ), ConstanteUtils.CONSTANTE_CHECKOUT_ERROR );
+            // }
+            // else
+            // {
+            // thread = new ErrorCommandThread( AppPropertiesService
+            // .getProperty(ConstanteUtils.PROPERTY_MESSAGE_CHECKOUT_ERROR_LOGIN_MDP_EMPTY ), ConstanteUtils.CONSTANTE_CHECKOUT_ERROR );
+            // }
+            //
+            // ThreadUtils.launchThread( thread, user );
+            //
         }
 
         return ConstanteUtils.CONSTANTE_EMPTY_STRING;
     }
 
-	@Override
-	public ReferenceList getUpgradesFiles(String strSiteName, String strUrlSite, SvnUser user) {
-		
-		
-		CommandResult commandResult=new CommandResult();
-		DeploymentUtils.startCommandResult(commandResult);
-		ReferenceList upgradeResults=new ReferenceList();
-		// TODO Auto-generated method stub
-		String strUrlTrunkSite= getUrlDevSite( strUrlSite );
-		
-		doCheckoutSite(strSiteName, strUrlTrunkSite, user, commandResult, null, null);
-		
-		List<String> listUpgradeFiles=FileUtil.list(DeploymentUtils.getPathUpgradeFiles(DeploymentUtils.getPathCheckoutSite( strSiteName )), "sql");
-                
-		for(String upgradeFile:listUpgradeFiles)
-		{
-			upgradeResults.addItem(upgradeFile,upgradeFile);
-			
-		}
-		
-		DeploymentUtils.stopCommandResult(commandResult);
-		
-		return upgradeResults;
-		
-	}
-        
+    @Override
+    public ReferenceList getUpgradesFiles( String strSiteName, String strUrlSite, SvnUser user )
+    {
+
+        CommandResult commandResult = new CommandResult( );
+        DeploymentUtils.startCommandResult( commandResult );
+        ReferenceList upgradeResults = new ReferenceList( );
+        // TODO Auto-generated method stub
+        String strUrlTrunkSite = getUrlDevSite( strUrlSite );
+
+        doCheckoutSite( strSiteName, strUrlTrunkSite, user, commandResult, null, null );
+
+        List<String> listUpgradeFiles = FileUtil.list( DeploymentUtils.getPathUpgradeFiles( DeploymentUtils.getPathCheckoutSite( strSiteName ) ), "sql" );
+
+        for ( String upgradeFile : listUpgradeFiles )
+        {
+            upgradeResults.addItem( upgradeFile, upgradeFile );
+
+        }
+
+        DeploymentUtils.stopCommandResult( commandResult );
+
+        return upgradeResults;
+
+    }
+
     public ReferenceList getSVNDirChildren( String strRepoUrl, SvnUser user )
     {
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
-                user.getPassword(  ) );
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin( ), user.getPassword( ) );
         ISVNOptions options = SVNWCUtil.createDefaultOptions( true );
         SVNClientManager clientManager = SVNClientManager.newInstance( options, authManager );
         try
         {
             return SVNUtils.getSvnDirChildren( strRepoUrl, clientManager );
         }
-        catch ( SVNException e )
+        catch( SVNException e )
         {
             return null;
         }
@@ -217,22 +214,22 @@ public class SvnService implements IVCSService<SvnUser>
     }
 
     @Override
-    public String getArtifactId( String strPathRepo ) 
+    public String getArtifactId( String strPathRepo )
     {
-        String[] tabPathSplit = strPathRepo.split( ConstanteUtils.CONSTANTE_SEPARATOR_SLASH );
-        return tabPathSplit[ tabPathSplit.length - 1];
+        String [ ] tabPathSplit = strPathRepo.split( ConstanteUtils.CONSTANTE_SEPARATOR_SLASH );
+        return tabPathSplit [tabPathSplit.length - 1];
     }
 
-    public String getUrlTagSite(String strBaseUrl, String strTagName) {
-        return strBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TAGS +
-        ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strTagName;
+    public String getUrlTagSite( String strBaseUrl, String strTagName )
+    {
+        return strBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TAGS + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + strTagName;
     }
 
-    public String getUrlDevSite(String strBaseUrl) 
+    public String getUrlDevSite( String strBaseUrl )
     {
-        return strBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TRUNK;    
+        return strBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH + ConstanteUtils.CONSTANTE_TRUNK;
     }
-    
+
     @Override
     public boolean isPrivate( )
     {
@@ -240,13 +237,12 @@ public class SvnService implements IVCSService<SvnUser>
     }
 
     @Override
-    public void checkAuthentication(String strRepoUrl, SvnUser user) 
+    public void checkAuthentication( String strRepoUrl, SvnUser user )
     {
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin(  ),
-                user.getPassword(  ) );
-        if ( !SVNUtils.checkAuthentication( authManager, strRepoUrl))
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager( user.getLogin( ), user.getPassword( ) );
+        if ( !SVNUtils.checkAuthentication( authManager, strRepoUrl ) )
         {
-            throw new AppException( "Bad credentials to SVN : Unauthorized");
+            throw new AppException( "Bad credentials to SVN : Unauthorized" );
         }
     }
 }

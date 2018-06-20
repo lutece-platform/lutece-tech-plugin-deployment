@@ -62,7 +62,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-
 /**
  *
  * MavenService : provides maven command launcher
@@ -70,191 +69,192 @@ import javax.xml.bind.JAXBException;
  */
 public class MavenService implements IMavenService
 {
-    //private static IMavenService _singleton;
+    // private static IMavenService _singleton;
     private Invoker _invoker;
     private static IMavenService _singleton;
-    private MavenService(  )
+
+    private MavenService( )
     {
-        
+
     }
 
-    
-    public static  IMavenService getService()
+    public static IMavenService getService( )
     {
-        
-        if(_singleton==null)
+
+        if ( _singleton == null )
         {
-            
-            _singleton = SpringContextService.getBean( 
-                    "deployment.MavenService" );
-            
+
+            _singleton = SpringContextService.getBean( "deployment.MavenService" );
+
             _singleton.init( );
         }
         return _singleton;
     }
-    public void init(  )
+
+    public void init( )
     {
-        _invoker = new DefaultInvoker(  );
+        _invoker = new DefaultInvoker( );
         _invoker.setMavenHome( new File( AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_HOME_PATH ) ) );
-        _invoker.setLocalRepositoryDirectory( new File( AppPropertiesService.getProperty( 
-                    ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY ) ) );
+        _invoker.setLocalRepositoryDirectory( new File( AppPropertiesService.getProperty( ConstanteUtils.CONSTANTE_MAVEN_LOCAL_REPOSITORY ) ) );
     }
 
-
-    /* (non-Javadoc)
-     * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment, fr.paris.lutece.plugins.deployment.business.MavenUser)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment,
+     * fr.paris.lutece.plugins.deployment.business.MavenUser)
      */
-    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user,
-        CommandResult commandResult )
+    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult )
     {
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
 
-        List<String> listGoals = MavenGoals.LUTECE_SITE_ASSEMBLY.asList(  );
-        List<String> listGoalsProfile = new ArrayList<String>(  );
+        List<String> listGoals = MavenGoals.LUTECE_SITE_ASSEMBLY.asList( );
+        List<String> listGoalsProfile = new ArrayList<String>( );
         listGoalsProfile.addAll( listGoals );
         listGoalsProfile.add( "-P " + strMavenProfile );
         listGoalsProfile.add( "-U" );
         mvn( strTagName, strSiteLocalBasePath, listGoalsProfile, commandResult );
     }
-    
-    
-    
-    public void saveMvnProfilName(String strProfilValue,String strIdApplication,String strCodeEnvironment,String strCodeServerApplicationInstance)
+
+    public void saveMvnProfilName( String strProfilValue, String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance )
     {
-        
-        DatastoreService.setDataValue( strIdApplication+"_"+strCodeEnvironment+"_"+strCodeServerApplicationInstance, strProfilValue);
+
+        DatastoreService.setDataValue( strIdApplication + "_" + strCodeEnvironment + "_" + strCodeServerApplicationInstance, strProfilValue );
     }
-    
-    public String getMvnProfilSaved(String strIdApplication,String strCodeEnvironment,String strCodeServerApplicationInstance)
+
+    public String getMvnProfilSaved( String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance )
     {
-        
-        return DatastoreService.getDataValue( strIdApplication+"_"+strCodeEnvironment+"_"+strCodeServerApplicationInstance, null);
+
+        return DatastoreService.getDataValue( strIdApplication + "_" + strCodeEnvironment + "_" + strCodeServerApplicationInstance, null );
     }
-    
-    
-    
-    public  String getSiteWarName( String strSiteName )
+
+    public String getSiteWarName( String strSiteName )
     {
-	    String strWarGeneratedName=null;
-	    try {
-			String strSiteArtifactId=ReleaseUtils.getSiteArtifactId(DeploymentUtils.getPathCheckoutSite( strSiteName ));
-			String strSiteVersion=ReleaseUtils.getSiteVersion(DeploymentUtils.getPathCheckoutSite( strSiteName ));
-			strWarGeneratedName=strSiteArtifactId+"-"+strSiteVersion;
-	    } catch (FileNotFoundException e) {
-			AppLogService.error(e);
-		} catch (JAXBException e) {
-			
-			AppLogService.error(e);
-		}
-	   return  strWarGeneratedName;
+        String strWarGeneratedName = null;
+        try
+        {
+            String strSiteArtifactId = ReleaseUtils.getSiteArtifactId( DeploymentUtils.getPathCheckoutSite( strSiteName ) );
+            String strSiteVersion = ReleaseUtils.getSiteVersion( DeploymentUtils.getPathCheckoutSite( strSiteName ) );
+            strWarGeneratedName = strSiteArtifactId + "-" + strSiteVersion;
+        }
+        catch( FileNotFoundException e )
+        {
+            AppLogService.error( e );
+        }
+        catch( JAXBException e )
+        {
+
+            AppLogService.error( e );
+        }
+        return strWarGeneratedName;
     }
 
     /**
      * Transforme la liste en chaine, pour passer l'argument � la ligne de commande
+     * 
      * @param goals
      * @return
      */
     private String getGoalToString( List<String> goals )
     {
-        StringBuilder sbGoal = new StringBuilder(  );
+        StringBuilder sbGoal = new StringBuilder( );
 
         for ( String strGoal : goals )
         {
             sbGoal.append( strGoal ).append( ConstanteUtils.CONSTANTE_SPACE );
         }
 
-        return sbGoal.toString(  );
+        return sbGoal.toString( );
     }
 
-    //	public static IMavenService getInstance()
-    //	{
-    //		
-    //		if(_singleton ==null)
-    //		{
-    //			_singleton=new MavenService();
-    //		}
-    //		
-    //		return _singleton;
-    //		
-    //	}
-    //	
+    // public static IMavenService getInstance()
+    // {
+    //
+    // if(_singleton ==null)
+    // {
+    // _singleton=new MavenService();
+    // }
+    //
+    // return _singleton;
+    //
+    // }
+    //
 
     /**
      * Launches mvn cmd
-     * @param strPluginName plugin name (ex:  plugin-ods)
-     * @param goals maven goals
-     * @param strSVNBinPath svn bin path (ex:  /home/svn/apps/subversion/bin)
+     * 
+     * @param strPluginName
+     *            plugin name (ex: plugin-ods)
+     * @param goals
+     *            maven goals
+     * @param strSVNBinPath
+     *            svn bin path (ex: /home/svn/apps/subversion/bin)
      */
     @SuppressWarnings( "unchecked" )
     private String mvn( String strTagName, String strSitePath, List<String> goals, CommandResult commandResult )
     {
-        InvocationRequest request = new DefaultInvocationRequest(  );
+        InvocationRequest request = new DefaultInvocationRequest( );
         request.setPomFile( new File( DeploymentUtils.getPathPomFile( strSitePath ) ) );
         request.setGoals( goals );
 
         try
         {
-            final StringBuffer sbLog = commandResult.getLog(  );
+            final StringBuffer sbLog = commandResult.getLog( );
 
             // logger
-            _invoker.setOutputHandler( new InvocationOutputHandler(  )
+            _invoker.setOutputHandler( new InvocationOutputHandler( )
+            {
+                public void consumeLine( String strLine )
                 {
-                    public void consumeLine( String strLine )
-                    {
-                        sbLog.append( strLine + "\n" );
-                    }
-                } );
+                    sbLog.append( strLine + "\n" );
+                }
+            } );
 
             InvocationResult invocationResult = _invoker.execute( request );
 
-            int nStatus = invocationResult.getExitCode(  );
+            int nStatus = invocationResult.getExitCode( );
 
             if ( nStatus != 0 )
             {
-            	
-            	DeploymentUtils.addTechnicalError(commandResult, commandResult.getLog(  ).toString(  ));
-                
+
+                DeploymentUtils.addTechnicalError( commandResult, commandResult.getLog( ).toString( ) );
+
             }
             else
             {
-            	  commandResult.setStatus( CommandResult.STATUS_OK);
+                commandResult.setStatus( CommandResult.STATUS_OK );
             }
-            
 
-           
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            StringWriter sw = new StringWriter(  );
+            StringWriter sw = new StringWriter( );
             PrintWriter pw = new PrintWriter( sw );
             e.printStackTrace( pw );
 
-            String errorLog = sw.toString(  );
-            pw.flush(  );
-            pw.close(  );
+            String errorLog = sw.toString( );
+            pw.flush( );
+            pw.close( );
 
             try
             {
-                sw.flush(  );
-                sw.close(  );
+                sw.flush( );
+                sw.close( );
             }
-            catch ( IOException e1 )
+            catch( IOException e1 )
             {
                 // do nothing
                 AppLogService.error( e1 );
             }
 
-            commandResult.getLog(  ).append( errorLog );
-            //_result.setIdError( ReleaseLogger.logError( _result.getLog(  ).toString(  ), e ) );
-            DeploymentUtils.addTechnicalError(commandResult,  errorLog );
-            
+            commandResult.getLog( ).append( errorLog );
+            // _result.setIdError( ReleaseLogger.logError( _result.getLog( ).toString( ), e ) );
+            DeploymentUtils.addTechnicalError( commandResult, errorLog );
+
         }
 
-        //_endTime = new Date(  );
+        // _endTime = new Date( );
         return null;
     }
-    
-    
-    
-  
-    }
+
+}

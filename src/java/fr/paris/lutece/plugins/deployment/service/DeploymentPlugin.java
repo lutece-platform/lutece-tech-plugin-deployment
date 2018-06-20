@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.user.attribute.AdminUserFieldListenerService;
 
-
 /**
  * class ArchivePlugin
  */
@@ -49,10 +48,9 @@ public class DeploymentPlugin extends PluginDefaultImplementation
     /**
      * Initialize plugin
      */
-    public void init(  )
+    public void init( )
     {
-        AdminUserFieldListenerService adminUserFieldListenerService = SpringContextService.getBean( 
-                "deployment.AdminUserFieldListenerService" );
-        adminUserFieldListenerService.registerListener( new DeploymentAdminUserFieldListener(  ) );
+        AdminUserFieldListenerService adminUserFieldListenerService = SpringContextService.getBean( "deployment.AdminUserFieldListenerService" );
+        adminUserFieldListenerService.registerListener( new DeploymentAdminUserFieldListener( ) );
     }
 }

@@ -51,7 +51,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
-
 public class ActionService implements IActionService
 {
     private static HashMap<String, IAction> _hashServerApplicationAction;
@@ -60,37 +59,34 @@ public class ActionService implements IActionService
     {
         if ( _hashServerApplicationAction == null )
         {
-            initHashServerApplicationAction(  );
+            initHashServerApplicationAction( );
         }
 
         IAction serverApplicationAction = _hashServerApplicationAction.get( strKey );
 
         if ( serverApplicationAction != null )
         {
-            serverApplicationAction.setName( I18nService.getLocalizedString( 
-                    serverApplicationAction.getI18nKeyName(  ), locale ) );
+            serverApplicationAction.setName( I18nService.getLocalizedString( serverApplicationAction.getI18nKeyName( ), locale ) );
         }
 
         return serverApplicationAction;
     }
 
-    public List<IAction> getListActionByServerApplicationInstance( Application application,
-        ServerApplicationInstance serverApplicationInstance, Locale locale )
+    public List<IAction> getListActionByServerApplicationInstance( Application application, ServerApplicationInstance serverApplicationInstance, Locale locale )
     {
         String strPlateformEnvironmentBaseUrl = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_ENVIRONMENT_PLATEFORM_BASE_URL );
-        List<IAction> listActions = new ArrayList<IAction>(  );
+        List<IAction> listActions = new ArrayList<IAction>( );
         List<String> listStrActions;
-        String strWebserviceActionJsonDictionaryName = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_SERVER_ACTIONS_JSON_DICTIONARY_NAME );
+        String strWebserviceActionJsonDictionaryName = AppPropertiesService
+                .getProperty( ConstanteUtils.PROPERTY_WEBSERVICE_SERVER_ACTIONS_JSON_DICTIONARY_NAME );
         String strJSONActions = null;
 
         try
         {
-            strJSONActions = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl +
-                    ConstanteUtils.CONSTANTE_SEPARATOR_SLASH +
-                    DeploymentUtils.getPlateformUrlServerApplicationActions( application.getCode(),
-                        serverApplicationInstance ) );
+            strJSONActions = DeploymentUtils.callPlateformEnvironmentWs( strPlateformEnvironmentBaseUrl + ConstanteUtils.CONSTANTE_SEPARATOR_SLASH
+                    + DeploymentUtils.getPlateformUrlServerApplicationActions( application.getCode( ), serverApplicationInstance ) );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e );
         }
@@ -102,8 +98,7 @@ public class ActionService implements IActionService
 
             for ( String strActionCode : listStrActions )
             {
-                action = getAction( DeploymentUtils.getActionKey( strActionCode, serverApplicationInstance.getType(  ) ),
-                        locale );
+                action = getAction( DeploymentUtils.getActionKey( strActionCode, serverApplicationInstance.getType( ) ), locale );
 
                 if ( action != null )
                 {
@@ -115,35 +110,34 @@ public class ActionService implements IActionService
         return listActions;
     }
 
-    private void initHashServerApplicationAction(  )
+    private void initHashServerApplicationAction( )
     {
         List<IAction> listAction = SpringContextService.getBeansOfType( IAction.class );
-        _hashServerApplicationAction = new HashMap<String, IAction>(  );
+        _hashServerApplicationAction = new HashMap<String, IAction>( );
 
         if ( listAction != null )
         {
             for ( IAction action : listAction )
             {
-                _hashServerApplicationAction.put( DeploymentUtils.getActionKey( action.getCode(  ),
-                        action.getServerType(  ) ), action );
+                _hashServerApplicationAction.put( DeploymentUtils.getActionKey( action.getCode( ), action.getServerType( ) ), action );
             }
         }
     }
 
     public List<IAction> getListAction( Locale locale )
     {
-        List<IAction> listActions = new ArrayList<IAction>(  );
+        List<IAction> listActions = new ArrayList<IAction>( );
         IAction action;
 
         if ( _hashServerApplicationAction == null )
         {
-            initHashServerApplicationAction(  );
+            initHashServerApplicationAction( );
         }
 
-        for ( Entry<String, IAction> entry : _hashServerApplicationAction.entrySet(  ) )
+        for ( Entry<String, IAction> entry : _hashServerApplicationAction.entrySet( ) )
         {
-            action = entry.getValue(  );
-            action.setName( I18nService.getLocalizedString( action.getI18nKeyName(  ), locale ) );
+            action = entry.getValue( );
+            action.setName( I18nService.getLocalizedString( action.getI18nKeyName( ), locale ) );
             listActions.add( action );
         }
 
@@ -151,43 +145,38 @@ public class ActionService implements IActionService
     }
 
     @Override
-    public boolean executeAction( Application application, IAction action,
-        ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter )
+    public boolean executeAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter )
     {
         // TODO Auto-generated method stub
-          String strResult=action.run( application, serverApplicationInstance, commandResult, parameter );
-          boolean bResult=false;
-          //set status action
-          if(strResult !=null )
-          {
-        	  bResult=new Boolean( strResult );
-        	
-          }
-          
-          if( commandResult != null)
-          {
-        	  commandResult.setStatus(bResult ? CommandResult.STATUS_OK : CommandResult.STATUS_ERROR ) ;
-          }
-          return bResult;
+        String strResult = action.run( application, serverApplicationInstance, commandResult, parameter );
+        boolean bResult = false;
+        // set status action
+        if ( strResult != null )
+        {
+            bResult = new Boolean( strResult );
+
+        }
+
+        if ( commandResult != null )
+        {
+            commandResult.setStatus( bResult ? CommandResult.STATUS_OK : CommandResult.STATUS_ERROR );
+        }
+        return bResult;
     }
-    
+
     @Override
-    public boolean canExecuteAction( Application application,IAction action,
-            ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  )
+    public boolean canExecuteAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter )
     {
         // TODO Auto-generated method stub
-        return action.canRunAction(application, serverApplicationInstance, commandResult, parameter);
+        return action.canRunAction( application, serverApplicationInstance, commandResult, parameter );
     }
 
-	
-
-	@Override
-	public String getTemplateFormAction(Application application,
-			IAction action,
-			ServerApplicationInstance serverApplicationInstance,
-			 Locale locale
-			) {
-		// TODO Auto-generated method stub
-		return action.getTemplateFormAction(application, serverApplicationInstance, locale);
-	}
+    @Override
+    public String getTemplateFormAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, Locale locale )
+    {
+        // TODO Auto-generated method stub
+        return action.getTemplateFormAction( application, serverApplicationInstance, locale );
+    }
 }

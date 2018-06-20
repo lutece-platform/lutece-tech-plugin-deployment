@@ -40,7 +40,6 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.deployment.service.MavenService;
 
-
 public class ServerApplicationInstance
 {
     private String _strCode;
@@ -57,10 +56,8 @@ public class ServerApplicationInstance
     private String _strBeanName;
     private Integer _nStatus;
     private List<IAction> _listServerApplicationAction;
-    
-    
 
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -70,7 +67,7 @@ public class ServerApplicationInstance
         _strName = strName;
     }
 
-    public String getI18nKeyName(  )
+    public String getI18nKeyName( )
     {
         return _strI18nKeyName;
     }
@@ -80,7 +77,7 @@ public class ServerApplicationInstance
         _strI18nKeyName = strName;
     }
 
-    public String getFtpDirectoryTarget(  )
+    public String getFtpDirectoryTarget( )
     {
         return _strFtpDirectoryTarget;
     }
@@ -95,7 +92,7 @@ public class ServerApplicationInstance
         this._strCode = _strCode;
     }
 
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
@@ -105,7 +102,7 @@ public class ServerApplicationInstance
         this._strCodeEnvironment = _strCodeEnvironment;
     }
 
-    public String getCodeEnvironment(  )
+    public String getCodeEnvironment( )
     {
         return _strCodeEnvironment;
     }
@@ -115,18 +112,17 @@ public class ServerApplicationInstance
         this._ftpInfo = _ftpInfo;
     }
 
-    public FtpInfo getFtpInfo(  )
+    public FtpInfo getFtpInfo( )
     {
         return _ftpInfo;
     }
 
     public String getMavenProfile( int nIdApplication )
     {
-       String strMavenProfile= MavenService.getService( ).getMvnProfilSaved( Integer.toString( nIdApplication ), _strCodeEnvironment, _strCode);
-        if(StringUtils.isEmpty(strMavenProfile))
+        String strMavenProfile = MavenService.getService( ).getMvnProfilSaved( Integer.toString( nIdApplication ), _strCodeEnvironment, _strCode );
+        if ( StringUtils.isEmpty( strMavenProfile ) )
         {
-            if ( ( _strCodeEnvironment != null ) && ( _hashMavenProfile != null ) &&
-                    _hashMavenProfile.containsKey( _strCodeEnvironment ) )
+            if ( ( _strCodeEnvironment != null ) && ( _hashMavenProfile != null ) && _hashMavenProfile.containsKey( _strCodeEnvironment ) )
             {
                 return _hashMavenProfile.get( _strCodeEnvironment );
             }
@@ -140,7 +136,7 @@ public class ServerApplicationInstance
         this._strType = _strType;
     }
 
-    public String getType(  )
+    public String getType( )
     {
         return _strType;
     }
@@ -150,12 +146,12 @@ public class ServerApplicationInstance
         this._hashMavenProfile = _hashMavenProfile;
     }
 
-    public HashMap<String, String> getHashMavenProfile(  )
+    public HashMap<String, String> getHashMavenProfile( )
     {
         return _hashMavenProfile;
     }
 
-    public String getBeanName(  )
+    public String getBeanName( )
     {
         return _strBeanName;
     }
@@ -170,7 +166,7 @@ public class ServerApplicationInstance
         this._nStatus = _nStatus;
     }
 
-    public Integer getStatus(  )
+    public Integer getStatus( )
     {
         return _nStatus;
     }
@@ -180,16 +176,18 @@ public class ServerApplicationInstance
         this._listServerApplicationAction = _listServerApplicationAction;
     }
 
-    public List<IAction> getListServerApplicationAction(  )
+    public List<IAction> getListServerApplicationAction( )
     {
         return _listServerApplicationAction;
     }
 
-	public String getFtpDirectoryDump() {
-		return _strFtpDirectoryDump;
-	}
+    public String getFtpDirectoryDump( )
+    {
+        return _strFtpDirectoryDump;
+    }
 
-	public void setFtpDirectoryDump(String _strFtpDirectoryDumpFile) {
-		this._strFtpDirectoryDump = _strFtpDirectoryDumpFile;
-	}
+    public void setFtpDirectoryDump( String _strFtpDirectoryDumpFile )
+    {
+        this._strFtpDirectoryDump = _strFtpDirectoryDumpFile;
+    }
 }

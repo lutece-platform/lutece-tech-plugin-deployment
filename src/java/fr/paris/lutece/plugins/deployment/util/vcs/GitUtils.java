@@ -43,40 +43,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 
+public class GitUtils
+{
 
-
-
-
-public class GitUtils  {
-	
     public static final String MASTER_BRANCH = "master";
     public static final String DEVELOP_BRANCH = "develop";
     private static final String CONSTANTE_REF_TAG = "refs/tags/";
-    
+
     public static Collection<String> getTagNameList( Git git )
     {
-        List<String> listTagName = new ArrayList<>();
-        Collection<Ref> colTags = git.getRepository().getTags().values();
+        List<String> listTagName = new ArrayList<>( );
+        Collection<Ref> colTags = git.getRepository( ).getTags( ).values( );
         for ( Ref ref : colTags )
         {
-            listTagName.add( ref.getName().replace(CONSTANTE_REF_TAG, "") );
+            listTagName.add( ref.getName( ).replace( CONSTANTE_REF_TAG, "" ) );
         }
         return listTagName;
-        
+
     }
 
-    public static  Git cloneOrReturnGit(String sClonePath, String sRepoURL, CommandResult commandResult,GitUser user, String strBranch, String strTagName ) 
+    public static Git cloneOrReturnGit( String sClonePath, String sRepoURL, CommandResult commandResult, GitUser user, String strBranch, String strTagName )
     {
-        Git git=null;
-        Repository repository=null;
+        Git git = null;
+        Repository repository = null;
         try
         {
-            FileRepositoryBuilder builder = new FileRepositoryBuilder();
-            File fGitDir = new File(sClonePath);
+            FileRepositoryBuilder builder = new FileRepositoryBuilder( );
+            File fGitDir = new File( sClonePath );
 
-            File gitFile = new File( sClonePath + "/.git");
-            repository = builder.setGitDir(fGitDir).readEnvironment().findGitDir().build();
-            
+            File gitFile = new File( sClonePath + "/.git" );
+            repository = builder.setGitDir( fGitDir ).readEnvironment( ).findGitDir( ).build( );
+
             if ( gitFile.exists( ) )
             {
                 git = Git.open( gitFile );
@@ -84,22 +81,21 @@ public class GitUtils  {
                 return git;
             }
 
-            CloneCommand clone = Git.cloneRepository().setBare(false).setCloneAllBranches(true).setDirectory(fGitDir).setURI(getRepoUrl( sRepoURL ));
+            CloneCommand clone = Git.cloneRepository( ).setBare( false ).setCloneAllBranches( true ).setDirectory( fGitDir ).setURI( getRepoUrl( sRepoURL ) );
 
-            if ( user.getLogin() != null && user.getPassword() != null )
+            if ( user.getLogin( ) != null && user.getPassword( ) != null )
             {
-                clone.setCredentialsProvider(new UsernamePasswordCredentialsProvider( user.getLogin(), user.getPassword( ) ) );
+                clone.setCredentialsProvider( new UsernamePasswordCredentialsProvider( user.getLogin( ), user.getPassword( ) ) );
             }
-            git=clone.call( );
-            
+            git = clone.call( );
+
             createLocalBranch( git, DEVELOP_BRANCH, commandResult );
             createLocalBranch( git, MASTER_BRANCH, commandResult );
             repository.getConfig( ).setString( "user", null, "name", user.getLogin( ) );
             repository.getConfig( ).save( );
 
-
         }
-        catch( InvalidRemoteException  e )
+        catch( InvalidRemoteException e )
         {
 
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
@@ -120,23 +116,19 @@ public class GitUtils  {
         }
         finally
         {
-            repository.close();
+            repository.close( );
         }
         return git;
 
     }
 
-
-    public static void checkoutRepoBranch(Git git, String sBranchName,CommandResult commandResult)
+    public static void checkoutRepoBranch( Git git, String sBranchName, CommandResult commandResult )
     {
         try
         {
-            git.checkout()
-                .setName(sBranchName)
-                .setForce(true)
-                .call(); 
+            git.checkout( ).setName( sBranchName ).setForce( true ).call( );
         }
-        catch( InvalidRemoteException  e )
+        catch( InvalidRemoteException e )
         {
 
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
@@ -155,18 +147,14 @@ public class GitUtils  {
 
     }
 
-    public static void createLocalBranch(Git git, String sBranchName,CommandResult commandResult) 
+    public static void createLocalBranch( Git git, String sBranchName, CommandResult commandResult )
     {
         try
         {
-            git.branchCreate() 
-               .setName(sBranchName)
-               .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
-               .setStartPoint("origin/" + sBranchName)
-               .setForce(true)
-               .call();
+            git.branchCreate( ).setName( sBranchName ).setUpstreamMode( SetupUpstreamMode.SET_UPSTREAM ).setStartPoint( "origin/" + sBranchName )
+                    .setForce( true ).call( );
         }
-        catch( InvalidRemoteException  e )
+        catch( InvalidRemoteException e )
         {
 
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
@@ -184,18 +172,17 @@ public class GitUtils  {
         }
 
     }
-	
-    public static String getRefBranch(Git git, String sBranchName,CommandResult commandResult) 
+
+    public static String getRefBranch( Git git, String sBranchName, CommandResult commandResult )
     {
-	    
-        String refLastCommit=null;
+
+        String refLastCommit = null;
         try
         {
-             git.checkout().setName(sBranchName).call();
-             refLastCommit= getLastCommitId( git );
+            git.checkout( ).setName( sBranchName ).call( );
+            refLastCommit = getLastCommitId( git );
         }
-  
-     
+
         catch( RefAlreadyExistsException e )
         {
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
@@ -219,174 +206,180 @@ public class GitUtils  {
         return refLastCommit;
     }
 
-    public static void  pushForce(Git git, String strRefSpec, String strUserName, String strPassword) throws InvalidRemoteException, TransportException, GitAPIException
+    public static void pushForce( Git git, String strRefSpec, String strUserName, String strPassword ) throws InvalidRemoteException, TransportException,
+            GitAPIException
     {
 
-        git.push( ).setRemote( "origin" ).setRefSpecs( new RefSpec( strRefSpec ) ).setForce( true ).setCredentialsProvider(new UsernamePasswordCredentialsProvider(strUserName, strPassword)).call();
+        git.push( ).setRemote( "origin" ).setRefSpecs( new RefSpec( strRefSpec ) ).setForce( true )
+                .setCredentialsProvider( new UsernamePasswordCredentialsProvider( strUserName, strPassword ) ).call( );
 
     }
-	
-    public static PullResult pullRepoBranch(Git git, String sRepoURL, String sBranchName) throws IOException, WrongRepositoryStateException, InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException, TransportException, GitAPIException
+
+    public static PullResult pullRepoBranch( Git git, String sRepoURL, String sBranchName ) throws IOException, WrongRepositoryStateException,
+            InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException,
+            TransportException, GitAPIException
     {
-            PullResult pPullResult = git.pull().call();		
-            return pPullResult;	
+        PullResult pPullResult = git.pull( ).call( );
+        return pPullResult;
     }
-	
-    public static MergeResult mergeRepoBranch(Git git, String strBranchToMerge) throws IOException, WrongRepositoryStateException, InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException, TransportException, GitAPIException
+
+    public static MergeResult mergeRepoBranch( Git git, String strBranchToMerge ) throws IOException, WrongRepositoryStateException,
+            InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException,
+            TransportException, GitAPIException
     {
-            List<Ref> call = git.branchList().call();
-            Ref mergedBranchRef = null;
-            for (Ref ref : call) 
-            {
-                    if (ref.getName().equals("refs/heads/" + strBranchToMerge)) {
-                            mergedBranchRef = ref;
-                            break;
-                    }
-            }
-            MergeResult mergeResult = git.merge().include(mergedBranchRef).call();
-            return mergeResult;	
-    }
-	
-    public  static String getLastLog(Git git, int nMaxCommit) throws NoHeadException, GitAPIException
-    {
-            Iterable<RevCommit> logList = git.log().setMaxCount(1).call();
-            Iterator i = logList.iterator();
-            String sCommitMessages = "";
-            while (i.hasNext())
-            {
-                    RevCommit revCommit = (RevCommit) i.next();
-                    sCommitMessages += revCommit.getFullMessage();
-                    sCommitMessages += "\n";
-                    sCommitMessages += revCommit.getCommitterIdent();
-            }
-            return sCommitMessages;
-    }
-	
-	
-    public  static String getLastCommitId(Git git) throws NoHeadException, GitAPIException
-    {
-        Iterable<RevCommit> logList = git.log().setMaxCount(1).call();
-        Iterator i = logList.iterator();
-       String strCommitId = null;
-        while (i.hasNext())
+        List<Ref> call = git.branchList( ).call( );
+        Ref mergedBranchRef = null;
+        for ( Ref ref : call )
         {
-            RevCommit revCommit = (RevCommit) i.next();
+            if ( ref.getName( ).equals( "refs/heads/" + strBranchToMerge ) )
+            {
+                mergedBranchRef = ref;
+                break;
+            }
+        }
+        MergeResult mergeResult = git.merge( ).include( mergedBranchRef ).call( );
+        return mergeResult;
+    }
+
+    public static String getLastLog( Git git, int nMaxCommit ) throws NoHeadException, GitAPIException
+    {
+        Iterable<RevCommit> logList = git.log( ).setMaxCount( 1 ).call( );
+        Iterator i = logList.iterator( );
+        String sCommitMessages = "";
+        while ( i.hasNext( ) )
+        {
+            RevCommit revCommit = (RevCommit) i.next( );
+            sCommitMessages += revCommit.getFullMessage( );
+            sCommitMessages += "\n";
+            sCommitMessages += revCommit.getCommitterIdent( );
+        }
+        return sCommitMessages;
+    }
+
+    public static String getLastCommitId( Git git ) throws NoHeadException, GitAPIException
+    {
+        Iterable<RevCommit> logList = git.log( ).setMaxCount( 1 ).call( );
+        Iterator i = logList.iterator( );
+        String strCommitId = null;
+        while ( i.hasNext( ) )
+        {
+            RevCommit revCommit = (RevCommit) i.next( );
             strCommitId = revCommit.getName( );
-          
+
         }
         return strCommitId;
     }
-    
-	
-	  
-    public static MergeResult mergeBack(Git git, String strUserName, String strPassword, CommandResult commandResult) throws IOException, GitAPIException
-    {
-        
-            
-        Ref tag = getTagLinkedToLastRelease(git);
 
-        git.checkout().setName(MASTER_BRANCH).call();
-        List<Ref> call = git.branchList().call();
+    public static MergeResult mergeBack( Git git, String strUserName, String strPassword, CommandResult commandResult ) throws IOException, GitAPIException
+    {
+
+        Ref tag = getTagLinkedToLastRelease( git );
+
+        git.checkout( ).setName( MASTER_BRANCH ).call( );
+        List<Ref> call = git.branchList( ).call( );
 
         Ref mergedBranchRef = null;
-        for (Ref ref : call) 
+        for ( Ref ref : call )
         {
-           if (ref.getName().equals("refs/heads/"+DEVELOP_BRANCH)) 
-           {
-               mergedBranchRef = ref;
-               break;
-           }
+            if ( ref.getName( ).equals( "refs/heads/" + DEVELOP_BRANCH ) )
+            {
+                mergedBranchRef = ref;
+                break;
+            }
         }
 
-       if (tag != null) 
-       {
-           mergedBranchRef = tag;
-       }
-       MergeResult mergeResult = git.merge().include(mergedBranchRef).call();
-       if (mergeResult.getMergeStatus().equals(MergeResult.MergeStatus.CHECKOUT_CONFLICT) || mergeResult.getMergeStatus().equals(MergeResult.MergeStatus.CONFLICTING) || mergeResult.getMergeStatus().equals(MergeResult.MergeStatus.FAILED) || mergeResult.getMergeStatus().equals(MergeResult.MergeStatus.NOT_SUPPORTED))
-       {
+        if ( tag != null )
+        {
+            mergedBranchRef = tag;
+        }
+        MergeResult mergeResult = git.merge( ).include( mergedBranchRef ).call( );
+        if ( mergeResult.getMergeStatus( ).equals( MergeResult.MergeStatus.CHECKOUT_CONFLICT )
+                || mergeResult.getMergeStatus( ).equals( MergeResult.MergeStatus.CONFLICTING )
+                || mergeResult.getMergeStatus( ).equals( MergeResult.MergeStatus.FAILED )
+                || mergeResult.getMergeStatus( ).equals( MergeResult.MergeStatus.NOT_SUPPORTED ) )
+        {
 
-           DeploymentUtils.addTechnicalError( commandResult, mergeResult.getMergeStatus().toString()
-                   + "\nPlease merge manually master into"+ DEVELOP_BRANCH +"branch." );
-       }
-       else
-       {
-           git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(strUserName, strPassword)).call();
-           commandResult.getLog( ).append(mergeResult.getMergeStatus());
-       }
-       return mergeResult;
-            
+            DeploymentUtils.addTechnicalError( commandResult, mergeResult.getMergeStatus( ).toString( ) + "\nPlease merge manually master into"
+                    + DEVELOP_BRANCH + "branch." );
+        }
+        else
+        {
+            git.push( ).setCredentialsProvider( new UsernamePasswordCredentialsProvider( strUserName, strPassword ) ).call( );
+            commandResult.getLog( ).append( mergeResult.getMergeStatus( ) );
+        }
+        return mergeResult;
+
     }
-    
-    
-    public  static String getFileContent(String strFullName,String strPathFile,String strBranch,String strUserName, String strPassword)
+
+    public static String getFileContent( String strFullName, String strPathFile, String strBranch, String strUserName, String strPassword )
     {
-        HttpAccess httpAccess = new HttpAccess(  );
-       String strUrl = "https://raw.githubusercontent.com/"+strFullName+"/"+strBranch+"/"+ strPathFile;
+        HttpAccess httpAccess = new HttpAccess( );
+        String strUrl = "https://raw.githubusercontent.com/" + strFullName + "/" + strBranch + "/" + strPathFile;
         String strResponse = "";
-        
+
         try
         {
-            strResponse = httpAccess.doGet( strUrl, new BasicAuthorizationAuthenticator(  strUserName, strPassword ),null );
+            strResponse = httpAccess.doGet( strUrl, new BasicAuthorizationAuthenticator( strUserName, strPassword ), null );
         }
-        catch ( HttpAccessException ex )
+        catch( HttpAccessException ex )
         {
             AppLogService.error( ex );
         }
 
         return strResponse;
     }
-    
-    
-    private static Ref getTagLinkedToLastRelease(Git git) throws GitAPIException {
+
+    private static Ref getTagLinkedToLastRelease( Git git ) throws GitAPIException
+    {
         final String TOKEN = "[maven-release-plugin] prepare release ";
         Ref res = null;
         String sTagName = null;
-        
-        Iterable<RevCommit> logList = git.log().setMaxCount(10).call();
-        Iterator i = logList.iterator();
+
+        Iterable<RevCommit> logList = git.log( ).setMaxCount( 10 ).call( );
+        Iterator i = logList.iterator( );
         String sCommitMessages = "";
-        while (i.hasNext())
+        while ( i.hasNext( ) )
         {
-            RevCommit revCommit = (RevCommit) i.next();
-            sCommitMessages = revCommit.getFullMessage();
-            int index = sCommitMessages.indexOf(TOKEN);
-            if (index >= 0) {
-                sTagName = sCommitMessages.replace(TOKEN, "");
+            RevCommit revCommit = (RevCommit) i.next( );
+            sCommitMessages = revCommit.getFullMessage( );
+            int index = sCommitMessages.indexOf( TOKEN );
+            if ( index >= 0 )
+            {
+                sTagName = sCommitMessages.replace( TOKEN, "" );
                 break;
             }
         }
-        
-        if ( (sTagName != null) && (!(sTagName.trim().equals(""))) ) {
-            List<Ref> tags = git.tagList().call();
-            for (int j=0; j<tags.size(); j++) {
-                Ref tag = tags.get(tags.size() - 1 - j);
-                String tagName = tag.getName();
-                if (tagName.equals("refs/tags/" + sTagName)) {
+
+        if ( ( sTagName != null ) && ( !( sTagName.trim( ).equals( "" ) ) ) )
+        {
+            List<Ref> tags = git.tagList( ).call( );
+            for ( int j = 0; j < tags.size( ); j++ )
+            {
+                Ref tag = tags.get( tags.size( ) - 1 - j );
+                String tagName = tag.getName( );
+                if ( tagName.equals( "refs/tags/" + sTagName ) )
+                {
                     res = tag;
                     break;
                 }
             }
         }
-        
+
         return res;
     }
 
-
-
-    private static String getRepoUrl(String strRepoUrl)
+    private static String getRepoUrl( String strRepoUrl )
     {
 
-        if(strRepoUrl!=null && strRepoUrl.startsWith( "scm:git:" ))
-         {
-            strRepoUrl=strRepoUrl.substring( 8 );
+        if ( strRepoUrl != null && strRepoUrl.startsWith( "scm:git:" ) )
+        {
+            strRepoUrl = strRepoUrl.substring( 8 );
 
-
-              }
+        }
 
         return strRepoUrl;
     }
-    
+
     private static void checkout( Git git, String strBranch, String strTagName, CommandResult commandResult )
     {
         if ( strBranch == null && strTagName == null )
@@ -408,16 +401,16 @@ public class GitUtils  {
             checkoutTag( git, strTagName, commandResult );
         }
     }
-    
+
     private static void checkoutTag( Git git, String strTagName, CommandResult commandResult )
     {
-        
+
         try
         {
-            git.checkout().setName( CONSTANTE_REF_TAG + strTagName ).call();
+            git.checkout( ).setName( CONSTANTE_REF_TAG + strTagName ).call( );
 
         }
-        catch( InvalidRemoteException  e )
+        catch( InvalidRemoteException e )
         {
 
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
@@ -434,7 +427,7 @@ public class GitUtils  {
             DeploymentUtils.addTechnicalError( commandResult, e.getMessage( ), e );
         }
     }
-    
+
     public static boolean checkAuthentication( String strRepoUrl, String strLocalTempPath, String strLocalTempDir, GitUser user )
     {
         boolean bAuth = true;
@@ -443,11 +436,9 @@ public class GitUtils  {
         {
             Path basePath = Paths.get( strLocalTempPath );
             localPath = Files.createTempDirectory( basePath, strLocalTempDir );
-            Git.cloneRepository()
-                  .setURI (strRepoUrl )
-                  .setCredentialsProvider(new UsernamePasswordCredentialsProvider(user.getLogin(), user.getPassword()))
-                  .setDirectory( localPath.toFile( ) )
-                  .call();
+            Git.cloneRepository( ).setURI( strRepoUrl )
+                    .setCredentialsProvider( new UsernamePasswordCredentialsProvider( user.getLogin( ), user.getPassword( ) ) )
+                    .setDirectory( localPath.toFile( ) ).call( );
         }
         catch( Exception e )
         {
@@ -459,11 +450,11 @@ public class GitUtils  {
             {
                 try
                 {
-                   FileUtils.forceDelete(new File(localPath.toString( ) ) );
+                    FileUtils.forceDelete( new File( localPath.toString( ) ) );
                 }
-                catch ( IOException e )
+                catch( IOException e )
                 {
-                    AppLogService.error( "Unable to delete dir " + localPath.toString(), e);
+                    AppLogService.error( "Unable to delete dir " + localPath.toString( ), e );
                 }
             }
         }

@@ -35,19 +35,19 @@ package fr.paris.lutece.plugins.deployment.business;
 
 public interface ISite
 {
-    String getCodeApplication(  );
+    String getCodeApplication( );
 
     void setCodeApplication( String strCodeApplication );
 
-    String getCheckoutPath(  );
+    String getCheckoutPath( );
 
-    String getName(  );
+    String getName( );
 
-    String getBaseSiteUrl(  );
+    String getBaseSiteUrl( );
 
     void setBaseSiteUrl( String strUrl );
 
-    CommandResult getCommandResult(  );
+    CommandResult getCommandResult( );
 
     void setCommandResult( CommandResult commandResult );
 }

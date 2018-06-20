@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.deployment.service.vcs.IVCSService;
 
 import java.sql.Date;
 
-
 public class SiteDeploy extends AbstractSite
 {
     private String _strWebappName;
@@ -46,7 +45,7 @@ public class SiteDeploy extends AbstractSite
     private ServerApplicationInstance _serverApplicationInstance;
     private Date _deploymentDate;
 
-    public String getTagName(  )
+    public String getTagName( )
     {
         return _strTagName;
     }
@@ -56,7 +55,7 @@ public class SiteDeploy extends AbstractSite
         this._strTagName = strTagName;
     }
 
-    public String getCodeEnvironment(  )
+    public String getCodeEnvironment( )
     {
         return _strCodeEnvironment;
     }
@@ -66,7 +65,7 @@ public class SiteDeploy extends AbstractSite
         this._strCodeEnvironment = strEnvironment;
     }
 
-    public ServerApplicationInstance getServerApplicationInstance(  )
+    public ServerApplicationInstance getServerApplicationInstance( )
     {
         return _serverApplicationInstance;
     }
@@ -76,7 +75,7 @@ public class SiteDeploy extends AbstractSite
         this._serverApplicationInstance = serverApplicationInstance;
     }
 
-    public Date getDeploymentDate(  )
+    public Date getDeploymentDate( )
     {
         return _deploymentDate;
     }
@@ -86,7 +85,7 @@ public class SiteDeploy extends AbstractSite
         _deploymentDate = deploymentDate;
     }
 
-    public String getWebappName(  )
+    public String getWebappName( )
     {
         return _strWebappName;
     }
@@ -97,14 +96,14 @@ public class SiteDeploy extends AbstractSite
     }
 
     @Override
-    public String getCheckoutPath(  )
+    public String getCheckoutPath( )
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public String getName(  )
+    public String getName( )
     {
         // TODO Auto-generated method stub
         return null;

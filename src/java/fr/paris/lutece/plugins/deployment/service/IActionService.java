@@ -42,22 +42,19 @@ import fr.paris.lutece.plugins.deployment.business.CommandResult;
 import fr.paris.lutece.plugins.deployment.business.IAction;
 import fr.paris.lutece.plugins.deployment.business.ServerApplicationInstance;
 
-
 public interface IActionService
 {
     IAction getAction( String strKey, Locale locale );
 
-    List<IAction> getListActionByServerApplicationInstance(  Application application,
-        ServerApplicationInstance serverApplicationInstance, Locale locale );
+    List<IAction> getListActionByServerApplicationInstance( Application application, ServerApplicationInstance serverApplicationInstance, Locale locale );
 
-    boolean executeAction( Application application, IAction action,
-        ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter );
-    
-    boolean canExecuteAction(  Application application, IAction action,
-            ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter  );
-    
-         
-    String getTemplateFormAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance,Locale locale);      
+    boolean executeAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter );
+
+    boolean canExecuteAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter );
+
+    String getTemplateFormAction( Application application, IAction action, ServerApplicationInstance serverApplicationInstance, Locale locale );
 
     List<IAction> getListAction( Locale locale );
 }

@@ -44,20 +44,23 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class RepositoryUtils 
+public class RepositoryUtils
 {
     /**
      * Check if the provided Application has a recognized repo url, otherwise, throws an exception
-     * @param application the Application
-     * @throws InvalidRepositoryUrlException if the given application repo url isn't recognized 
+     * 
+     * @param application
+     *            the Application
+     * @throws InvalidRepositoryUrlException
+     *             if the given application repo url isn't recognized
      */
-    public static void checkRepository ( Application application ) throws InvalidRepositoryUrlException
+    public static void checkRepository( Application application ) throws InvalidRepositoryUrlException
     {
         String strUrlRepo = application.getUrlRepo( );
         if ( !strUrlRepo.isEmpty( ) )
         {
             URLUtils.checkUrl( strUrlRepo );
-            String strPath = URLUtils.getPath( strUrlRepo );               
+            String strPath = URLUtils.getPath( strUrlRepo );
 
             String strSvnUrlSites = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_SVN_SITES_URL );
             String strGithubUrlSites = AppPropertiesService.getProperty( ConstanteUtils.PROPERTY_GITHUB_BASE_URL );
@@ -67,53 +70,57 @@ public class RepositoryUtils
             {
                 application.setRepoType( ConstanteUtils.CONSTANTE_REPO_TYPE_SVN );
             }
-            else if ( strUrlRepo.startsWith( strGithubUrlSites ) )
-            {
-
-                List<String> listAuthorizedGithubRepoKeys = AppPropertiesService.getKeys( ConstanteUtils.PROPERTY_GITHUB_AUTHORIZED_REPO_NAME );
-                List<String> listAuthorizedGithubRepo = new ArrayList<String>();
-                for ( String strKey : listAuthorizedGithubRepoKeys )
+            else
+                if ( strUrlRepo.startsWith( strGithubUrlSites ) )
                 {
-                    listAuthorizedGithubRepo.add( AppPropertiesService.getProperty( strKey ) );
-                }
 
-                String strRepoName = strPath.split( ConstanteUtils.CONSTANTE_SEPARATOR_SLASH )[1];
-                if ( listAuthorizedGithubRepo.contains( strRepoName ) )
-                {
-                    application.setRepoType( ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB );
+                    List<String> listAuthorizedGithubRepoKeys = AppPropertiesService.getKeys( ConstanteUtils.PROPERTY_GITHUB_AUTHORIZED_REPO_NAME );
+                    List<String> listAuthorizedGithubRepo = new ArrayList<String>( );
+                    for ( String strKey : listAuthorizedGithubRepoKeys )
+                    {
+                        listAuthorizedGithubRepo.add( AppPropertiesService.getProperty( strKey ) );
+                    }
+
+                    String strRepoName = strPath.split( ConstanteUtils.CONSTANTE_SEPARATOR_SLASH ) [1];
+                    if ( listAuthorizedGithubRepo.contains( strRepoName ) )
+                    {
+                        application.setRepoType( ConstanteUtils.CONSTANTE_REPO_TYPE_GITHUB );
+                    }
+                    else
+                    {
+                        throw new InvalidRepositoryUrlException( );
+                    }
                 }
                 else
-                {
-                    throw new InvalidRepositoryUrlException();
-                }
-            }
-            else if ( strUrlRepo.startsWith( strGitlabUrlSites ) )
-            {
-                application.setRepoType( ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB );
-            }
-            else
-            {
-                throw new InvalidRepositoryUrlException();
-            }
+                    if ( strUrlRepo.startsWith( strGitlabUrlSites ) )
+                    {
+                        application.setRepoType( ConstanteUtils.CONSTANTE_REPO_TYPE_GITLAB );
+                    }
+                    else
+                    {
+                        throw new InvalidRepositoryUrlException( );
+                    }
             application.setArtifactId( DeploymentUtils.getVCSService( application.getRepoType( ) ).getArtifactId( strUrlRepo ) );
         }
         else
         {
-            throw new InvalidRepositoryUrlException();
+            throw new InvalidRepositoryUrlException( );
         }
     }
-    
+
     /**
      * Check if the provided urlRepo is recognized as a correct repository url
-     * @param strUrlRepo the repo of the url
+     * 
+     * @param strUrlRepo
+     *            the repo of the url
      * @return a JSON mapped on a RepoValidation object
      */
-    public static String checkRepository ( String strUrlRepo )
+    public static String checkRepository( String strUrlRepo )
     {
-        ObjectMapper mapper = new ObjectMapper();
-        RepoValidation repoValidation = new RepoValidation();
+        ObjectMapper mapper = new ObjectMapper( );
+        RepoValidation repoValidation = new RepoValidation( );
 
-        Application application= new Application( );
+        Application application = new Application( );
         application.setUrlRepo( strUrlRepo );
         try
         {
@@ -121,52 +128,52 @@ public class RepositoryUtils
             repoValidation.setIsUrlValid( true );
             repoValidation.setRepoType( application.getRepoType( ) );
         }
-        catch ( InvalidRepositoryUrlException e )
+        catch( InvalidRepositoryUrlException e )
         {
             repoValidation.setIsUrlValid( false );
         }
-        try 
+        try
         {
             return mapper.writeValueAsString( repoValidation );
         }
-        catch ( IOException e )
+        catch( IOException e )
         {
-            AppLogService.error( "Unable to serealize repoValidation as Json obj", e);
+            AppLogService.error( "Unable to serealize repoValidation as Json obj", e );
         }
         return StringUtils.EMPTY;
 
     }
-    
+
     /**
      * This class is only used for the JSON object mapper
      */
     private static class RepoValidation
     {
-        @JsonProperty("valid_url")
+        @JsonProperty( "valid_url" )
         private boolean _isUrlValid;
-        @JsonProperty("repo_type")
+        @JsonProperty( "repo_type" )
         private String _strRepoType;
 
-        @JsonProperty("valid_url")
-        public boolean isIsUrlValid( ) 
+        @JsonProperty( "valid_url" )
+        public boolean isIsUrlValid( )
         {
             return _isUrlValid;
         }
 
-        @JsonProperty("valid_url")
-        public void setIsUrlValid( boolean isUrlValid ) 
+        @JsonProperty( "valid_url" )
+        public void setIsUrlValid( boolean isUrlValid )
         {
             _isUrlValid = isUrlValid;
         }
 
-        @JsonProperty("repo_type")
-        public String getRepoType( ) 
+        @JsonProperty( "repo_type" )
+        public String getRepoType( )
         {
             return _strRepoType;
         }
 
-        @JsonProperty("repo_type")
-        public void setRepoType(String strRepoType )
+        @JsonProperty( "repo_type" )
+        public void setRepoType( String strRepoType )
         {
             _strRepoType = strRepoType;
         }

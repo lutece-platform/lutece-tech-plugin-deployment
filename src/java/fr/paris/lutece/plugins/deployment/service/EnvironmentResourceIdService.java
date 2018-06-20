@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.deployment.service;
 
-
 import java.util.List;
 import java.util.Locale;
 
@@ -50,7 +49,6 @@ import fr.paris.lutece.portal.service.rbac.ResourceTypeManager;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
-
 /**
  *
  * class DirectoryResourceIdService
@@ -58,19 +56,18 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public class EnvironmentResourceIdService extends ResourceIdService
 {
-	 private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
-	      
+    private IEnvironmentService _environmentService = SpringContextService.getBean( "deployment.EnvironmentService" );
 
     /** Permission for deploying an application */
-    public static final String PERMISSION_DEPLOY_ON_ENVIROMENT= "DEPLOY_ON_ENVIROMENT";
+    public static final String PERMISSION_DEPLOY_ON_ENVIROMENT = "DEPLOY_ON_ENVIROMENT";
 
-    private static final String PROPERTY_LABEL_DEPLOY_ON_ENVIROMENT ="deployment.permission.label.environement.deploy_on_environment";
-    
-   /** Label resource type */
+    private static final String PROPERTY_LABEL_DEPLOY_ON_ENVIROMENT = "deployment.permission.label.environement.deploy_on_environment";
+
+    /** Label resource type */
     public static final String PROPERTY_LABEL_RESOURCE_TYPE = "deployment.permission.label.resource_type_environment";
-       
+
     /** Creates a new instance of ApplicationResourceIdService */
-    public EnvironmentResourceIdService(  )
+    public EnvironmentResourceIdService( )
     {
         setPluginName( DeploymentPlugin.PLUGIN_NAME );
     }
@@ -79,41 +76,41 @@ public class EnvironmentResourceIdService extends ResourceIdService
      * {@inheritDoc}
      */
     @Override
-    public void register(  )
+    public void register( )
     {
         // Override the resource type DIRECTORY_DIRECTORY_TYPE
         ResourceType rt = ResourceTypeManager.getResourceType( Environment.RESOURCE_TYPE );
 
         if ( rt == null )
         {
-            rt = new ResourceType(  );
-            rt.setResourceIdServiceClass( EnvironmentResourceIdService.class.getName(  ) );
+            rt = new ResourceType( );
+            rt.setResourceIdServiceClass( EnvironmentResourceIdService.class.getName( ) );
             rt.setPluginName( DeploymentPlugin.PLUGIN_NAME );
             rt.setResourceTypeKey( Environment.RESOURCE_TYPE );
             rt.setResourceTypeLabelKey( PROPERTY_LABEL_RESOURCE_TYPE );
         }
 
-      
-        Permission p = new Permission(  );
-        p.setPermissionKey( PERMISSION_DEPLOY_ON_ENVIROMENT);
-        p.setPermissionTitleKey( PROPERTY_LABEL_DEPLOY_ON_ENVIROMENT);
+        Permission p = new Permission( );
+        p.setPermissionKey( PERMISSION_DEPLOY_ON_ENVIROMENT );
+        p.setPermissionTitleKey( PROPERTY_LABEL_DEPLOY_ON_ENVIROMENT );
         rt.registerPermission( p );
-      
+
         ResourceTypeManager.registerResourceType( rt );
     }
 
     /**
      * Returns a list of directory resource ids
-     * @param locale The current locale
+     * 
+     * @param locale
+     *            The current locale
      * @return A list of resource ids
      */
     @Override
     public ReferenceList getResourceIdList( Locale locale )
     {
-        
-    	return _environmentService.getEnvironmentRefList(locale);
-    	
-         
+
+        return _environmentService.getEnvironmentRefList( locale );
+
     }
 
     /**
@@ -122,10 +119,10 @@ public class EnvironmentResourceIdService extends ResourceIdService
     @Override
     public String getTitle( String strId, Locale locale )
     {
-       
-    	Environment environment=_environmentService.getEnvironment(strId, locale);
 
-    	return environment!=null?environment.getName():null;
-      
+        Environment environment = _environmentService.getEnvironment( strId, locale );
+
+        return environment != null ? environment.getName( ) : null;
+
     }
 }

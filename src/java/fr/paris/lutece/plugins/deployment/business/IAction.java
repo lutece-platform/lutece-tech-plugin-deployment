@@ -36,30 +36,29 @@ package fr.paris.lutece.plugins.deployment.business;
 import java.util.List;
 import java.util.Locale;
 
-
 public interface IAction
 {
     void setCode( String strCode );
 
-    String getCode(  );
+    String getCode( );
 
     void setName( String strName );
 
-    String getName(  );
+    String getName( );
 
     void setI18nKeyName( String strI18nKeyName );
 
-    String getI18nKeyName(  );
+    String getI18nKeyName( );
 
     void setStatus( Integer strStatus );
 
-    Integer getStatus(  );
+    Integer getStatus( );
 
     void setUsedForStatus( boolean bUsedForStatus );
 
-    boolean isUsedForStatus(  );
+    boolean isUsedForStatus( );
 
-    boolean isDisplay(  );
+    boolean isDisplay( );
 
     void setDisplay( boolean bDisplay );
 
@@ -67,29 +66,24 @@ public interface IAction
 
     void setServerType( String _strServerType );
 
-    String getServerType();
+    String getServerType( );
 
-    List<String> getParameters(  );
+    List<String> getParameters( );
 
-    String run( Application application, ServerApplicationInstance serverApplicationInstance,
-        CommandResult commandResult, ActionParameter... parameter );
-    
-    boolean canRunAction(Application application, ServerApplicationInstance serverApplicationInstance,
-            CommandResult commandResult, ActionParameter... parameter);
-    
-    String getTemplateFormAction(Application application, ServerApplicationInstance serverApplicationInstance,Locale locale);
-    
-    
-    
+    String run( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult, ActionParameter... parameter );
+
+    boolean canRunAction( Application application, ServerApplicationInstance serverApplicationInstance, CommandResult commandResult,
+            ActionParameter... parameter );
+
+    String getTemplateFormAction( Application application, ServerApplicationInstance serverApplicationInstance, Locale locale );
 
     void setIconCssClass( String _strIconCssClass );
 
-    String getIconCssClass(  );
-    
+    String getIconCssClass( );
 
-	boolean isStopWorkflowIfExecutionError() ;
+    boolean isStopWorkflowIfExecutionError( );
 
-	void setStopWorkflowIfExecutionError(
-	
-	boolean _bStopWorkflowIfExecutionError);
+    void setStopWorkflowIfExecutionError(
+
+    boolean _bStopWorkflowIfExecutionError );
 }
