@@ -48,6 +48,8 @@ public class Application implements AdminWorkgroupResource, RBACResource
     private String _strUrlRepo;
     private String _strRepoType;
     private String _strWorkgroup;
+    private boolean _bLuteceSite;
+    private String _strMavenCustomDeployGoal;
 
     public void setIdApplication( int _nIdApplication )
     {
@@ -185,5 +187,44 @@ public class Application implements AdminWorkgroupResource, RBACResource
     {
         return ApplicationService.isPrivateRepo( this );
     }
+
+    /**
+     * Get the is LuteceSite boolean
+     * @return return true if the application is a Lutece App, false otherwise
+     */
+    public boolean isLuteceSite( ) 
+    {
+        return _bLuteceSite;
+    }
+
+    /**
+     * Set the Lutece Site boolean
+     * @param bLuteceSite the Lutece Site boolean
+     */
+    public void setLuteceSite(boolean bLuteceSite) 
+    {
+        _bLuteceSite = bLuteceSite;
+    }
+
+    /**
+     * Get the maven custom deploy goal
+     * @return the custom maven deploy goal
+     */
+    public String getMavenCustomDeployGoal() 
+    {
+        return _strMavenCustomDeployGoal;
+    }
+
+    /**
+     * Get the maven custom deploy goal
+     * @param _strMavenCustomDeployGoal
+     *                  The custom Maven Custom deploy goal
+     */
+    public void setMavenCustomDeployGoal(String _strMavenCustomDeployGoal) 
+    {
+        this._strMavenCustomDeployGoal = _strMavenCustomDeployGoal;
+    }
+    
+    
 
 }

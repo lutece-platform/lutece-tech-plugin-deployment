@@ -268,14 +268,27 @@ public class DeploymentUtils
      */
     public static String getPathArchiveGenerated( String strPathSite, String strWarName, String strExtension )
     {
-
+        //Return the only one WAR file in target folder
         List<String> listFileInTarget = FileUtil.list( strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET, strExtension, false );
         if ( !CollectionUtils.isEmpty( listFileInTarget ) && listFileInTarget.size( ) == 1 )
         {
             return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + listFileInTarget.get( 0 );
         }
-
-        return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName + strExtension;
+        //Else return the specific WAR 
+        else if ( strWarName != null )
+        {
+            return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + strWarName + strExtension;
+        }
+        else 
+        {
+            //Else return the first WAR found recursively
+            List<String> listFileInTargetRecursive = FileUtil.list( strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET, strExtension, true );
+            if ( !listFileInTargetRecursive.isEmpty( ) && listFileInTargetRecursive.size() == 1 )
+            {
+                return strPathSite + File.separator + ConstanteUtils.CONSTANTE_TARGET + File.separator + listFileInTarget.get( 0 );
+            }
+        }
+        return null;
     }
 
     /**
@@ -584,19 +597,24 @@ public class DeploymentUtils
             nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT, ConstanteUtils.CONSTANTE_ID_NULL );
         }
         else
-            if ( workflowDeploySiteContext.isInitAppContext( ) )
+            if ( workflowDeploySiteContext.isDeployNonLutece( ) )
             {
-                nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT, ConstanteUtils.CONSTANTE_ID_NULL );
+                nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_NON_LUTECE, ConstanteUtils.CONSTANTE_ID_NULL );
             }
             else
-                if ( workflowDeploySiteContext.isInitBdd( ) )
+                if ( workflowDeploySiteContext.isInitAppContext( ) )
                 {
-                    nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE, ConstanteUtils.CONSTANTE_ID_NULL );
+                    nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT, ConstanteUtils.CONSTANTE_ID_NULL );
                 }
                 else
-                {
-                    nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE, ConstanteUtils.CONSTANTE_ID_NULL );
-                }
+                    if ( workflowDeploySiteContext.isInitBdd( ) )
+                    {
+                        nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_INIT_DATABASE, ConstanteUtils.CONSTANTE_ID_NULL );
+                    }
+                    else
+                    {
+                        nIdWorkflow = AppPropertiesService.getPropertyInt( ConstanteUtils.PROPERTY_ID_WORKFLOW_DEPLOY_SITE, ConstanteUtils.CONSTANTE_ID_NULL );
+                    }
 
         return nIdWorkflow;
     }

@@ -158,7 +158,7 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
                 context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ), context.getCodeEnvironement( ),
                 ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
         context.getCommandResult( ).getLog( ).append( "Starting Action Assembly  Site...\n" );
-        MavenService.getService( ).mvnSiteAssembly( application.getArtifactId( ), context.getTagName( ),
+        MavenService.getService( ).mvnSiteAssembly( application.getArtifactId( ),
                 serverApplicationInstance.getMavenProfile( application.getIdApplication( ) ), context.getVcsUser( ), context.getCommandResult( ) );
         // throw RuntimeException for stopping Workflow
         stopWorkflowIfTechnicalError( "Error During assembly Site", context.getCommandResult( ) );
@@ -254,6 +254,37 @@ public class WorkflowDeploySiteService implements IWorkflowDeploySiteService
         {
             throw new RuntimeException( strProcess );
         }
+    }
+    
+    /**
+     * Run a custom maven command
+     * @param context
+     *              The workflow deploy site context
+     * @param locale
+     *              The locale
+     * @return the logs of the command
+     */
+    @Override
+    public String runCustomMavenCommand( WorkflowDeploySiteContext context, Locale locale )
+    {
+        Plugin plugin = PluginService.getPlugin( DeploymentPlugin.PLUGIN_NAME );
+        Application application = _applicationService.getApplication( context.getIdApplication( ), plugin );
+
+        ServerApplicationInstance serverApplicationInstance = _serverApplicationService.getServerApplicationInstance( application,
+                context.getCodeServerInstance( ConstanteUtils.CONSTANTE_SERVER_TOMCAT ), context.getCodeEnvironement( ),
+                ConstanteUtils.CONSTANTE_SERVER_TOMCAT, locale, false, false );
+        
+        context.getCommandResult( ).getLog( ).append( "Starting Action Run Custom Maven Cmd " );
+        context.getCommandResult( ).getLog( ).append( context.getCustomMavenCommand( ) );
+        context.getCommandResult( ).getLog( ).append( "\n" );
+        MavenService.getService( ).runCustomMavenCommand( application.getArtifactId( ), serverApplicationInstance.getMavenProfile( application.getIdApplication( ) ),
+                context.getCustomMavenCommand(), context.getCommandResult( ) );
+        
+        // throw RuntimeException for stopping Workflow
+        stopWorkflowIfTechnicalError( "Error During the run of the custom maven cmd " + context.getCustomMavenCommand(), context.getCommandResult( ) );
+        context.getCommandResult( ).getLog( ).append( "End Action Run Custom Maven Cmd \n" );
+
+        return null;
     }
     
 }

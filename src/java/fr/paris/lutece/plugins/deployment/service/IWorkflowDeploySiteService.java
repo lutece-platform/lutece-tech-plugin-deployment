@@ -56,4 +56,6 @@ public interface IWorkflowDeploySiteService
     void initTagInformations( WorkflowDeploySiteContext context );
 
     String executeServerAction( String strActionKey, HttpServletRequest request, WorkflowDeploySiteContext context, Locale locale );
+
+    String runCustomMavenCommand( WorkflowDeploySiteContext context, Locale locale );
 }

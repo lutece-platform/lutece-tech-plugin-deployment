@@ -449,6 +449,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
     public String getFormDeployApplication( HttpServletRequest request ) throws AccessDeniedException
     {
+        String strDeployNonLutece = request.getParameter( ConstanteUtils.PARAM_DEPLOY_NON_LUTECE );
         String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
         String strInitDatabase = request.getParameter( ConstanteUtils.PARAM_INIT_DATABASE );
@@ -458,6 +459,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         Boolean bDeploySql = !StringUtils.isEmpty( strDeploySql );
         Boolean bInitDatabase = !StringUtils.isEmpty( strInitDatabase );
         Boolean bInitContext = !StringUtils.isEmpty( strInitContext );
+        Boolean bDeployNonLutece = !StringUtils.isEmpty( strDeployNonLutece );
 
         String strIdApplication = request.getParameter( ConstanteUtils.PARAM_ID_APPLICATION );
         int nIdApplication = DeploymentUtils.getIntegerParameter( strIdApplication );
@@ -469,7 +471,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         Application application = _applicationService.getApplication( nIdApplication, getPlugin( ) );
 
         AbstractVCSUser vcsUser = DeploymentUtils.getVCSUser( request, application );
-        if ( bDeployWar )
+        if ( bDeployWar || bDeployNonLutece )
         {
 
             IVCSService vcsService = DeploymentUtils.getVCSService( application.getRepoType( ) );
@@ -488,7 +490,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         if ( ( bDeployWar && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_DEPLOY_APPLICATION ) )
                 || ( bDeploySql && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_DEPLOY_SCRIPT ) )
                 || ( bInitDatabase && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_INIT_DATABASE ) )
-                || ( bInitContext && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT ) ) )
+                || ( bInitContext && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_INIT_APP_CONTEXT ) ) 
+                || ( bDeployNonLutece && !isAuthorized( application, ApplicationResourceIdService.PERMISSION_DEPLOY_NON_LUTECE ) ) )
         {
             throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_ACCESS_DENIED, getLocale( ) ) );
         }
@@ -505,7 +508,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             Collection<Environment> colEnvironmentsFilter = RBACService.getAuthorizedCollection( listEnvironments,
                     EnvironmentResourceIdService.PERMISSION_DEPLOY_ON_ENVIROMENT, getUser( ) );
 
-            if ( bDeployWar || bInitContext )
+            if ( bDeployWar || bInitContext || bDeployNonLutece )
             {
                 HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceTomcat = _serverApplicationService
                         .getHashServerApplicationInstance( application, ConstanteUtils.CONSTANTE_SERVER_TOMCAT, getLocale( ), true, true );
@@ -561,7 +564,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                     model.put( ConstanteUtils.MARK_UPGRADE_FILE_REF_LIST, refListUpgradeFilesList );
 
                 }
-
+            
             HashMap<String, List<ServerApplicationInstance>> hashServerApplicationInstanceMysql = new HashMap<String, List<ServerApplicationInstance>>( );
 
             ReferenceList refListEnvironements = ReferenceList.convert( colEnvironmentsFilter, "code", "name", false );
@@ -572,6 +575,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
 
             model.put( ConstanteUtils.MARK_DEPLOY_WAR, bDeployWar );
             model.put( ConstanteUtils.MARK_DEPLOY_SQL, bDeploySql );
+            model.put( ConstanteUtils.MARK_DEPLOY_NON_LUTECE, bDeployNonLutece );
             model.put( ConstanteUtils.MARK_INIT_DATABASE, bInitDatabase );
             model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT, bInitContext );
             model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT, bInitContext );
@@ -618,7 +622,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                 throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_ACCESS_DENIED, getLocale( ) ) );
             }
 
-            if ( workflowDeploySiteContext.isDeployWar( ) || workflowDeploySiteContext.isInitAppContext( ) )
+            if ( workflowDeploySiteContext.isDeployWar( ) || workflowDeploySiteContext.isDeployNonLutece() || workflowDeploySiteContext.isInitAppContext( ) )
             {
 
                 ServerApplicationInstance serverApplicationInstanceTomcat = _serverApplicationService.getServerApplicationInstance( application,
@@ -653,6 +657,7 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
             model.put( ConstanteUtils.MARK_ACTION_LIST, listAction );
             model.put( ConstanteUtils.MARK_DEPLOY_WAR, workflowDeploySiteContext.isDeployWar( ) );
             model.put( ConstanteUtils.MARK_DEPLOY_SQL, workflowDeploySiteContext.isDeploySql( ) );
+            model.put( ConstanteUtils.MARK_DEPLOY_NON_LUTECE, workflowDeploySiteContext.isDeployNonLutece() );
             model.put( ConstanteUtils.MARK_INIT_APP_CONTEXT, workflowDeploySiteContext.isInitAppContext( ) );
             model.put( ConstanteUtils.MARK_INIT_DATABASE, workflowDeploySiteContext.isInitBdd( ) );
 
@@ -1184,12 +1189,14 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strCodeEnvironment = request.getParameter( ConstanteUtils.PARAM_CODE_ENVIRONMENT );
 
         String strDeployWar = request.getParameter( ConstanteUtils.PARAM_DEPLOY_WAR );
+        String strDeployNonLutece = request.getParameter( ConstanteUtils.PARAM_DEPLOY_NON_LUTECE );
         String strDeploySql = request.getParameter( ConstanteUtils.PARAM_DEPLOY_SQL );
 
         String strCodeServerApplicationInstanceTomcat = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_TOMCAT );
         String strCodeServerApplicationInstanceMysql = request.getParameter( ConstanteUtils.PARAM_CODE_SERVER_APPLICATION_INSTANCE_SQL );
         String strDeployDevSite = request.getParameter( ConstanteUtils.PARAM_DEPLOY_DEV_SITE );
         String strTagToDeploy = request.getParameter( ConstanteUtils.PARAM_TAG_TO_DEPLOY );
+        String strMavenCustomGoal = request.getParameter( ConstanteUtils.PARAM_CUSTOM_MAVEN_GOAL );
 
         String strCodeDatabase = request.getParameter( ConstanteUtils.PARAM_CODE_DATABASE );
         String strScriptUpgradeSelected = request.getParameter( ConstanteUtils.PARAM_SCRIPT_UPGRADE_SELECTED );
@@ -1240,6 +1247,10 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                                     strFieldError = ConstanteUtils.PROPERTY_LABEL_SCRIPT_UPLOAD;
                                 }
                             }
+                            else if ( !StringUtils.isEmpty( strDeployNonLutece ) && strMavenCustomGoal.isEmpty( ) )
+                            {
+                                strFieldError = ConstanteUtils.PROPERTY_LABEL_CUSTOM_MAVEN_GOAL;
+                            }
 
         if ( !StringUtils.isEmpty( strFieldError ) )
         {
@@ -1267,6 +1278,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         workflowDeploySiteContext.setDeployDevSite( ( strDeployDevSite != null ) ? true : false );
         workflowDeploySiteContext.setDeployWar( !StringUtils.isEmpty( strDeployWar ) );
         workflowDeploySiteContext.setDeploySql( !StringUtils.isEmpty( strDeploySql ) );
+        workflowDeploySiteContext.setDeployNonLutece( !StringUtils.isEmpty( strDeployNonLutece ) );
+        workflowDeploySiteContext.setCustomMavenCommand( strMavenCustomGoal );
         workflowDeploySiteContext.setInitAppContext( !StringUtils.isEmpty( strInitAppContext ) );
         workflowDeploySiteContext.setInitBdd( !StringUtils.isEmpty( strInitDatabase ) );
 
@@ -1325,6 +1338,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         String strWebAppName = request.getParameter( ConstanteUtils.PARAM_WEBAPP_NAME );
         String strWorkgroup = request.getParameter( ConstanteUtils.PARAM_WORKGROUP );
         String strUrlRepo = request.getParameter( ConstanteUtils.PARAM_URL_REPO );
+        String strIsLuteceSite = request.getParameter( ConstanteUtils.PARAM_LUTECE_SITE );
+        String strCustomMavenDeployGoal = request.getParameter( ConstanteUtils.PARAM_CUSTOM_MAVEN_DEPLOY_GOAL );
 
         String strFieldError = ConstanteUtils.CONSTANTE_EMPTY_STRING;
 
@@ -1347,6 +1362,11 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
                     {
                         strFieldError = ConstanteUtils.PROPERTY_LABEL_URL_REPO;
                     }
+                    else if ( StringUtils.isEmpty( strIsLuteceSite ) )
+                    {
+                        strFieldError = ConstanteUtils.PROPERTY_LABEL_LUTECE_SITE;
+                    }
+                    
 
         if ( !StringUtils.isEmpty( strFieldError ) )
         {
@@ -1362,6 +1382,8 @@ public class DeploymentJspBean extends PluginAdminPageJspBean
         application.setWebAppName( strWebAppName );
         application.setWorkgroup( strWorkgroup );
         application.setUrlRepo( strUrlRepo );
+        application.setLuteceSite( Boolean.parseBoolean( strIsLuteceSite ) );
+        application.setMavenCustomDeployGoal( strCustomMavenDeployGoal );
 
         try
         {

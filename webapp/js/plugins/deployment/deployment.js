@@ -144,6 +144,30 @@ function refreshComponantsTomcat(){
 			var item = itemListTomcat[i];
 			addOption(selectTomcat,item["name"],item["code"],false);
 		}
+                if ( selectedEnvironment == 'R7')
+                var mvnProfile = '';
+                switch ( selectedEnvironment )
+                {
+                    case 'v1.r7':
+                        mvnProfile = 'rec';
+                        break;
+                    case 'v1.pr':
+                        mvnProfile = 'prod';
+                        break;
+                    case 'v1.dv':
+                        mvnProfile = 'dev';
+                        break;
+                    case 'v1.pp':
+                        mvnProfile = 'preprod';
+                        break;
+                    case 'v1.fo':
+                        mvnProfile = 'formation';
+                        break;
+                    case 'ville.fo':
+                        mvnProfile = 'formation';
+                        break;
+                }
+                $('#maven_custom_goal').val( "-P "+ mvnProfile +" -U " + $('#base_maven_custom_goal').val( ) );
 	}
 }
 

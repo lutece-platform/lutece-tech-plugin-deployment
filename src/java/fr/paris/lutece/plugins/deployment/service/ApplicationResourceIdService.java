@@ -80,7 +80,10 @@ public class ApplicationResourceIdService extends ResourceIdService
 
     /** Permission for init App context */
     public static final String PERMISSION_INIT_APP_CONTEXT = "INIT_APP_CONTEXT";
-
+    
+    /** Permission for deploying an non Lutece application */
+    public static final String PERMISSION_DEPLOY_NON_LUTECE = "PERMISSION_DEPLOY_NON_LUTECE";
+    
     /** Label resource type */
     public static final String PROPERTY_LABEL_RESOURCE_TYPE = "deployment.permission.label.resource_type_application";
     private static final String PROPERTY_LABEL_CREATE = "deployment.permission.label.application.create_application";
@@ -91,6 +94,7 @@ public class ApplicationResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_DEPLOY_SCRIPT = "deployment.permission.label.application.deploy_script";
     private static final String PROPERTY_LABEL_INIT_APP_CONTEXT = "deployment.permission.label.application.init_app_context";
     private static final String PROPERTY_LABEL_INIT_DATABASE = "deployment.permission.label.application.init_database";
+    private static final String PROPERTY_LABEL_DEPLOY_NON_LUTECE = "deployment.permission.label.application.init_database";
 
     /** Creates a new instance of ApplicationResourceIdService */
     public ApplicationResourceIdService( )
@@ -139,6 +143,11 @@ public class ApplicationResourceIdService extends ResourceIdService
         p = new Permission( );
         p.setPermissionKey( PERMISSION_DEPLOY_APPLICATION );
         p.setPermissionTitleKey( PROPERTY_LABEL_DEPLOY_APPLICATION );
+        rt.registerPermission( p );
+        
+        p = new Permission( );
+        p.setPermissionKey( PERMISSION_DEPLOY_NON_LUTECE );
+        p.setPermissionTitleKey( PROPERTY_LABEL_DEPLOY_NON_LUTECE );
         rt.registerPermission( p );
 
         p = new Permission( );

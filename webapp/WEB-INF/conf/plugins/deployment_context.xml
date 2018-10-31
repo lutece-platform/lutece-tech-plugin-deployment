@@ -643,7 +643,14 @@
         p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_war=deploy_war"
         p:i18nKeyTitle="deployment.manage_application.action_deploy_application.title"
         p:permission="DEPLOY_APPLICATION"
-  /> 
+  />
+ <bean id="deployment.manageApplicationActionDeployApplicationNonLutece" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
+        p:i18nKeyName="deployment.manage_application.action_deploy_application_non_lutece.name"
+        p:iconCssClass="fa fa-cloud-upload"
+        p:url="jsp/admin/plugins/deployment/DeployApplication.jsp?deploy_site_non_lutece=deploy_site_non_lutece"
+        p:i18nKeyTitle="deployment.manage_application.action_deploy_application_non_lutece.title"
+        p:permission="DEPLOY_APPLICATION_NON_LUTECE"
+  />  
    <bean id="deployment.manageApplicationActionDeployScript" class="fr.paris.lutece.plugins.deployment.business.ManageApplicationAction" scope="prototype"
         p:i18nKeyName="deployment.manage_application.action_deploy_script.name"
         p:iconCssClass="fa fa-database"

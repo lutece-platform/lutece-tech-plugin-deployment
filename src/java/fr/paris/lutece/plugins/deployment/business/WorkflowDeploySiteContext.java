@@ -59,12 +59,14 @@ public class WorkflowDeploySiteContext implements Serializable
     private AbstractVCSUser _vcsUser;
     private boolean _bDeployWar;
     private boolean _bDeploySql;
+    private boolean _bDeployNonLutece;
     private String _strDatabaseName;
     private InputStream _scriptFileItem;
     private String _scriptFileItemName;
     private String _scriptFileSelected;
     private boolean _bInitBdd;
     private boolean _bInitAppContext;
+    private String _strCustomMavenCommand;
 
     public int getId( )
     {
@@ -212,6 +214,18 @@ public class WorkflowDeploySiteContext implements Serializable
         return _bDeploySql;
     }
 
+    public boolean isDeployNonLutece() 
+    {
+        return _bDeployNonLutece;
+    }
+
+    public void setDeployNonLutece(boolean bDeployNonLutece) 
+    {
+        _bDeployNonLutece = bDeployNonLutece;
+    }
+    
+    
+
     public void setDeploySql( boolean bDeploySql )
     {
         _bDeploySql = bDeploySql;
@@ -298,4 +312,21 @@ public class WorkflowDeploySiteContext implements Serializable
         this._vcsUser = vcsUser;
     }
 
+    /**
+     * Get the string representing the custom maven command
+     * @return the custom maven command
+     */
+    public String getCustomMavenCommand() 
+    {
+        return _strCustomMavenCommand;
+    }
+
+    /**
+     * Set the string representing the custom maven command
+     * @param strCustomMavenCommand  the string representing the custom maven command
+     */
+    public void setCustomMavenCommand(String strCustomMavenCommand) 
+    {
+        _strCustomMavenCommand = strCustomMavenCommand;
+    }
 }

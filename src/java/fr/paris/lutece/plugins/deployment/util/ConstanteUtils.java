@@ -82,6 +82,7 @@ public class ConstanteUtils
     public static final String CONSTANTE_REPO_TYPE_GITLAB = "gitlab";
     public static final String CONSTANTE_BRANCH_DEVELOP = "develop";
     public static final String CONSTANTE_BRANCH_MASTER = "master";
+    public static final String CONSTANT_MAVEN_BASE_CMD = "mvn ";
 
     public static final String CONSTANTE_SERVER_RO = "RO";
     public static final String CONSTANTE_MAX_DEPLOY_SITE_CONTEXT_KEY = "max_deploy_site_context_key";
@@ -123,9 +124,11 @@ public class ConstanteUtils
     public static final String PROPERTY_LABEL_CODE_SERVER_APPLICATION_INSTANCE_MYSQL = "deployment.form_init_deploy_application.label_code_server_application_instance_mysql";
     public static final String PROPERTY_LABEL_CODE_DATABASE = "deployment.form_init_deploy_application.label_code_database";
     public static final String PROPERTY_LABEL_TAG_TO_DEPLOY = "deployment.form_init_deploy_application.label_tag_to_deploy";
+        public static final String PROPERTY_LABEL_CUSTOM_MAVEN_GOAL = "deployment.form_init_deploy_application.label_custom_maven_goal";
     public static final String PROPERTY_LABEL_NAME = "deployment.create_application.label_name";
     public static final String PROPERTY_LABEL_WEBAPP_NAME = "deployment.create_application.label_webapp_name";
     public static final String PROPERTY_LABEL_SITE = "deployment.create_application.label_site";
+    public static final String PROPERTY_LABEL_LUTECE_SITE = "deployment.create_application.label_lutece_site";
     public static final String PROPERTY_LABEL_URL_REPO = "deployment.create_application.label_url_repo";
     public static final String PROPERTY_LABEL_SCRIPT_UPLOAD = "deployment.form_init_deploy_application.label_script_upload";
     public static final String PROPERTY_MESSAGE_MANDATORY_FIELD = "deployment.message.mandatory_field";
@@ -141,6 +144,7 @@ public class ConstanteUtils
     public static final String PROPERTY_ID_WORKFLOW_TAG_AUTOMATICALLY_AND_DEPLOY_SITE = "deployment.idWorkflowTagAutomaticallyAndDeploySite";
 
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SITE = "deployment.idWorkflowDeploySite";
+    public static final String PROPERTY_ID_WORKFLOW_DEPLOY_NON_LUTECE = "deployment.idWorkflowDeploySiteNonLutece";
     public static final String PROPERTY_ID_WORKFLOW_TAG_SITE = "deployment.idWorkflowTagSite";
     public static final String PROPERTY_ID_WORKFLOW_DEPLOY_SCRIPT = "deployment.idWorkflowDeployScript";
     public static final String PROPERTY_ID_WORKFLOW_INIT_APP_CONTEXT = "deployment.idWorkflowInitAppContext";
@@ -219,6 +223,7 @@ public class ConstanteUtils
     public static final String MARK_CONFIG = "config";
     public static final String MARK_DEPLOY_WAR = "deploy_war";
     public static final String MARK_DEPLOY_SQL = "deploy_sql";
+    public static final String MARK_DEPLOY_NON_LUTECE = "deploy_site_non_lutece";
     public static final String MARK_INIT_DATABASE = "init_database";
     public static final String MARK_INIT_APP_CONTEXT = "init_app_context";
     public static final String MARK_CAN_CREATE_APPLICATION = "can_create_application";
@@ -249,6 +254,8 @@ public class ConstanteUtils
     public static final String PARAM_CODE = "code";
     public static final String PARAM_NAME = "name";
     public static final String PARAM_WEBAPP_NAME = "webapp_name";
+    public static final String PARAM_LUTECE_SITE = "is_lutece_site";
+    public static final String PARAM_CUSTOM_MAVEN_DEPLOY_GOAL = "maven_custom_deploy_goal";
     public static final String PARAM_SITE = "site";
     public static final String PARAM_ID_APPLICATION = "id_application";
     public static final String PARAM_MAVEN_PROFIL = "maven_profil";
@@ -259,6 +266,7 @@ public class ConstanteUtils
     public static final String PARAM_KEY_ACTION_DEPLOYMENT = "key_action";
     public static final String PARAM_DEPLOY_WAR = "deploy_war";
     public static final String PARAM_DEPLOY_SQL = "deploy_sql";
+    public static final String PARAM_DEPLOY_NON_LUTECE = "deploy_site_non_lutece";
     public static final String PARAM_SCRIPT = "script";
     public static final String PARAM_CODE_DATABASE = "code_database";
     public static final String PARAM_SCRIPT_UPLOAD = "script_upload";
@@ -274,6 +282,7 @@ public class ConstanteUtils
     public static final String PARAM_SCRIPT_NAME = "script_name";
     public static final String PARAM_CODE_APPLICATION = "code_application";
     public static final String PARAM_WORKGROUP = "workgroup";
+    public static final String PARAM_CUSTOM_MAVEN_GOAL = "maven_custom_goal";
 
     // ARCHIVE TYPE
     public static final String ARCHIVE_WAR_EXTENSION = ".war";

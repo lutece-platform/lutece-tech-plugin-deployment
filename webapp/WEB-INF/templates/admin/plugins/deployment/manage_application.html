@@ -96,16 +96,32 @@
   <#list actions as action >
    <#switch action.permission>
     <#case "DEPLOY_APPLICATION">
-      <#if application.hasPrivateRepo() >
-        <a class="button shadow fill-blue small" href="jsp/admin/plugins/deployment/AskCredentials.jsp?id_application=${application.idApplication}&action_url=${action.url}" title="#i18n{${action.i18nKeyTitle}}" >
+      <#if application.isLuteceSite()>
+        <#if application.hasPrivateRepo() >
+          <a class="button shadow fill-blue small" href="jsp/admin/plugins/deployment/AskCredentials.jsp?id_application=${application.idApplication}&action_url=${action.url}" title="#i18n{${action.i18nKeyTitle}}" >
 
-      <#else>
-        <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
+        <#else>
+          <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
+        </#if>
+          <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+          <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+        </a>
       </#if>
-        <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
-        <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
-      </a>
       <#break>
+     <#case "DEPLOY_APPLICATION_NON_LUTECE">
+        <#if !application.isLuteceSite()>
+            <#if application.hasPrivateRepo() >
+              <a class="button shadow fill-blue small" href="jsp/admin/plugins/deployment/AskCredentials.jsp?id_application=${application.idApplication}&action_url=${action.url}" title="#i18n{${action.i18nKeyTitle}}" >
+
+            <#else>
+              <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
+            </#if>
+              <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>
+              <span class="visible-xs visible-sm"><i class="${action.iconCssClass} fa-2x fa-fw"></i></span>
+            </a>
+            
+        </#if>
+       <#break>
     <#case "DEPLOY_SCRIPT">
       <a class="button shadow fill-blue small" href="${action.url}&id_application=${application.idApplication}" title="#i18n{${action.i18nKeyTitle}}" >
         <span class="hidden-xs hidden-sm"><i class="${action.iconCssClass}"></i> #i18n{${action.i18nKeyName}}</span>

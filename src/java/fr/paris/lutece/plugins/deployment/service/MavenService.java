@@ -104,7 +104,7 @@ public class MavenService implements IMavenService
      * @see fr.paris.lutece.plugins.deployment.service.IMavenService#mvnSiteAssembly(java.lang.String, fr.paris.lutece.plugins.deployment.business.Environment,
      * fr.paris.lutece.plugins.deployment.business.MavenUser)
      */
-    public void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult )
+    public void mvnSiteAssembly( String strSiteName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult )
     {
         String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
 
@@ -113,7 +113,7 @@ public class MavenService implements IMavenService
         listGoalsProfile.addAll( listGoals );
         listGoalsProfile.add( "-P " + strMavenProfile );
         listGoalsProfile.add( "-U" );
-        mvn( strTagName, strSiteLocalBasePath, listGoalsProfile, commandResult );
+        mvn( strSiteLocalBasePath, listGoalsProfile, commandResult );
     }
 
     public void saveMvnProfilName( String strProfilValue, String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance )
@@ -191,7 +191,7 @@ public class MavenService implements IMavenService
      *            svn bin path (ex: /home/svn/apps/subversion/bin)
      */
     @SuppressWarnings( "unchecked" )
-    private String mvn( String strTagName, String strSitePath, List<String> goals, CommandResult commandResult )
+    private String mvn( String strSitePath, List<String> goals, CommandResult commandResult )
     {
         InvocationRequest request = new DefaultInvocationRequest( );
         request.setPomFile( new File( DeploymentUtils.getPathPomFile( strSitePath ) ) );
@@ -256,5 +256,30 @@ public class MavenService implements IMavenService
         // _endTime = new Date( );
         return null;
     }
-
+    
+    /**
+     * Run a custom maven cmd
+     * @param strSiteName the repo
+     * @param strMavenProfile
+     * @param strCustomCommand
+     * @param commandResult 
+     */
+    @Override
+    public void runCustomMavenCommand( String strSiteName, String strMavenProfile, String strCustomCommand, CommandResult commandResult )
+    {
+        String strSiteLocalBasePath = DeploymentUtils.getPathCheckoutSite( strSiteName );
+        
+        //If the custom mvn command begin by "mvn "; we remove this. 
+        if ( strCustomCommand.startsWith( ConstanteUtils.CONSTANT_MAVEN_BASE_CMD ) )
+        {
+            strCustomCommand = strCustomCommand.replaceFirst( ConstanteUtils.CONSTANT_MAVEN_BASE_CMD, "");
+        }
+        
+        List<String> listGoals = new ArrayList<>();
+        listGoals.add( strCustomCommand );
+        
+        //Run the cmd 
+        mvn( strSiteLocalBasePath,listGoals, commandResult );
+    }
+    
 }

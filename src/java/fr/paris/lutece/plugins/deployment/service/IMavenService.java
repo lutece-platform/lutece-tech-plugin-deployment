@@ -38,23 +38,7 @@ import fr.paris.lutece.plugins.deployment.business.vcs.AbstractVCSUser;
 
 public interface IMavenService
 {
-    /**
-     * 
-     * mvnReleasePrepare
-     * 
-     * @param strBasePath
-     *            chemin sur le disque pour l'acces au composant
-     * @param strPluginName
-     *            le nom du composant
-     * @param strReleaseVersion
-     *            la version a release
-     * @param strTag
-     *            le nom du tag
-     * @param strDevelopmentVersion
-     *            la prochaine version de developpement (avec -SNAPSHOT)
-     * @return le thread
-     */
-    void mvnSiteAssembly( String strSiteName, String strTagName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult );
+    void mvnSiteAssembly( String strSiteName, String strMavenProfile, AbstractVCSUser user, CommandResult commandResult );
 
     String getSiteWarName( String strSiteName );
 
@@ -63,4 +47,6 @@ public interface IMavenService
     void saveMvnProfilName( String strProfilValue, String strIdApplication, String strCodeEnvironment, String strCodeServerApplicationInstance );
 
     void init( );
+    
+    public void runCustomMavenCommand( String strSiteName, String strProfile, String strCustomCommand, CommandResult commandResult );
 }
