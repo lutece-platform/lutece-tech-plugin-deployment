@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-deployment</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>Lutece deployment</name>
     <description>deployment plugin</description>
     <packaging>lutece-plugin</packaging>
